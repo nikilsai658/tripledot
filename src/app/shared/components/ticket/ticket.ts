@@ -15,6 +15,7 @@ import { TicketService } from '../../../features/services/ticket/ticket-service'
 export class TicketComponent {
 
   loading = false;
+  showSuccess = false;
 
    ticketForm: any;
 
@@ -49,13 +50,17 @@ export class TicketComponent {
     this.loading = true;
 
     this.ticketService.createTicket(this.ticketForm.value).subscribe({
-      next: (res: any) => {
+      next: () => {
 
         this.loading = false;
-
-        alert('Ticket Raised Successfully');
-        this.router.navigate(['/main/mytickets']);
+        this.showSuccess = true;
         this.cdr.markForCheck();
+
+        setTimeout(() => {
+          this.showSuccess = false;
+          this.cdr.markForCheck();
+          this.router.navigate(['/main/mytickets']);
+        }, 2000);
       },
       error: (err) => {
         this.loading = false;

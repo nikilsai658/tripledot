@@ -1,38 +1,26 @@
-
 <div class="leaderboard-page">
 
-  <!-- ================= HEADER ================= -->
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
   <div class="leaderboard-header">
 
     <div class="header-content">
 
-      <div class="title-row">
+      <div class="title-section">
 
-        <div class="header-icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.8"
-            stroke="currentColor">
+        <span class="page-label">
+          LEARNING PORTAL
+        </span>
 
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3 13.125l6-6 4.5 4.5L21 4.125M21 4.125V10m0-5.875h-5.875" />
+        <h1 class="page-title">
+          Student Leaderboard
+        </h1>
 
-          </svg>
-        </div>
-
-        <div>
-          <h2 class="page-title">
-            Leaderboard
-          </h2>
-
-          <p class="page-subtitle">
-            Student performance and ranking overview
-          </p>
-        </div>
+        <p class="page-subtitle">
+          Comprehensive evaluation metrics, rubric weights, and cohort distribution
+        </p>
 
       </div>
 
@@ -43,69 +31,50 @@
 
     <div class="statistics-container">
 
-      <!-- My Rank -->
-      <div class="stat-card">
+      <!-- My Standing -->
 
-        <div class="stat-icon rank-icon">
+      <div class="stat-block">
 
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.8"
-            stroke="currentColor">
-
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 3l2.09 4.26L19 8l-3.5 3.41.83 4.82L12 14l-4.33 2.23.83-4.82L5 8l4.91-.74L12 3z" />
-
-          </svg>
-
+        <div class="stat-rank-box">
+          {{ myRank }}
         </div>
 
-        <div>
+        <div class="stat-content">
+
           <p class="stat-label">
-            My Rank
+            MY RANK
           </p>
 
           <h3 class="stat-value">
-            #{{ myRank }}
+            {{ myRank }}
           </h3>
+
         </div>
 
       </div>
 
 
-      <!-- My Score -->
-      <div class="stat-card">
+      <div class="stat-divider"></div>
 
-        <div class="stat-icon score-icon">
 
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.8"
-            stroke="currentColor">
+      <!-- Earned Score -->
 
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 6v12m6-9H9.5a2.5 2.5 0 100 5H15a2.5 2.5 0 110 5H6" />
+      <div class="stat-block score-stat">
 
-          </svg>
-
+        <div class="stat-points-box">
+          PTS
         </div>
 
-        <div>
+        <div class="stat-content">
+
           <p class="stat-label">
-            My Score
+            EARNED SCORE
           </p>
 
-          <h3 class="stat-value score-value">
+          <h3 class="stat-value">
             {{ myScore }}
           </h3>
+
         </div>
 
       </div>
@@ -115,113 +84,174 @@
   </div>
 
 
-  <!-- ================= TOP 3 STUDENTS ================= -->
+
+  <!-- =====================================================
+       TOP THREE
+  ====================================================== -->
 
   <div
     class="top-students"
     *ngIf="leaderboard && leaderboard.length > 0">
 
 
-    <!-- SECOND PLACE -->
+    <!-- =================================================
+         SECOND PLACE
+    ================================================== -->
 
     <div
       class="top-student-card second-place"
       *ngIf="leaderboard.length > 1">
 
-      <div class="position-badge silver">
-        2
+      <div class="place-label silver-label">
+        <span class="place-dot"></span>
+        RANK 2 
       </div>
 
-      <div class="student-avatar">
 
-        {{ leaderboard[1].studentName?.charAt(0)?.toUpperCase() }}
+      <div class="top-avatar silver-avatar">
+
+        <span>
+          {{ leaderboard[1].studentName?.charAt(0)?.toUpperCase() }}
+        </span>
 
       </div>
 
-      <h3 class="top-student-name">
+
+      <h2 class="top-student-name">
         {{ leaderboard[1].studentName }}
-      </h3>
+      </h2>
+
+
+      <!-- Position BELOW circle -->
 
       <p class="student-position">
         2nd Position
       </p>
 
-      <div class="top-score">
-        {{ leaderboard[1].totalScore }}
 
-        <span>
-          points
+      <!-- Score -->
+
+      <div class="top-score">
+
+        <span class="score-number">
+          {{ leaderboard[1].totalScore }}
         </span>
+
+        <span class="score-points">
+          PTS
+        </span>
+
       </div>
 
     </div>
 
 
-    <!-- FIRST PLACE -->
+
+    <!-- =================================================
+         FIRST PLACE
+    ================================================== -->
 
     <div
       class="top-student-card first-place"
       *ngIf="leaderboard.length > 0">
 
-      <div class="position-badge gold">
-        1
+      <div class="winner-label">
+        <span class="place-dot"></span>
+        FIRST PLACE
+        <span class="place-dot"></span>
       </div>
 
-      <div class="student-avatar winner-avatar">
 
-        {{ leaderboard[0].studentName?.charAt(0)?.toUpperCase() }}
+      <div class="top-avatar gold-avatar">
+
+        <span>
+          {{ leaderboard[0].studentName?.charAt(0)?.toUpperCase() }}
+        </span>
+
+        <span class="winner-rank">
+          #1
+        </span>
 
       </div>
 
-      <h3 class="top-student-name">
+
+      <h2 class="top-student-name">
         {{ leaderboard[0].studentName }}
-      </h3>
+      </h2>
+
+
+      <!-- Position BELOW circle -->
 
       <p class="student-position">
         Top Performer
       </p>
 
-      <div class="top-score">
-        {{ leaderboard[0].totalScore }}
 
-        <span>
-          points
+      <!-- Score -->
+
+      <div class="top-score">
+
+        <span class="score-number">
+          {{ leaderboard[0].totalScore }}
         </span>
+
+        <span class="score-points">
+          PTS
+        </span>
+
       </div>
 
     </div>
 
 
-    <!-- THIRD PLACE -->
+
+    <!-- =================================================
+         THIRD PLACE
+    ================================================== -->
 
     <div
       class="top-student-card third-place"
       *ngIf="leaderboard.length > 2">
 
-      <div class="position-badge bronze">
-        3
+      <div class="place-label bronze-label">
+        <span class="place-dot"></span>
+        RANK 3 
       </div>
 
-      <div class="student-avatar">
 
-        {{ leaderboard[2].studentName?.charAt(0)?.toUpperCase() }}
+      <div class="top-avatar bronze-avatar">
+
+        <span>
+          {{ leaderboard[2].studentName?.charAt(0)?.toUpperCase() }}
+        </span>
 
       </div>
 
-      <h3 class="top-student-name">
+
+      <h2 class="top-student-name">
         {{ leaderboard[2].studentName }}
-      </h3>
+      </h2>
+
+
+      <!-- Position BELOW circle -->
 
       <p class="student-position">
         3rd Position
       </p>
 
-      <div class="top-score">
-        {{ leaderboard[2].totalScore }}
 
-        <span>
-          points
+      <!-- Score -->
+
+      <div class="top-score">
+
+        <span class="score-number">
+          {{ leaderboard[2].totalScore }}
         </span>
+
+        <span class="score-points">
+          PTS
+        </span>
+
       </div>
 
     </div>
@@ -229,33 +259,50 @@
   </div>
 
 
-  <!-- ================= LEADERBOARD ================= -->
+
+  <!-- =====================================================
+       FULL CLASS STANDINGS
+  ====================================================== -->
 
   <div class="leaderboard-card">
 
-
-    <!-- Table Header -->
+    <!-- Header -->
 
     <div class="table-heading">
 
-      <div>
-        <h3 class="table-title">
-          Student Rankings
-        </h3>
+      <div class="table-heading-content">
+
+        <h2 class="table-title">
+          Full Class Standings
+        </h2>
 
         <p class="table-subtitle">
-          Overall student performance
+          Complete cohort roster ordered by aggregate grade scores and rubric completion
         </p>
+
       </div>
 
-      <div class="student-count">
-        {{ leaderboard?.length || 0 }} Students
+
+      <div class="table-actions">
+
+        <input
+          type="text"
+          class="student-search"
+          placeholder="Search student or roll #..." />
+
+        <span class="student-count">
+          {{ leaderboard?.length || 0 }} Enrolled
+        </span>
+
       </div>
 
     </div>
 
 
-    <!-- ================= TABLE ================= -->
+
+    <!-- =================================================
+         TABLE
+    ================================================== -->
 
     <div
       class="table-container"
@@ -267,24 +314,24 @@
 
           <tr>
 
-            <th>
-              Rank
+            <th class="rank-column">
+              RANK
             </th>
 
             <th>
-              Student
+              STUDENT & IDENTIFICATION
             </th>
 
-            <th class="center">
-              Score
+            <th class="center-column">
+              SCORE
             </th>
 
-            <th class="center">
-              Assignments
+            <th class="center-column">
+              ASSIGNMENTS
             </th>
 
-            <th class="center">
-              Attempts
+            <th class="center-column">
+              ATTEMPTS
             </th>
 
           </tr>
@@ -296,12 +343,13 @@
 
           <tr
             *ngFor="let student of leaderboard"
-            class="leaderboard-row">
+            class="leaderboard-row"
+            [class.current-student]="student.rank === myRank">
 
 
-            <!-- Rank -->
+            <!-- ================= RANK ================= -->
 
-            <td>
+            <td class="rank-column">
 
               <span
                 class="rank-number"
@@ -319,26 +367,45 @@
             </td>
 
 
-            <!-- Student -->
+
+            <!-- ================= STUDENT ================= -->
 
             <td>
 
               <div class="student-info">
 
-                <div class="student-table-avatar">
+                <div
+                  class="student-table-avatar"
+                  [ngClass]="{
+                    'table-avatar-first': student.rank === 1,
+                    'table-avatar-second': student.rank === 2,
+                    'table-avatar-third': student.rank === 3
+                  }">
 
                   {{ student.studentName?.charAt(0)?.toUpperCase() }}
 
                 </div>
 
-                <div>
+
+                <div class="student-details">
 
                   <p class="student-name">
                     {{ student.studentName }}
                   </p>
 
                   <p class="student-label">
-                    Student
+                    {{ student.email || 'Student' }}
+                    <span *ngIf="student.rollNumber">
+                      • {{ student.rollNumber }}
+                    </span>
+                  </p>
+
+                  <p
+                    class="current-profile"
+                    *ngIf="student.rank === myRank">
+
+                    Current Profile
+
                   </p>
 
                 </div>
@@ -348,20 +415,36 @@
             </td>
 
 
-            <!-- Score -->
 
-            <td class="center">
+            <!-- ================= SCORE ================= -->
 
-              <span class="score-badge">
-                {{ student.totalScore }}
+            <td class="center-column">
+
+              <span
+                class="score-badge"
+                [ngClass]="{
+                  'score-first': student.rank === 1,
+                  'score-second': student.rank === 2,
+                  'score-third': student.rank === 3
+                }">
+
+                <strong>
+                  {{ student.totalScore }}
+                </strong>
+
+                <small>
+                  pts
+                </small>
+
               </span>
 
             </td>
 
 
-            <!-- Assignments -->
 
-            <td class="center">
+            <!-- ================= ASSIGNMENTS ================= -->
+
+            <td class="center-column">
 
               <span class="metric-value">
                 {{ student.totalAssignments }}
@@ -370,9 +453,10 @@
             </td>
 
 
-            <!-- Attempts -->
 
-            <td class="center">
+            <!-- ================= ATTEMPTS ================= -->
+
+            <td class="center-column">
 
               <span class="metric-value">
                 {{ student.totalAttempts }}
@@ -389,29 +473,14 @@
     </div>
 
 
-    <!-- ================= EMPTY STATE ================= -->
+
+    <!-- =================================================
+         EMPTY STATE
+    ================================================== -->
 
     <div
       class="empty-state"
       *ngIf="!leaderboard || leaderboard.length === 0">
-
-      <div class="empty-icon">
-
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor">
-
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M3 13.125l6-6 4.5 4.5L21 4.125" />
-
-        </svg>
-
-      </div>
 
       <h3>
         No leaderboard data

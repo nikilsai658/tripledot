@@ -19,10 +19,70 @@
   @apply mt-1 text-sm text-gray-500;
 }
 
+.header-actions {
+  @apply flex items-center gap-3;
+}
+
+.add-btn {
+  @apply flex items-center gap-2 px-5 py-2.5 rounded-lg
+    bg-[#2F3E46] text-white font-medium shadow-sm
+    transition-opacity duration-200 hover:opacity-90;
+}
+
+.add-btn .plus {
+  @apply text-lg leading-none;
+}
+
 .refresh-btn {
-  @apply px-4 py-2 rounded-lg bg-[#2F3E46] text-white
-    font-medium transition-all duration-200
-    hover:bg-[#243238] disabled:opacity-50;
+  @apply px-4 py-2 rounded-lg bg-white text-[#2F3E46]
+    border border-gray-300 font-medium transition-all duration-200
+    hover:bg-gray-100 disabled:opacity-50;
+}
+
+/* ==========================
+   ADD / EDIT DIALOG
+========================== */
+
+.modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center
+    bg-black/50 backdrop-blur-sm px-4;
+}
+
+.modal-card {
+  @apply bg-white w-full max-w-3xl rounded-xl shadow-2xl
+    overflow-hidden max-h-[90vh] flex flex-col;
+}
+
+@keyframes modal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-modal {
+  animation: modal-pop 0.18s ease-out;
+}
+
+.modal-header {
+  @apply flex items-center justify-between px-6 py-4 shrink-0;
+  background-color: #2F3E46;
+}
+
+.modal-header h3 {
+  @apply text-white text-lg font-semibold;
+}
+
+.modal-close {
+  @apply text-white/80 hover:text-white text-xl leading-none;
+}
+
+.modal-form {
+  @apply p-6 overflow-y-auto;
 }
 
 /* ==========================
@@ -97,8 +157,8 @@
     bg-white text-gray-800
     text-sm outline-none
     transition-all duration-200
-    focus:border-[#24c0c5]
-    focus:ring-2 focus:ring-[#24c0c5]/20;
+    focus:border-transparent
+    focus:ring-2 focus:ring-[#2F3E46];
 }
 
 .form-group input::placeholder,
@@ -143,27 +203,37 @@
 ========================== */
 
 .form-actions {
-  @apply flex items-center gap-3 mt-6 pt-5
+  @apply flex items-center justify-end gap-3 mt-6 pt-5
     border-t border-gray-200;
 }
 
 .save-btn {
   @apply px-5 py-2.5 rounded-lg
-    bg-[#24c0c5] text-white
+    bg-emerald-600 text-white
     font-medium
     transition-all duration-200
-    hover:bg-[#1faeb3]
+    hover:bg-emerald-700
+    disabled:opacity-50
+    disabled:cursor-not-allowed;
+}
+
+.update-btn {
+  @apply px-5 py-2.5 rounded-lg
+    bg-amber-500 text-white
+    font-medium
+    transition-all duration-200
+    hover:bg-amber-600
     disabled:opacity-50
     disabled:cursor-not-allowed;
 }
 
 .cancel-btn {
   @apply px-5 py-2.5 rounded-lg
-    bg-gray-100 text-gray-700
+    bg-white text-gray-700
     font-medium
     border border-gray-300
     transition-all duration-200
-    hover:bg-gray-200;
+    hover:bg-gray-100;
 }
 
 /* ==========================
@@ -198,6 +268,54 @@
 
 .file-name {
   @apply text-sm text-gray-600;
+}
+
+/* ==========================
+   UPLOAD RESULTS
+========================== */
+
+.upload-results {
+  @apply border-t border-gray-200 px-6 py-5;
+}
+
+.upload-results-header {
+  @apply flex items-center justify-between flex-wrap gap-3 mb-4;
+}
+
+.upload-results-summary {
+  @apply flex items-center gap-3;
+}
+
+.result-badge {
+  @apply px-3 py-1.5 rounded-full text-xs font-semibold;
+}
+
+.result-badge-success {
+  @apply bg-emerald-100 text-emerald-700;
+}
+
+.result-badge-failed {
+  @apply bg-red-100 text-red-700;
+}
+
+.upload-results-block {
+  @apply mb-6;
+}
+
+.upload-results-block:last-child {
+  @apply mb-0;
+}
+
+.upload-results-title {
+  @apply text-sm font-semibold mb-3;
+}
+
+.upload-results-title-success {
+  @apply text-emerald-700;
+}
+
+.upload-results-title-failed {
+  @apply text-red-700;
 }
 
 /* ==========================
@@ -247,15 +365,14 @@ table {
 }
 
 thead {
-  @apply bg-gray-50;
+  background-color: #2F3E46;
 }
 
 thead th {
   @apply px-5 py-3.5
     text-left text-xs font-semibold
     uppercase tracking-wide
-    text-gray-600
-    border-b border-gray-200
+    text-white
     whitespace-nowrap;
 }
 
@@ -264,7 +381,7 @@ thead th:not(:last-child) {
 }
 
 thead th:hover {
-  @apply bg-gray-100;
+  background-color: #243238;
 }
 
 tbody tr {
@@ -318,20 +435,18 @@ tbody td {
 
 .edit-btn {
   @apply px-3 py-1.5 rounded-lg
-    bg-blue-50 text-blue-600
-    border border-blue-200
+    bg-amber-500 text-white
     text-xs font-medium
     transition-all duration-200
-    hover:bg-blue-100;
+    hover:bg-amber-600;
 }
 
 .delete-btn {
   @apply px-3 py-1.5 rounded-lg
-    bg-red-50 text-red-600
-    border border-red-200
+    bg-red-600 text-white
     text-xs font-medium
     transition-all duration-200
-    hover:bg-red-100;
+    hover:bg-red-700;
 }
 
 /* ==========================
@@ -358,24 +473,53 @@ tbody td {
 ========================== */
 
 .pagination {
-  @apply flex items-center justify-between
+  @apply flex flex-col sm:flex-row items-center justify-between
+    gap-3
     px-6 py-4
-    border-t border-gray-200;
+    border-t border-gray-200
+    bg-gray-50;
 }
 
-.pagination button {
+.pagination-info {
+  @apply text-sm text-gray-500;
+}
+
+.pagination-info strong {
+  @apply font-semibold text-gray-700;
+}
+
+.pagination-controls {
+  @apply flex items-center gap-1.5;
+}
+
+.pagination-controls button {
   @apply px-4 py-2 rounded-lg
     border border-gray-300
-    bg-white text-gray-700
-    text-sm font-medium
+    bg-white text-gray-600
+    text-sm font-semibold
     transition-all duration-200
     hover:bg-gray-100
     disabled:opacity-40
     disabled:cursor-not-allowed;
 }
 
-.pagination span {
-  @apply text-sm text-gray-600;
+.pagination-controls .nav-btn {
+  @apply px-3;
+}
+
+.pagination-controls .page-btn {
+  @apply w-9 h-9 px-0
+    flex items-center justify-center;
+}
+
+.pagination-controls .page-btn.active {
+  background-color: #2F3E46;
+  @apply text-white border-transparent shadow-sm hover:bg-[#2F3E46];
+}
+
+.pagination-controls .page-ellipsis {
+  @apply w-9 h-9 flex items-center justify-center
+    text-sm text-gray-400;
 }
 
 /* ==========================
@@ -416,4 +560,51 @@ tbody td {
     @apply flex-col items-start;
   }
 
+}
+.upload-results-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.print-success-btn,
+.print-failed-btn {
+  border: none;
+  padding: 9px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.print-success-btn {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.print-success-btn:hover {
+  background: #bbf7d0;
+}
+
+.print-failed-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.print-failed-btn:hover {
+  background: #fecaca;
+}
+
+@media (max-width: 768px) {
+  .upload-results-actions {
+    width: 100%;
+  }
+
+  .print-success-btn,
+  .print-failed-btn,
+  .upload-results-actions .cancel-btn {
+    flex: 1;
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Logo } from '../../../shared/logo/logo';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,17 +17,18 @@ import { UserStore } from '../../../core/store/user';
   imports: [Logo, FloatLabelModule, FormsModule, InputTextModule, ButtonModule, PasswordModule, ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Login implements OnInit{
   Form !:FormGroup;
   collegecode:any;
   errorMessage = '';
   loading = false;
-   constructor(private fb: FormBuilder, private router:Router,private cookie:CookieService,private auth:AuthServices,private userStore:UserStore,@Inject(PLATFORM_ID) private platformId: Object){
+   constructor(private fb: FormBuilder, private router:Router,private cookie:CookieService,private auth:AuthServices,private userStore:UserStore,private cd: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object){
     this.Form=this.fb.group({
       userNameOrEmail: ['',Validators.required],
       password: ['',Validators.required],
-      collegeCode: ["", Validators.required]
+      collegeCode: ['', Validators.required]
     });
     
    }
@@ -46,6 +47,7 @@ export class Login implements OnInit{
 
     if(this.Form.valid){
       this.loading = true;
+      this.cd.markForCheck();
 
       this.auth.login(this.Form.value).subscribe({
         next:(res :any)=>{
@@ -59,7 +61,7 @@ export class Login implements OnInit{
           this.cookie.set('refresh', refresh, 7, '/');
          if(res.data.isFirstLogin=== true ){
           this.router.navigate(['/changepassword']);
-         }else if(res.data.isFirstLogin=== false && res.profileCompleted=== false){
+         }else if(res.data.isFirstLogin=== false && res.data.profileCompleted=== false){
            this.router.navigate(['/profile']);
          }else{
          this.router.navigate(['/main']);
@@ -70,6 +72,8 @@ export class Login implements OnInit{
           this.loading = false;
 
           this.errorMessage = this.extractErrorMessage(err);
+
+          this.cd.markForCheck();
         }
       })
     }

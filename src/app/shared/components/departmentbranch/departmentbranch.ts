@@ -10,6 +10,8 @@ import {
   CommonModule
 } from '@angular/common';
 
+import { RouterLink } from '@angular/router';
+
 import {
   FormBuilder,
   FormGroup,
@@ -31,7 +33,8 @@ import { DeptbranchService} from '../../../features/services/departmentbranch/de
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './departmentbranch.html',
   styleUrls: ['./departmentbranch.css']
@@ -49,6 +52,7 @@ export class DepartmentBranchComponent implements OnInit {
   submitted = false;
   loading = false;
   editMode = false;
+  showModal = false;
 
   selectedId: number | null = null;
 
@@ -84,6 +88,20 @@ export class DepartmentBranchComponent implements OnInit {
 
     });
 
+  }
+
+  //==========================
+  // MODAL
+  //==========================
+
+  openAddModal(): void {
+    this.resetForm();
+    this.showModal = true;
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.resetForm();
   }
 
   //==========================
@@ -205,7 +223,7 @@ export class DepartmentBranchComponent implements OnInit {
 
             this.loadMappings();
 
-            this.resetForm();
+            this.closeModal();
 
           }
 
@@ -222,7 +240,7 @@ export class DepartmentBranchComponent implements OnInit {
 
             this.loadMappings();
 
-            this.resetForm();
+            this.closeModal();
 
           }
 
@@ -251,6 +269,8 @@ export class DepartmentBranchComponent implements OnInit {
       branchName: item.branchName
 
     });
+
+    this.showModal = true;
 
   }
 

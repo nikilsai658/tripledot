@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule , isPlatformBrowser} from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Logo } from '../../../shared/logo/logo';
 import { InputTextModule } from 'primeng/inputtext';
@@ -14,19 +14,31 @@ import {AuthServices} from '../../services/auth/auth-services';
   imports: [ReactiveFormsModule,CommonModule,Logo,InputTextModule,ButtonModule,PasswordModule,FloatLabelModule],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResetPassword implements OnInit {
   Form !: FormGroup;
-  constructor(private router:Router,private auth:AuthServices , private fb:FormBuilder, private route:ActivatedRoute,){
+  collegecode:any;
+  message = '';
+  messageType: 'success' | 'error' = 'error';
+  constructor(private router:Router,private auth:AuthServices , private fb:FormBuilder, private route:ActivatedRoute,private cd: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object){
     this.Form=this.fb.group({
       newPassword:['',Validators.required],
       confirmPassword:['',Validators.required],
-      CollegeCode:['c2']
+      CollegeCode:['',Validators.required]
     })
   }
+ 
    userId!:string;
   token!:string;
   ngOnInit(): void {
+     if (isPlatformBrowser(this.platformId)) {
+      this.collegecode = localStorage.getItem('collegecode');
+
+      if (this.collegecode) {
+        this.Form.patchValue({ CollegeCode: this.collegecode });
+      }
+    }
     this.route.queryParams.subscribe(params=>
     {
       this.userId=params['userId'];
@@ -35,6 +47,8 @@ export class ResetPassword implements OnInit {
     )
   }
   onSubmit(){
+   this.message = '';
+
    if(this.Form.valid){
     const body = {
       ...this.Form.value,
@@ -42,16 +56,26 @@ export class ResetPassword implements OnInit {
       token: this.token
     };
     this.auth.resetpassword(body).subscribe({
-      next:(res :any)=>{
-        alert('password changed sucessfully');
+      next:()=>{
+        this.messageType = 'success';
+        this.message = 'Password changed successfully';
+        this.cd.markForCheck();
+
         this.router.navigate(['/auth/login']);
       },error:(err :any)=>{
         console.log(err);
-        alert('failed')
+
+        this.messageType = 'error';
+        this.message = 'Failed to reset password. Please try again.';
+        this.cd.markForCheck();
       }
     })
    }else{
-    alert('fill the form');
+    this.Form.markAllAsTouched();
+
+    this.messageType = 'error';
+    this.message = 'Please fill the form';
+    this.cd.markForCheck();
    }
   }
 }

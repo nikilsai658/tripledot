@@ -44,6 +44,8 @@ export class Role implements OnInit {
 
   selectedRoleId = 0;
 
+  showModal = false;
+
   constructor(
     private api: RoleService,
     private fb: FormBuilder,
@@ -121,6 +123,31 @@ export class Role implements OnInit {
   }
 
   //==============================
+  // Modal Controls
+  //==============================
+
+  openAddModal(): void {
+
+    if (!this.auth.hasPermission('CREATE_ROLE')) {
+      alert('You do not have permission to create Role.');
+      return;
+    }
+
+    this.resetForm();
+
+    this.showModal = true;
+
+  }
+
+  closeModal(): void {
+
+    this.showModal = false;
+
+    this.resetForm();
+
+  }
+
+  //==============================
   // Create Role
   //==============================
 
@@ -180,6 +207,8 @@ export class Role implements OnInit {
       requiresYear: role.requiresYear
 
     });
+
+    this.showModal = true;
 
   }
 
@@ -273,6 +302,7 @@ export class Role implements OnInit {
 
     this.isEditMode = false;
     this.selectedRoleId = 0;
+    this.showModal = false;
 
   }
 

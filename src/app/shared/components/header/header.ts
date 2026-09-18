@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { CommonModule } from '@angular/common';
 import { Auth } from '../../../core/auth/auth';
 import { UserStore } from '../../../core/store/user';
+import { AuthServices } from '../../../features/services/auth/auth-services';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -33,7 +34,7 @@ colleges = [
   }
 ];
 
-  constructor(private router:Router,private cookie:CookieService,public auth:Auth,private userStore:UserStore){
+  constructor(private router:Router,private cookie:CookieService,public auth:Auth,private userStore:UserStore,private api:AuthServices) {
     effect(() => {
       const user = this.userStore.user();
 
@@ -54,10 +55,18 @@ colleges = [
     });
   }
   logout(){
-    this.userStore.clearUser();
+    this.api.logoutAll({}).subscribe({
+      next:(res:any)=>{
+      this.userStore.clearUser();
     this.cookie.delete('token','/');
     this.cookie.delete('refresh','/');
     this.router.navigate(['/auth/login']);
+      },
+      error:(err:any)=>{
+      console.log(err);
+      }
+    })
+    
   }
 
   ngOnInit(): void {}

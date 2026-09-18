@@ -15,10 +15,11 @@ import {
   FormBuilder,
   FormGroup,
   Validators,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  FormsModule
 } from '@angular/forms';
 
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
@@ -31,7 +32,9 @@ import { CourseService } from '../../../features/services/course/course-service'
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './domaincourse.html',
   styleUrls: ['./domaincourse.css']
@@ -41,16 +44,21 @@ export class DomainCourseMapComponent implements OnInit {
   domainCourseForm!: FormGroup;
 
   mappings: any[] = [];
+  filteredMappings: any[] = [];
 
   domains: any[] = [];
 
   courses: any[] = [];
 
-  isEditMode = false;
+  submitted = false;
+  editMode = false;
+  showModal = false;
 
-  selectedId = 0;
+  selectedId: number | null = null;
 
   loading = false;
+
+  searchText = '';
 
   constructor(
     private fb: FormBuilder,
@@ -66,17 +74,7 @@ export class DomainCourseMapComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.domainCourseForm = this.fb.group({
-
-      domainName: ['', Validators.required],
-
-      courseName: ['', Validators.required],
-
-      yearNumber: [1, [Validators.required, Validators.min(1)]],
-
-      semester: [1, [Validators.required, Validators.min(1)]]
-
-    });
+    this.buildForm();
 
     if (!isPlatformBrowser(this.platformId)) return;
 
@@ -96,6 +94,36 @@ export class DomainCourseMapComponent implements OnInit {
 
   }
 
+  buildForm(): void {
+
+    this.domainCourseForm = this.fb.group({
+
+      domainName: ['', Validators.required],
+
+      courseName: ['', Validators.required],
+
+      yearNumber: [1, [Validators.required, Validators.min(1)]],
+
+      semester: [1, [Validators.required, Validators.min(1)]]
+
+    });
+
+  }
+
+  //==========================
+  // MODAL
+  //==========================
+
+  openAddModal(): void {
+    this.resetForm();
+    this.showModal = true;
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.resetForm();
+  }
+
   //========================
   // Load Domains
   //========================
@@ -107,6 +135,8 @@ export class DomainCourseMapComponent implements OnInit {
       next: (res: any) => {
 
         this.domains = res.data || res.result || res || [];
+
+        this.cd.detectChanges();
 
       }
 
@@ -125,6 +155,8 @@ export class DomainCourseMapComponent implements OnInit {
       next: (res: any) => {
 
         this.courses = res.data || res.result || res || [];
+
+        this.cd.detectChanges();
 
       }
 
@@ -154,6 +186,8 @@ export class DomainCourseMapComponent implements OnInit {
 
         }
 
+        this.filteredMappings = [...this.mappings];
+
         this.cd.detectChanges();
 
       },
@@ -170,17 +204,21 @@ export class DomainCourseMapComponent implements OnInit {
 
   }
 
-  //========================
-  // CREATE
-  //========================
+  //==========================
+  // SAVE
+  //==========================
 
-  createMapping() {
+  save(): void {
 
-    if (!this.auth.hasPermission('CREATE_DOMAIN_COURSE_MAP')) {
+    this.submitted = true;
 
-      alert('Permission Denied');
+    if (this.editMode) {
 
-      return;
+      if (!this.auth.hasPermission('UPDATE_DOMAIN_COURSE_MAP')) return;
+
+    } else {
+
+      if (!this.auth.hasPermission('CREATE_DOMAIN_COURSE_MAP')) return;
 
     }
 
@@ -192,17 +230,19 @@ export class DomainCourseMapComponent implements OnInit {
 
     }
 
-    this.api.createDomaincourse(this.domainCourseForm.value)
+    const payload = this.domainCourseForm.value;
 
-      .subscribe({
+    if (this.editMode) {
+
+      if (this.selectedId == null) return;
+
+      this.api.updateDomaincourse(this.selectedId, payload).subscribe({
 
         next: () => {
 
-          alert('Mapping Created Successfully');
-
-          this.resetForm();
-
           this.loadMappings();
+
+          this.closeModal();
 
         },
 
@@ -210,15 +250,35 @@ export class DomainCourseMapComponent implements OnInit {
 
       });
 
+    } else {
+
+      this.api.createDomaincourse(payload).subscribe({
+
+        next: () => {
+
+          this.loadMappings();
+
+          this.closeModal();
+
+        },
+
+        error: err => console.log(err)
+
+      });
+
+    }
+
   }
 
   //========================
   // EDIT
   //========================
 
-  editMapping(item: any) {
+  edit(item: any) {
 
-    this.isEditMode = true;
+    if (!this.auth.hasPermission('UPDATE_DOMAIN_COURSE_MAP')) return;
+
+    this.editMode = true;
 
     this.selectedId = item.id;
 
@@ -234,43 +294,23 @@ export class DomainCourseMapComponent implements OnInit {
 
     });
 
+    this.showModal = true;
+
   }
 
   //========================
-  // UPDATE
+  // DELETE
   //========================
 
-  updateMapping() {
+  delete(id: number) {
 
-    if (!this.auth.hasPermission('UPDATE_DOMAIN_COURSE_MAP')) {
+    if (!this.auth.hasPermission('DELETE_DOMAIN_COURSE_MAP')) return;
 
-      alert('Permission Denied');
+    if (!confirm('Delete this mapping?')) return;
 
-      return;
-
-    }
-
-    if (this.domainCourseForm.invalid) {
-
-      this.domainCourseForm.markAllAsTouched();
-
-      return;
-
-    }
-
-    this.api.updateDomaincourse(
-
-      this.selectedId,
-
-      this.domainCourseForm.value
-
-    ).subscribe({
+    this.api.deleteDomaincourse(id).subscribe({
 
       next: () => {
-
-        alert('Updated Successfully');
-
-        this.resetForm();
 
         this.loadMappings();
 
@@ -283,52 +323,16 @@ export class DomainCourseMapComponent implements OnInit {
   }
 
   //========================
-  // DELETE
-  //========================
-
-  deleteMapping(id: number) {
-
-    if (!this.auth.hasPermission('DELETE_DOMAIN_COURSE_MAP')) {
-
-      alert('Permission Denied');
-
-      return;
-
-    }
-
-    if (!confirm('Delete this Mapping?')) {
-
-      return;
-
-    }
-
-    this.api.deleteDomaincourse(id)
-
-      .subscribe({
-
-        next: () => {
-
-          alert('Deleted Successfully');
-
-          this.loadMappings();
-
-        },
-
-        error: err => console.log(err)
-
-      });
-
-  }
-
-  //========================
   // RESET
   //========================
 
   resetForm() {
 
-    this.isEditMode = false;
+    this.submitted = false;
 
-    this.selectedId = 0;
+    this.editMode = false;
+
+    this.selectedId = null;
 
     this.domainCourseForm.reset({
 
@@ -341,6 +345,24 @@ export class DomainCourseMapComponent implements OnInit {
       semester: 1
 
     });
+
+  }
+
+  //==========================
+  // SEARCH
+  //==========================
+
+  search(): void {
+
+    const value = this.searchText.toLowerCase();
+
+    this.filteredMappings = this.mappings.filter(x =>
+
+      x.domainName.toLowerCase().includes(value) ||
+
+      x.courseName.toLowerCase().includes(value)
+
+    );
 
   }
 

@@ -1,445 +1,641 @@
-/* ============================================================
-   PAGE
-============================================================ */
-
-@import 'tailwindcss';
-
+/* =========================================================
+   DOMAIN PAGE
+========================================================= */
+@import "tailwindcss";
 .domain-page {
-
-  @apply min-h-screen bg-white px-4 py-8 text-[#2F3E46];
-
+  @apply min-h-screen
+         bg-white
+         px-4
+         py-8
+         font-sans
+         sm:px-6
+         lg:px-10
+         xl:px-14;
 }
 
 
-/* ============================================================
-   TOOLBAR
-============================================================ */
+.domain-container {
+  @apply mx-auto
+         max-w-[1450px];
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
 
 .domain-toolbar {
-
-  @apply mx-auto mb-8 flex max-w-[1500px] items-end justify-between gap-6 border-b border-[#2F3E46]/15 pb-6;
-
+  @apply mb-8
+         flex
+         flex-col
+         gap-5
+         border-b
+         border-gray-200
+         pb-7
+         lg:flex-row
+         lg:items-center
+         lg:justify-between;
 }
+
 
 .toolbar-title {
-
-  @apply flex flex-col;
-
+  @apply flex
+         flex-col;
 }
+
 
 .page-label {
-
-  @apply mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#2F3E46]/55;
-
+  @apply mb-1
+         text-[10px]
+         font-bold
+         uppercase
+         tracking-[0.2em]
+         text-[#2F3E46];
 }
+
 
 .toolbar-title h1 {
-
-  @apply m-0 text-[28px] font-bold tracking-tight text-[#2F3E46];
-
+  @apply m-0
+         text-[30px]
+         font-bold
+         tracking-tight
+         text-[#2F3E46]
+         sm:text-[34px];
 }
+
 
 .toolbar-title p {
-
-  @apply mt-1.5 m-0 text-[13px] leading-6 text-[#2F3E46]/60;
-
+  @apply mt-2
+         max-w-[650px]
+         text-sm
+         leading-6
+         text-gray-500
+         sm:text-[15px];
 }
 
 
-/* ============================================================
+/* =========================================================
    DOMAIN COUNT
-============================================================ */
+========================================================= */
 
 .domain-count {
-
-  @apply flex min-w-[175px] items-center gap-3 rounded-xl border border-[#2F3E46]/15 bg-white px-4 py-3 shadow-sm;
-
+  @apply flex
+         w-full
+         items-center
+         gap-3
+         rounded-xl
+         border
+         border-gray-200
+         bg-white
+         px-4
+         py-3
+         shadow-sm
+         lg:w-auto
+         lg:min-w-[190px];
 }
+
 
 .count-icon {
-
-  @apply flex h-10 w-10 items-center justify-center rounded-lg bg-[#2F3E46] text-white;
-
+  @apply flex
+         h-10
+         w-10
+         shrink-0
+         items-center
+         justify-center
+         rounded-lg
+         bg-[#2F3E46]
+         text-white;
 }
+
 
 .count-icon svg {
-
-  @apply h-5 w-5;
-
+  @apply h-5
+         w-5;
 }
+
 
 .count-content {
-
-  @apply flex flex-col;
-
+  @apply flex
+         flex-col;
 }
+
 
 .count-content > span {
-
-  @apply text-[10px] font-bold uppercase tracking-wider text-[#2F3E46]/50;
-
+  @apply text-[9px]
+         font-bold
+         uppercase
+         tracking-[0.12em]
+         text-gray-400;
 }
+
 
 .count-number {
-
-  @apply flex items-baseline gap-1.5;
-
+  @apply flex
+         items-baseline
+         gap-1.5;
 }
+
 
 .count-number strong {
-
-  @apply text-xl font-bold text-[#2F3E46];
-
+  @apply text-xl
+         font-bold
+         leading-6
+         text-[#2F3E46];
 }
+
 
 .count-number small {
-
-  @apply text-[11px] font-semibold text-[#2F3E46]/55;
-
+  @apply text-xs
+         font-medium
+         text-gray-500;
 }
 
 
-/* ============================================================
+/* =========================================================
    DOMAIN GRID
-============================================================ */
+
+   3 COLUMNS ON DESKTOP
+   This makes each card wider.
+========================================================= */
 
 .domain-grid {
-
-  @apply mx-auto grid max-w-[1500px] grid-cols-3 gap-5;
-
+  @apply grid
+         grid-cols-1
+         gap-5
+         sm:grid-cols-2
+         lg:grid-cols-3
+         xl:gap-6;
 }
 
 
-/* ============================================================
+/* =========================================================
    DOMAIN CARD
-============================================================ */
+
+   OLD: 365px+
+   NEW: 300px
+========================================================= */
 
 .domain-card {
-
-  @apply flex min-h-[300px] flex-col overflow-hidden rounded-2xl
-    border border-[#2F3E46]/20
-    bg-[#2F3E46]/10
-    shadow-sm
-    transition-all duration-300;
-
+  @apply 
+         relative
+         h-[300px]
+         overflow-hidden
+         rounded-[18px]
+         bg-gradient-to-br
+         from-[#2F3E46]
+         via-gray-700
+         to-gray-900
+         p-2
+         font-sans
+         shadow-[0_10px_30px_rgba(47,62,70,0.18)]
+         transition-all
+         duration-300
+         ease-out;
 }
+
 
 .domain-card:hover {
-
   @apply -translate-y-1
-    border-[#2F3E46]/30
-    bg-[#2F3E46]/10
-    shadow-lg;
-
+         shadow-[0_18px_40px_rgba(47,62,70,0.28)];
 }
 
 
-/* ============================================================
-   CARD CONTENT
-============================================================ */
+/* =========================================================
+   DECORATIVE GLOW
+========================================================= */
 
-.card-content {
-
-  @apply flex flex-1 flex-col items-center px-6 pb-6 pt-8 text-center;
-
+.card-glow-top {
+  @apply pointer-events-none
+         absolute
+         -right-12
+         -top-12
+         h-32
+         w-32
+         rounded-full
+         bg-white/10
+         blur-2xl;
 }
 
 
-/* ============================================================
-   DOMAIN LABEL
-============================================================ */
+.card-glow-bottom {
+  @apply pointer-events-none
+         absolute
+         -bottom-16
+         -left-16
+         h-36
+         w-36
+         rounded-full
+         bg-white/5
+         blur-2xl;
+}
+
+
+/* =========================================================
+   INNER CARD
+
+   IMPORTANT:
+   h-full instead of min-h-[349px]
+========================================================= */
+
+.card-inner {
+  @apply relative
+         flex
+         h-full
+         flex-col
+         rounded-[13px]
+         border
+         border-white/10
+         px-5
+         py-4
+         text-center;
+}
+
+
+/* =========================================================
+   DOMAIN ICON
+
+   Smaller to fit compact card
+========================================================= */
+
+.domain-icon {
+  @apply mx-auto
+         flex
+         h-[60px]
+         w-[60px]
+         shrink-0
+         items-center
+         justify-center
+         rounded-full
+         border-2
+         border-white/80
+         bg-white/5
+         text-white
+         shadow-[0_0_0_6px_rgba(255,255,255,0.03)];
+}
+
+
+.domain-icon svg {
+  @apply h-8
+         w-8;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
 
 .domain-label {
-
-  @apply mb-3 text-[10px] font-bold uppercase
-    tracking-[0.16em]
-    text-[#2F3E46]/65;
-
+  @apply mt-2
+         block
+         text-[9px]
+         font-semibold
+         uppercase
+         tracking-[0.18em]
+         text-gray-300;
 }
 
 
-/* ============================================================
-   DOMAIN TITLE
-============================================================ */
+/* =========================================================
+   DOMAIN NAME
 
-.card-content h2 {
+   No line-clamp
+   No min-height
+   Full width
+========================================================= */
 
-  @apply m-0 max-w-[450px]
-    text-[21px] font-bold leading-7
-    text-[#2F3E46];
-
+.domain-name {
+  @apply mt-1
+         w-full
+         text-[18px]
+         font-bold
+         uppercase
+         leading-6
+         tracking-wide
+         text-white;
 }
 
 
-/* ============================================================
+/* =========================================================
    DESCRIPTION
-============================================================ */
 
-.card-content p {
+   No line-clamp
+   No restrictive max-width
+========================================================= */
 
-  @apply m-0 mt-3 max-w-[430px]
-    text-[13px] leading-6
-    text-[#2F3E46]/70;
-
+.domain-description {
+  @apply mx-auto
+         mt-1
+         w-full
+         max-w-[500px]
+         text-[12px]
+         font-normal
+         leading-[17px]
+         text-gray-300;
 }
 
 
-/* ============================================================
-   CARD FOOTER
-============================================================ */
-
-.card-footer {
-
-  @apply mt-auto flex w-full items-center justify-center
-    gap-5 border-t border-[#2F3E46]/15 pt-5;
-
-}
-
-
-/* ============================================================
-   CONTINUE LEARNING
-============================================================ */
+/* =========================================================
+   INFO BOX
+========================================================= */
 
 .domain-info {
-
-  @apply flex items-center justify-center gap-2
-    text-[11px] font-semibold
-    text-[#2F3E46]/70;
-
-}
-
-.domain-info svg {
-
-  @apply h-4 w-4 shrink-0 text-[#2F3E46];
-
+  @apply mt-2
+         rounded-lg
+         border
+         border-white/20
+         bg-white/5
+         px-3
+         py-2;
 }
 
 
-/* ============================================================
+.domain-info div {
+  @apply text-[10px]
+         leading-[15px]
+         text-gray-200;
+}
+
+
+/* =========================================================
    VIEW BUTTON
-============================================================ */
+========================================================= */
 
 .view-button {
-
-  @apply inline-flex min-w-[82px] items-center justify-center
-    gap-1.5 rounded-lg
-    bg-[#2F3E46]
-    px-3.5 py-2.5
-    text-xs font-bold text-white
-    transition-all duration-200;
-
+  @apply mt-auto
+         flex
+         h-8
+         w-full
+         shrink-0
+         items-center
+         justify-center
+         gap-2
+         rounded-lg
+         bg-gradient-to-r
+         from-white
+         via-gray-100
+         to-gray-200
+         px-4
+         text-[10px]
+         font-bold
+         uppercase
+         tracking-wider
+         text-[#2F3E46]
+         transition-all
+         duration-200;
 }
+
 
 .view-button:hover {
-
-  @apply bg-white
-    text-[#2F3E46]
-    ring-1 ring-[#2F3E46];
-
+  @apply from-gray-100
+         via-gray-200
+         to-gray-300;
 }
+
+
+.view-button:active {
+  @apply scale-[0.98];
+}
+
 
 .view-button svg {
-
-  @apply h-4 w-4 transition-transform duration-200;
-
+  @apply h-3.5
+         w-3.5
+         transition-transform
+         duration-200;
 }
+
 
 .view-button:hover svg {
-
-  transform: translateX(3px);
-
+  @apply translate-x-0.5;
 }
 
 
-/* ============================================================
+/* =========================================================
    EMPTY STATE
-============================================================ */
+========================================================= */
 
 .empty-state {
-
-  @apply mx-auto flex min-h-[320px] max-w-[1500px]
-    flex-col items-center justify-center
-    rounded-2xl
-    border border-dashed border-[#2F3E46]/20
-    bg-white p-8 text-center;
-
+  @apply flex
+         min-h-[350px]
+         flex-col
+         items-center
+         justify-center
+         text-center;
 }
+
 
 .empty-icon {
-
-  @apply mb-4 flex h-14 w-14 items-center justify-center
-    rounded-xl bg-[#2F3E46] text-white;
-
+  @apply flex
+         h-16
+         w-16
+         items-center
+         justify-center
+         rounded-full
+         bg-gray-100
+         text-[#2F3E46];
 }
+
 
 .empty-icon svg {
-
-  @apply h-7 w-7;
-
+  @apply h-7
+         w-7;
 }
+
 
 .empty-state h3 {
-
-  @apply m-0 text-lg font-bold text-[#2F3E46];
-
+  @apply mt-4
+         text-lg
+         font-bold
+         text-[#2F3E46];
 }
+
 
 .empty-state p {
-
-  @apply m-0 mt-2 text-xs text-[#2F3E46]/60;
-
+  @apply mt-2
+         text-sm
+         text-gray-500;
 }
 
 
-/* ============================================================
+/* =========================================================
    SKELETON
-============================================================ */
+========================================================= */
 
 .skeleton-card {
-
-  @apply pointer-events-none;
-
+  @apply h-[300px]
+         overflow-hidden
+         rounded-[18px]
+         border
+         border-gray-200
+         bg-white
+         p-2
+         shadow-sm;
 }
 
-.skeleton-top {
 
-  @apply h-[76px] bg-[#2F3E46]/10;
-
+.skeleton-content {
+  @apply flex
+         h-full
+         flex-col
+         items-center
+         rounded-[13px]
+         bg-gray-100
+         px-5
+         py-4;
 }
 
-.skeleton-body {
 
-  @apply p-5;
-
+.skeleton-circle {
+  @apply h-[60px]
+         w-[60px]
+         rounded-full
+         bg-gray-200;
 }
 
-.skeleton-line {
-
-  @apply mb-3 h-3 rounded-md bg-[#2F3E46]/10;
-
-}
 
 .skeleton-title {
-
-  @apply mb-5 h-5 w-3/5;
-
-}
-
-.skeleton-short {
-
-  @apply w-2/5;
-
-}
-
-.skeleton-footer {
-
-  @apply mt-8 h-10 w-full rounded-lg bg-[#2F3E46]/10;
-
+  @apply mt-4
+         h-5
+         w-36
+         rounded
+         bg-gray-200;
 }
 
 
-/* ============================================================
+.skeleton-description {
+  @apply mt-3
+         h-8
+         w-56
+         rounded
+         bg-gray-200;
+}
+
+
+.skeleton-info {
+  @apply mt-4
+         h-12
+         w-full
+         rounded-lg
+         bg-gray-200;
+}
+
+
+.skeleton-button {
+  @apply mt-auto
+         h-8
+         w-full
+         rounded-lg
+         bg-gray-200;
+}
+
+
+/* =========================================================
    TABLET
-============================================================ */
+========================================================= */
 
-@media (max-width: 1100px) {
+@media (max-width: 1023px) {
 
   .domain-page {
-
-    @apply px-6;
-
+    @apply px-6
+           py-7;
   }
 
-  .domain-grid {
 
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-
+  .domain-card {
+    @apply h-[300px];
   }
 
 }
 
 
-/* ============================================================
+/* =========================================================
    MOBILE
-============================================================ */
+========================================================= */
 
-@media (max-width: 700px) {
+@media (max-width: 639px) {
 
   .domain-page {
-
-    @apply px-4 py-6;
-
+    @apply px-4
+           py-6;
   }
+
 
   .domain-toolbar {
-
-    @apply flex-col items-stretch gap-4;
-
+    @apply mb-6
+           pb-6;
   }
+
 
   .toolbar-title h1 {
-
-    @apply text-2xl;
-
+    @apply text-[28px];
   }
+
+
+  .toolbar-title p {
+    @apply text-[13px]
+           leading-5;
+  }
+
 
   .domain-count {
-
     @apply w-full;
-
   }
+
 
   .domain-grid {
-
-    grid-template-columns: 1fr;
-
-    @apply gap-4;
-
+    @apply grid-cols-1
+           gap-5;
   }
 
-  .card-content {
 
-    @apply px-5 pb-5 pt-7;
+  .domain-card {
+    @apply h-[290px];
+  }
 
+
+  .card-inner {
+    @apply px-4
+           py-4;
+  }
+
+
+  .domain-name {
+    @apply text-[17px];
+  }
+
+
+  .domain-description {
+    @apply text-[11px]
+           leading-4;
   }
 
 }
 
 
-/* ============================================================
-   SMALL MOBILE
-============================================================ */
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
 
-@media (max-width: 420px) {
+@media (max-width: 400px) {
 
-  .toolbar-title h1 {
-
-    @apply text-[22px];
-
+  .domain-card {
+    @apply h-[285px];
   }
 
-  .card-content {
 
-    @apply px-4 pb-4;
-
+  .domain-name {
+    @apply text-[16px];
   }
 
-  .card-content h2 {
 
-    @apply text-[19px];
-
+  .domain-description {
+    @apply text-[10px];
   }
 
-  .domain-info span {
 
-    @apply max-w-[120px];
-
-  }
-
-  .view-button {
-
-    @apply min-w-[75px] px-3;
-
+  .domain-info div {
+    @apply text-[9px]
+           leading-[14px];
   }
 
 }

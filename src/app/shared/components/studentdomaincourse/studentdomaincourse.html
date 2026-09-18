@@ -1,271 +1,387 @@
-<div class="min-h-screen bg-gray-100 p-6">
+<div *ngIf="auth.hasPermission('VIEW_STUDENT_DOMAIN_COURSE_MAP'); else noPermission"
+    class="min-h-screen bg-gray-100 p-6">
 
-  <!-- Header -->
-  <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
 
-    <div>
-      <h1 class="text-3xl font-bold text-[#2F3E46]">
-        Student Domain Mapping
-      </h1>
+        <div>
+            <h1 class="text-3xl font-bold text-[#2F3E46]">
+                Student Domain Mapping
+            </h1>
 
-      <p class="text-gray-500 mt-1">
-        Manage Student Domain Mapping
-      </p>
-    </div>
+            <p class="text-gray-500 mt-1">
+                Map Students to Domains
+            </p>
+        </div>
 
-    <div class="bg-white rounded-xl shadow px-6 py-4">
-      <p class="text-sm text-gray-500">
-        Total Mappings
-      </p>
+        <div class="flex items-center gap-4">
 
-      <h2 class="text-3xl font-bold text-[#24c0c5]">
-        {{ mappings.length }}
-      </h2>
-    </div>
+            <div class="bg-white rounded-xl shadow px-6 py-4">
+                <p class="text-sm text-gray-500">
+                    Total Mappings
+                </p>
 
-  </div>
+                <h2 class="text-3xl font-bold text-[#24c0c5]">
+                    {{ mappings?.length || 0 }}
+                </h2>
 
-  <div class="grid lg:grid-cols-3 gap-8">
+            </div>
 
-    <!-- ================= FORM ================= -->
-
-    <div class="bg-white rounded-2xl shadow-lg p-6">
-
-      <h2 class="text-2xl font-bold text-[#2F3E46] mb-6">
-
-        {{ isEditMode ? 'Update Mapping' : 'Create Mapping' }}
-
-      </h2>
-
-    <form
-  [formGroup]="studentDomainForm"
-  (ngSubmit)="createMapping()"
-  class="space-y-6">
-
-  <!-- Student Email -->
- <div class="mb-5">
-
-          <label class="font-semibold">
-            Student Email
-          </label>
-
-          <input
-            type="text"
-            formControlName="studentEmail"
-            placeholder="Student Email"
-            class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+            <button
+                *ngIf="auth.hasPermission('CREATE_STUDENT_DOMAIN_COURSE_MAP')"
+                type="button"
+                (click)="openAddModal()"
+                style="background-color:#2F3E46"
+                class="flex items-center gap-2 hover:opacity-90 text-white px-5 py-3 rounded-xl font-semibold shadow-sm transition-opacity h-full">
+                <span class="text-lg leading-none">+</span>
+                Add Mapping
+            </button>
 
         </div>
-  
 
-  <!-- Domain -->
+    </div>
 
-  <div>
+    <!-- Search -->
 
-    <label class="block text-sm font-semibold text-[#2F3E46] mb-2">
-      Domain <span class="text-red-500">*</span>
-    </label>
+    <div class="mb-5">
 
-    <select
-      formControlName="domainName"
-      class="w-full rounded-xl border border-gray-300
-             px-4 py-3
-             bg-white
-             shadow-sm
-             transition
-             duration-200
-             focus:outline-none
-             focus:ring-2
-             focus:ring-[#24c0c5]
-             focus:border-[#24c0c5]">
-
-      <option value="">Select Domain</option>
-
-      <option
-        *ngFor="let domain of domains"
-        [value]="domain.name">
-
-        {{ domain.name }}
-
-      </option>
-
-    </select>
-
-    <p
-      *ngIf="studentDomainForm.get('domainName')?.invalid &&
-             studentDomainForm.get('domainName')?.touched"
-      class="text-red-500 text-sm mt-2">
-
-      Domain is required.
-
-    </p>
-
-  </div>
-
-  <!-- Buttons -->
-
-  <div class="flex flex-wrap gap-3 pt-2">
-
-    <button
-      *ngIf="!isEditMode && auth.hasPermission('CREATE_STUDENT_DOMAIN_COURSE_MAP')"
-      type="submit"
-      class="flex-1 min-w-[140px]
-             bg-[#24c0c5]
-             hover:bg-[#1ba7ac]
-             text-white
-             font-semibold
-             py-3
-             rounded-xl
-             transition-all
-             duration-200">
-
-      + Create
-
-    </button>
-
-    <button
-      *ngIf="isEditMode && auth.hasPermission('UPDATE_STUDENT_DOMAIN_COURSE_MAP')"
-      type="submit"
-      class="flex-1 min-w-[140px]
-             bg-yellow-500
-             hover:bg-yellow-600
-             text-white
-             font-semibold
-             py-3
-             rounded-xl
-             transition-all
-             duration-200">
-
-      Update
-
-    </button>
-
-    <button
-      type="button"
-      (click)="resetForm()"
-      class="flex-1 min-w-[140px]
-             bg-gray-500
-             hover:bg-gray-600
-             text-white
-             font-semibold
-             py-3
-             rounded-xl
-             transition-all
-             duration-200">
-
-      Reset
-
-    </button>
-
-  </div>
-
-</form>
+        <input
+            type="text"
+            [(ngModel)]="searchText"
+            (keyup)="search()"
+            [ngModelOptions]="{standalone:true}"
+            placeholder="Search by student email or domain..."
+            class="w-full md:w-96 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
     </div>
 
     <!-- ================= TABLE ================= -->
 
-    <div
-      class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden"
-      *ngIf="auth.hasPermission('VIEW_STUDENT_DOMAIN_COURSE_MAP')">
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
 
-      <div class="bg-[#2F3E46] text-white px-6 py-4">
+        <div class="bg-[#2F3E46] text-white px-6 py-4">
 
-        <h2 class="text-xl font-bold">
-          Student Domain Mapping List
-        </h2>
+            <h2 class="text-xl font-bold">
+                Mappings List
+            </h2>
 
-      </div>
+        </div>
 
-      <div class="overflow-x-auto">
+        <div class="overflow-x-auto">
 
-        <table class="min-w-full">
+            <table class="min-w-full">
 
-          <thead class="bg-gray-100">
+                <thead class="bg-gray-100">
 
-            <tr>
+                    <tr>
 
-              <th class="px-5 py-4 text-left">#</th>
+                        <th class="px-5 py-4 text-left">#</th>
 
-              <th class="px-5 py-4 text-left">
-                Student Email
-              </th>
+                        <th class="px-5 py-4 text-left">Student Email</th>
 
-              <th class="px-5 py-4 text-left">
-                Domain
-              </th>
+                        <th class="px-5 py-4 text-left">Domain</th>
 
-              <th class="px-5 py-4 text-center">
-                Actions
-              </th>
+                        <th
+                            *ngIf="auth.hasPermission('DELETE_STUDENT_DOMAIN_COURSE_MAP')"
+                            class="px-5 py-4 text-center">
 
-            </tr>
+                            Actions
 
-          </thead>
+                        </th>
 
-          <tbody>
+                    </tr>
 
-            <tr
-              *ngFor="let map of mappings; let i=index"
-              class="border-b hover:bg-gray-50">
+                </thead>
 
-              <td class="px-5 py-4">
+                <tbody>
 
-                {{ i + 1 }}
+                    <tr
+                        *ngFor="let item of pagedMappings; let i = index"
+                        class="border-b hover:bg-gray-50">
 
-              </td>
+                        <!-- Serial Number -->
+                        <td class="px-5 py-4">
+                            {{ (currentPage - 1) * pageSize + i + 1 }}
+                        </td>
 
-              <td class="px-5 py-4">
+                        <!-- Student Email -->
+                        <td class="px-5 py-4">
+                            {{ item.email }}
+                        </td>
 
-                {{ map.email }}
+                        <!-- Domain -->
+                        <td class="px-5 py-4 font-semibold">
+                            {{ item.domainName }}
+                        </td>
 
-              </td>
+                        <!-- Actions -->
+                        <td
+                            *ngIf="auth.hasPermission('DELETE_STUDENT_DOMAIN_COURSE_MAP')"
+                            class="px-5 py-4">
 
-              <td class="px-5 py-4 font-semibold">
+                            <div class="flex justify-center gap-3">
 
-                {{ map.domainName }}
+                                <!-- Delete -->
+                                <button
+                                    *ngIf="auth.hasPermission('DELETE_STUDENT_DOMAIN_COURSE_MAP')"
+                                    type="button"
+                                    (click)="delete(item.id)"
+                                    class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition">
 
-              </td>
+                                    Delete
 
-              <td class="px-5 py-4">
+                                </button>
 
-                <div class="flex justify-center gap-3">
+                            </div>
 
-                  <button
-                    *ngIf="auth.hasPermission('DELETE_STUDENT_DOMAIN_COURSE_MAP')"
-                    (click)="deleteMapping(map.id)"
-                    class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white">
+                        </td>
 
-                    Delete
+                    </tr>
 
-                  </button>
+                    <!-- Empty State -->
 
-                </div>
+                    <tr *ngIf="filteredMappings.length === 0 && !loading">
 
-              </td>
+                        <td
+                            colspan="4"
+                            class="text-center py-12 text-gray-500 font-medium">
 
-            </tr>
+                            No Mapping Found
 
-            <tr *ngIf="mappings.length === 0">
+                        </td>
 
-              <td
-                colspan="4"
-                class="text-center py-8 text-gray-500">
+                    </tr>
 
-                No Student Domain Mapping Found
+                </tbody>
 
-              </td>
+            </table>
 
-            </tr>
+        </div>
 
-          </tbody>
+        <!-- ================= PAGINATION ================= -->
 
-        </table>
+        <div
+            *ngIf="filteredMappings.length > 0"
+            class="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
 
-      </div>
+            <p class="text-sm text-gray-500">
+                Showing <span class="font-semibold text-gray-700">{{ rangeStart }}</span>
+                &ndash;
+                <span class="font-semibold text-gray-700">{{ rangeEnd }}</span>
+                of
+                <span class="font-semibold text-gray-700">{{ filteredMappings.length }}</span>
+            </p>
+
+            <div class="flex items-center gap-1.5">
+
+                <button
+                    type="button"
+                    (click)="goToPage(1)"
+                    [disabled]="currentPage === 1"
+                    class="px-3 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition">
+                    «
+                </button>
+
+                <button
+                    type="button"
+                    (click)="prevPage()"
+                    [disabled]="currentPage === 1"
+                    class="px-4 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition">
+                    Prev
+                </button>
+
+                <ng-container *ngFor="let page of visiblePages">
+
+                    <span
+                        *ngIf="page === '...'"
+                        class="w-9 h-9 flex items-center justify-center text-sm text-gray-400">
+                        &hellip;
+                    </span>
+
+                    <button
+                        *ngIf="page !== '...'"
+                        type="button"
+                        (click)="goToPage(page)"
+                        class="w-9 h-9 rounded-lg text-sm font-semibold transition"
+                        [ngClass]="page === currentPage
+                            ? 'text-white shadow-sm'
+                            : 'border border-gray-300 text-gray-600 hover:bg-gray-100'"
+                        [style.background-color]="page === currentPage ? '#2F3E46' : null">
+                        {{ page }}
+                    </button>
+
+                </ng-container>
+
+                <button
+                    type="button"
+                    (click)="nextPage()"
+                    [disabled]="currentPage === totalPages"
+                    class="px-4 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition">
+                    Next
+                </button>
+
+                <button
+                    type="button"
+                    (click)="goToPage(totalPages)"
+                    [disabled]="currentPage === totalPages"
+                    class="px-3 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition">
+                    »
+                </button>
+
+            </div>
+
+        </div>
 
     </div>
 
-  </div>
+    <!-- ================= ADD DIALOG ================= -->
+
+    <div
+        *ngIf="showModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+
+        <div class="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden animate-modal">
+
+            <!-- Dialog Header -->
+
+            <div class="flex items-center justify-between px-6 py-4" style="background-color:#2F3E46">
+                <h3 class="text-white text-lg font-semibold">
+                    Add Mapping
+                </h3>
+                <button
+                    type="button"
+                    (click)="closeModal()"
+                    class="text-white/80 hover:text-white text-xl leading-none">
+                    &times;
+                </button>
+            </div>
+
+            <!-- Dialog Body -->
+
+            <form [formGroup]="studentDomainForm" (ngSubmit)="save()" class="px-6 py-6" *ngIf="studentDomainForm">
+
+                <div class="mb-4">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Student Email
+                    </label>
+                    <input
+                        type="text"
+                        formControlName="studentEmail"
+                        placeholder="student@example.com"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="submitted && studentDomainForm.get('studentEmail')?.invalid">
+                        Student email is required
+                    </p>
+                </div>
+
+                <div class="mb-2">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Domain
+                    </label>
+                    <select
+                        formControlName="domainName"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+                        <option value="">Select Domain</option>
+
+                        <option
+                            *ngFor="let domain of domains"
+                            [value]="domain.name">
+
+                            {{ domain.name }}
+
+                        </option>
+
+                    </select>
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="submitted && studentDomainForm.get('domainName')?.invalid">
+                        Domain is required
+                    </p>
+                </div>
+
+            </form>
+
+            <!-- Dialog Footer -->
+
+            <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
+
+                <button
+                    type="button"
+                    (click)="closeModal()"
+                    class="px-5 py-2 rounded-lg font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 transition-colors">
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    (click)="save()"
+                    class="px-5 py-2 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= END PAGE ================= -->
 
 </div>
+
+<!-- ================= NO PERMISSION ================= -->
+
+<ng-template #noPermission>
+
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+
+        <div class="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
+
+            <div class="flex justify-center mb-6">
+
+                <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-10 h-10 text-red-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"/>
+
+                    </svg>
+
+                </div>
+
+            </div>
+
+            <h2 class="text-3xl font-bold text-[#2F3E46] mb-3">
+
+                Access Denied
+
+            </h2>
+
+            <p class="text-gray-500 mb-8">
+
+                You don't have permission to access the Student Domain Mapping module.
+
+            </p>
+
+            <button
+                routerLink="/dashboard"
+                class="w-full bg-[#24c0c5] hover:bg-[#1ca9ad] text-white font-semibold py-3 rounded-lg transition">
+
+                Go to Dashboard
+
+            </button>
+
+        </div>
+
+    </div>
+
+</ng-template>

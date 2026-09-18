@@ -1,4 +1,4 @@
-<div *ngIf="auth.hasPermission('VIEW_DEPARTMENT_BRANCH'); else noPermission"
+<div *ngIf="auth.hasPermission('VIEW_TASK'); else noPermission"
     class="min-h-screen bg-gray-100 p-6">
 
     <!-- Header -->
@@ -6,52 +6,38 @@
 
         <div>
             <h1 class="text-3xl font-bold text-[#2F3E46]">
-                Department Branch Mapping
+                Task Management
             </h1>
 
             <p class="text-gray-500 mt-1">
-                Map Branches to Departments
+                Create, Update and Manage Tasks
             </p>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex flex-wrap items-center gap-4">
 
             <div class="bg-white rounded-xl shadow px-6 py-4">
                 <p class="text-sm text-gray-500">
-                    Total Mappings
+                    Total Tasks
                 </p>
 
                 <h2 class="text-3xl font-bold text-[#24c0c5]">
-                    {{ mappings?.length || 0 }}
+                    {{ tasks?.length || 0 }}
                 </h2>
 
             </div>
 
             <button
-                *ngIf="auth.hasPermission('CREATE_DEPARTMENT_BRANCH')"
+                *ngIf="auth.hasPermission('CREATE_TASK')"
                 type="button"
                 (click)="openAddModal()"
                 style="background-color:#2F3E46"
                 class="flex items-center gap-2 hover:opacity-90 text-white px-5 py-3 rounded-xl font-semibold shadow-sm transition-opacity h-full">
                 <span class="text-lg leading-none">+</span>
-                Add Mapping
+                Add Task
             </button>
 
         </div>
-
-    </div>
-
-    <!-- Search -->
-
-    <div class="mb-5">
-
-        <input
-            type="text"
-            [(ngModel)]="searchText"
-            (keyup)="search()"
-            [ngModelOptions]="{standalone:true}"
-            placeholder="Search by department or branch..."
-            class="w-full md:w-96 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
     </div>
 
@@ -62,7 +48,7 @@
         <div class="bg-[#2F3E46] text-white px-6 py-4">
 
             <h2 class="text-xl font-bold">
-                Mappings List
+                Tasks List
             </h2>
 
         </div>
@@ -77,12 +63,16 @@
 
                         <th class="px-5 py-4 text-left">#</th>
 
-                        <th class="px-5 py-4 text-left">Department</th>
+                        <th class="px-5 py-4 text-left">Title</th>
 
-                        <th class="px-5 py-4 text-left">Branch</th>
+                        <th class="px-5 py-4 text-left">Description</th>
+
+                        <th class="px-5 py-4 text-left">Due Date</th>
+
+                        <th class="px-5 py-4 text-left">Status</th>
 
                         <th
-                            *ngIf="auth.hasPermission('UPDATE_DEPARTMENT_BRANCH') || auth.hasPermission('DELETE_DEPARTMENT_BRANCH')"
+                            *ngIf="auth.hasPermission('UPDATE_TASK') || auth.hasPermission('DELETE_TASK')"
                             class="px-5 py-4 text-center">
 
                             Actions
@@ -94,9 +84,8 @@
                 </thead>
 
                 <tbody>
-
                     <tr
-                        *ngFor="let item of filteredMappings; let i = index"
+                        *ngFor="let task of tasks; let i = index"
                         class="border-b hover:bg-gray-50">
 
                         <!-- Serial Number -->
@@ -104,28 +93,50 @@
                             {{ i + 1 }}
                         </td>
 
-                        <!-- Department -->
+                        <!-- Title -->
                         <td class="px-5 py-4 font-semibold">
-                            {{ item.departmentName }}
+                            {{ task.title }}
                         </td>
 
-                        <!-- Branch -->
+                        <!-- Description -->
                         <td class="px-5 py-4">
-                            {{ item.branchName }}
+                            {{ task.description }}
+                        </td>
+
+                        <!-- Due Date -->
+                        <td class="px-5 py-4">
+                            {{ task.dueDate | slice:0:10 }}
+                        </td>
+
+                        <!-- Status -->
+                        <td class="px-5 py-4">
+
+                            <span
+                                class="px-3 py-1 rounded-full text-white text-sm"
+                                [ngClass]="{
+                                    'bg-green-600': task.status === 'Completed',
+                                    'bg-amber-500': task.status === 'InProgress',
+                                    'bg-gray-500': task.status === 'Pending'
+                                }">
+
+                                {{ task.status }}
+
+                            </span>
+
                         </td>
 
                         <!-- Actions -->
                         <td
-                            *ngIf="auth.hasPermission('UPDATE_DEPARTMENT_BRANCH') || auth.hasPermission('DELETE_DEPARTMENT_BRANCH')"
+                            *ngIf="auth.hasPermission('UPDATE_TASK') || auth.hasPermission('DELETE_TASK')"
                             class="px-5 py-4">
 
                             <div class="flex justify-center gap-3">
 
                                 <!-- Edit -->
                                 <button
-                                    *ngIf="auth.hasPermission('UPDATE_DEPARTMENT_BRANCH')"
+                                    *ngIf="auth.hasPermission('UPDATE_TASK')"
                                     type="button"
-                                    (click)="edit(item)"
+                                    (click)="editTask(task)"
                                     class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition">
 
                                     Edit
@@ -134,9 +145,9 @@
 
                                 <!-- Delete -->
                                 <button
-                                    *ngIf="auth.hasPermission('DELETE_DEPARTMENT_BRANCH')"
+                                    *ngIf="auth.hasPermission('DELETE_TASK')"
                                     type="button"
-                                    (click)="delete(item.id)"
+                                    (click)="deleteTask(task.id)"
                                     class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition">
 
                                     Delete
@@ -151,13 +162,13 @@
 
                     <!-- Empty State -->
 
-                    <tr *ngIf="filteredMappings.length === 0 && !loading">
+                    <tr *ngIf="tasks?.length === 0">
 
                         <td
-                            colspan="4"
+                            [attr.colspan]="(auth.hasPermission('UPDATE_TASK') || auth.hasPermission('DELETE_TASK')) ? 6 : 5"
                             class="text-center py-12 text-gray-500 font-medium">
 
-                            No Mapping Found
+                            No Tasks Found
 
                         </td>
 
@@ -183,7 +194,7 @@
 
             <div class="flex items-center justify-between px-6 py-4" style="background-color:#2F3E46">
                 <h3 class="text-white text-lg font-semibold">
-                    {{ editMode ? 'Edit Mapping' : 'Add Mapping' }}
+                    {{ isEditMode ? 'Edit Task' : 'Add Task' }}
                 </h3>
                 <button
                     type="button"
@@ -195,55 +206,64 @@
 
             <!-- Dialog Body -->
 
-            <form [formGroup]="departmentBranchForm" (ngSubmit)="save()" class="px-6 py-6" *ngIf="departmentBranchForm">
+            <form [formGroup]="taskForm" class="px-6 py-6" *ngIf="taskForm">
 
                 <div class="mb-4">
                     <label class="block mb-1.5 text-sm font-medium text-gray-700">
-                        Department
+                        Task Title
                     </label>
-                    <select
-                        formControlName="departmentName"
+                    <input
+                        type="text"
+                        formControlName="title"
+                        placeholder="e.g. Prepare monthly report"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
-
-                        <option value="">Select Department</option>
-
-                        <option
-                            *ngFor="let department of departments"
-                            [value]="department.name">
-
-                            {{ department.name }}
-
-                        </option>
-
-                    </select>
                     <p class="text-xs text-red-500 mt-1"
-                       *ngIf="submitted && departmentBranchForm.get('departmentName')?.invalid">
-                        Department is required
+                       *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
+                        Task title is required
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Description
+                    </label>
+                    <textarea
+                        rows="3"
+                        formControlName="description"
+                        placeholder="Task details..."
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Due Date
+                    </label>
+                    <input
+                        type="date"
+                        formControlName="dueDate"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="taskForm.get('dueDate')?.invalid && taskForm.get('dueDate')?.touched">
+                        Due date is required
                     </p>
                 </div>
 
                 <div class="mb-2">
                     <label class="block mb-1.5 text-sm font-medium text-gray-700">
-                        Branch
+                        Status
                     </label>
                     <select
-                        formControlName="branchName"
+                        formControlName="status"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
-                        <option value="">Select Branch</option>
-
-                        <option
-                            *ngFor="let branch of branches"
-                            [value]="branch.name">
-
-                            {{ branch.name }}
-
-                        </option>
+                        <option value="Pending">Pending</option>
+                        <option value="InProgress">In Progress</option>
+                        <option value="Completed">Completed</option>
 
                     </select>
                     <p class="text-xs text-red-500 mt-1"
-                       *ngIf="submitted && departmentBranchForm.get('branchName')?.invalid">
-                        Branch is required
+                       *ngIf="taskForm.get('status')?.invalid && taskForm.get('status')?.touched">
+                        Status is required
                     </p>
                 </div>
 
@@ -261,17 +281,17 @@
                 </button>
 
                 <button
-                    *ngIf="!editMode"
+                    *ngIf="!isEditMode"
                     type="button"
-                    (click)="save()"
+                    (click)="createTask()"
                     class="px-5 py-2 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
                     Save
                 </button>
 
                 <button
-                    *ngIf="editMode"
+                    *ngIf="isEditMode"
                     type="button"
-                    (click)="save()"
+                    (click)="updateTask()"
                     class="px-5 py-2 rounded-lg font-medium text-white bg-amber-500 hover:bg-amber-600 transition-colors">
                     Update
                 </button>
@@ -324,7 +344,7 @@
 
             <p class="text-gray-500 mb-8">
 
-                You don't have permission to access the Department Branch Mapping module.
+                You don't have permission to access the Task Management module.
 
             </p>
 

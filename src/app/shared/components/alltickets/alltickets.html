@@ -63,27 +63,6 @@
 
       <div class="filter-field">
 
-        <label>Status</label>
-
-        <select
-          [(ngModel)]="selectedStatus"
-          [ngModelOptions]="{ standalone: true }"
-          (change)="onFilterChange()">
-
-          <option value="">All Statuses</option>
-
-          <option
-            *ngFor="let status of statusOptions"
-            [value]="status">
-            {{ status === 'Resolved' ? 'In process' : status }}
-          </option>
-
-        </select>
-
-      </div>
-
-      <div class="filter-field">
-
         <label>College</label>
 
         <select

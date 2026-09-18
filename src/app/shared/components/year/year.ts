@@ -44,6 +44,8 @@ export class Year implements OnInit {
 
   selectedYearId = 0;
 
+  showModal = false;
+
   constructor(
     private api: YearService,
     private fb: FormBuilder,
@@ -137,6 +139,38 @@ export class Year implements OnInit {
   }
 
   //==============================
+  // Modal Controls
+  //==============================
+
+  openAddModal(): void {
+
+    if (!this.auth.hasPermission('CREATE_YEAR')) {
+
+      alert('Permission Denied');
+
+      return;
+
+    }
+
+    this.isEditMode = false;
+
+    this.selectedYearId = 0;
+
+    this.yearForm.reset();
+
+    this.showModal = true;
+
+  }
+
+  closeModal(): void {
+
+    this.showModal = false;
+
+    this.resetForm();
+
+  }
+
+  //==============================
   // Create Year
   //==============================
 
@@ -205,6 +239,8 @@ export class Year implements OnInit {
       semester: year.semester
 
     });
+
+    this.showModal = true;
 
   }
 
@@ -315,6 +351,8 @@ export class Year implements OnInit {
     this.isEditMode = false;
 
     this.selectedYearId = 0;
+
+    this.showModal = false;
 
   }
 

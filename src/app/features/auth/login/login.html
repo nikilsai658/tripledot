@@ -1,42 +1,180 @@
-<div class="login">
-     <app-logo></app-logo>
-    <h1 class="companyname">Technex Cloud Networks </h1>
-    <span class="companyname">Pvt Ltd</span>
-   <form class="form" [formGroup]="Form" (ngSubmit)="onSubmit()">
+<div class="login-page">
 
-    <p-floatlabel>
-        <input
-            pInputText
-            formControlName="userNameOrEmail"
-            id="on_label"
-            name="email"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">Username or Email</label>
-    </p-floatlabel>
-    <p-floatlabel>
-        <p-password
-            name="password"
-            formControlName="password"
-            inputStyleClass="custom-password"
-            inputId="over_label"
-            [feedback]="false"
-            [toggleMask]="true" 
-            autocomplete="off">
-        </p-password>
-        <label for="over_label" class="p-floatlabel">Password</label>
-    </p-floatlabel>
+  <div class="login-card">
 
-    <p-button label="Login" type="submit" [loading]="loading"></p-button>
+    <!-- LEFT VISUAL SECTION -->
+    <div class="login-visual">
 
-    <p *ngIf="errorMessage" class="login-error">
-        {{ errorMessage }}
-    </p>
-</form>
-<div class="f">
-    <div><a routerLink="/auth/forgot-password" class="forgot">
-  forgot password?
-</a></div>
-<div> &nbsp;&nbsp;&nbsp;<a routerLink="/auth/college" class="forgot">select college
-</a></div>
-</div>
+      <div class="purple-orb orb-1"></div>
+      <div class="purple-orb orb-2"></div>
+      <div class="purple-orb orb-3"></div>
+
+      <div class="visual-overlay"></div>
+
+      <div class="brand">
+        <app-logo></app-logo>
+
+        <div class="brand-name">
+          <span>Tripledot Ai</span>
+          <span class="brand-highlight">Technologies</span>
+        </div>
+      </div>
+
+      <div class="visual-content">
+        <p class="small-text">WELCOME TO</p>
+
+        <h2>
+          Tripledot Ai
+          <br />
+          Technologies
+        </h2>
+
+        <p>
+          Secure. Smart. Connected.
+          <br />
+          Your learning platform starts here.
+        </p>
+      </div>
+
+      <div class="visual-dots">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT LOGIN SECTION -->
+    <div class="login-form-section">
+
+      <!-- LOGIN CONTENT -->
+      <div class="login-content">
+
+        <div class="mobile-logo">
+          <app-logo></app-logo>
+        </div>
+
+        <h1>Welcome back</h1>
+
+        <p class="subtitle">
+          Sign in to access your account
+        </p>
+
+
+        <form
+          class="form"
+          [formGroup]="Form"
+          (ngSubmit)="onSubmit()">
+
+
+          <!-- USERNAME / EMAIL -->
+          <div class="input-wrapper">
+
+            <span class="input-icon">
+              <i class="pi pi-envelope"></i>
+            </span>
+
+            <p-floatlabel>
+
+              <input
+                pInputText
+                formControlName="userNameOrEmail"
+                id="username"
+                name="email"
+                autocomplete="username"
+                class="custom-input"
+              />
+
+              <label for="username">
+                Username or Email
+              </label>
+
+            </p-floatlabel>
+
+          </div>
+
+
+          <!-- PASSWORD -->
+          <div class="input-wrapper">
+
+            <span class="input-icon">
+              <i class="pi pi-lock"></i>
+            </span>
+
+            <p-floatlabel>
+
+              <p-password
+                name="password"
+                formControlName="password"
+                inputStyleClass="custom-password"
+                inputId="password"
+                [feedback]="false"
+                [toggleMask]="true"
+                autocomplete="current-password">
+              </p-password>
+
+              <label for="password">
+                Password
+              </label>
+
+            </p-floatlabel>
+
+          </div>
+
+
+          <!-- LOGIN BUTTON -->
+          <p-button
+            label="Login"
+            type="submit"
+            [loading]="loading"
+            styleClass="login-button">
+          </p-button>
+
+
+          <!-- ERROR -->
+          <p
+            class="login-error"
+            [class.visible]="errorMessage">
+            {{ errorMessage }}
+          </p>
+
+        </form>
+
+
+        <!-- LINKS -->
+        <div class="bottom-links">
+
+          <a
+            routerLink="/auth/forgot-password"
+            class="forgot">
+            Forgot your password?
+          </a>
+
+          <a
+            routerLink="/auth/college"
+            class="forgot">
+            Select College
+          </a>
+
+        </div>
+
+
+        <!-- SOCIAL STYLE FOOTER -->
+        <div class="social-section">
+
+          <span></span>
+
+          <p>Secure access to your learning portal</p>
+
+          <span></span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
 </div>

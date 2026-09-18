@@ -1,12 +1,12 @@
 @reference "../../../styles.css";
 .header{
-    @apply flex items-center justify-between p-2 bg-gray-100;  
+    @apply flex items-center justify-between p-2 bg-black text-white rounded-lg;  
 }
 img{
     @apply w-[30px] rounded-lg inline-flex  mr-3 ;
 }
 .title{
-    @apply text-[20px] font-bold text-[#2F3E46] inline-flex items-center;
+    @apply text-[20px] font-bold text-white inline-flex items-center;
 }
 :host ::ng-deep .p-button {
     @apply  h-[30px] rounded-lg bg-[#2f3e46f6] font-bold border-none;

@@ -46,6 +46,8 @@ export class DomainComponent implements OnInit {
 
   loading = false;
 
+  showModal = false;
+
   constructor(
     private fb: FormBuilder,
     private api:DomainServices,
@@ -118,6 +120,31 @@ export class DomainComponent implements OnInit {
   }
 
   //=============================
+  // MODAL CONTROLS
+  //=============================
+
+  openAddModal(): void {
+
+    if (!this.auth.hasPermission('CREATE_DOMAIN')) {
+      alert('Permission denied');
+      return;
+    }
+
+    this.resetForm();
+
+    this.showModal = true;
+
+  }
+
+  closeModal(): void {
+
+    this.showModal = false;
+
+    this.resetForm();
+
+  }
+
+  //=============================
   // CREATE
   //=============================
 
@@ -179,6 +206,8 @@ export class DomainComponent implements OnInit {
       isActive: domain.isActive
 
     });
+
+    this.showModal = true;
 
   }
 
@@ -265,6 +294,8 @@ export class DomainComponent implements OnInit {
     this.isEditMode = false;
 
     this.selectedId = 0;
+
+    this.showModal = false;
 
     this.domainForm.reset({
 

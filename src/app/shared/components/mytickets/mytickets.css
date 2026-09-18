@@ -96,18 +96,18 @@
   @apply h-full min-w-[2px] rounded-full transition-all duration-300;
 }
 
-/* Monochrome status colors */
+/* Status colors: green = open, amber = in process, slate = closed */
 
 .segment-open {
-  @apply bg-[#555];
+  @apply bg-emerald-500;
 }
 
 .segment-resolved {
-  @apply bg-[#999];
+  @apply bg-amber-500;
 }
 
 .segment-closed {
-  @apply bg-[#222];
+  @apply bg-slate-400;
 }
 
 /* =========================================================
@@ -127,15 +127,15 @@
 }
 
 .dot-open {
-  @apply bg-[#555];
+  @apply bg-emerald-500;
 }
 
 .dot-resolved {
-  @apply bg-[#999];
+  @apply bg-amber-500;
 }
 
 .dot-closed {
-  @apply bg-[#222];
+  @apply bg-slate-400;
 }
 
 /* =========================================================
@@ -159,15 +159,15 @@
 }
 
 .accent-open {
-  @apply bg-[#555];
+  @apply bg-emerald-500;
 }
 
 .accent-resolved {
-  @apply bg-[#999];
+  @apply bg-amber-500;
 }
 
 .accent-closed {
-  @apply bg-[#222];
+  @apply bg-slate-400;
 }
 
 /* =========================================================
@@ -186,18 +186,16 @@
   @apply h-4 w-4;
 }
 
-/* Monochrome icons */
-
 .icon-open {
-  @apply bg-[#dedede] text-[#444];
+  @apply bg-emerald-100 text-emerald-600;
 }
 
 .icon-resolved {
-  @apply bg-[#d2d2d2] text-[#555];
+  @apply bg-amber-100 text-amber-600;
 }
 
 .icon-closed {
-  @apply bg-[#c5c5c5] text-[#222];
+  @apply bg-slate-200 text-slate-600;
 }
 
 .column-label {
@@ -256,22 +254,16 @@
    CARD STATUS
    ========================================================= */
 
-/* Open = medium gray */
-
 .card-accent-open {
-  @apply border-l-[3px] border-l-[#666];
+  @apply border-l-[3px] border-l-emerald-500;
 }
-
-/* Resolved = light gray */
 
 .card-accent-resolved {
-  @apply border-l-[3px] border-l-[#aaa];
+  @apply border-l-[3px] border-l-amber-500;
 }
 
-/* Closed = black */
-
 .card-accent-closed {
-  @apply border-l-[3px] border-l-[#222];
+  @apply border-l-[3px] border-l-slate-400;
 }
 
 /* =========================================================

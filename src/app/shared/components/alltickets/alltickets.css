@@ -140,18 +140,18 @@
 }
 
 
-/* Status colors */
+/* Status colors: green = open, amber = in process, slate = closed */
 
 .segment-open {
-  @apply bg-[#555555];
+  @apply bg-emerald-500;
 }
 
 .segment-resolved {
-  @apply bg-[#aaaaaa];
+  @apply bg-amber-500;
 }
 
 .segment-closed {
-  @apply bg-[#222222];
+  @apply bg-slate-400;
 }
 
 
@@ -170,15 +170,15 @@
 }
 
 .dot-open {
-  @apply bg-[#555555];
+  @apply bg-emerald-500;
 }
 
 .dot-resolved {
-  @apply bg-[#aaaaaa];
+  @apply bg-amber-500;
 }
 
 .dot-closed {
-  @apply bg-[#222222];
+  @apply bg-slate-400;
 }
 
 
@@ -291,15 +291,15 @@
 }
 
 .accent-open {
-  @apply bg-[#555555];
+  @apply bg-emerald-500;
 }
 
 .accent-resolved {
-  @apply bg-[#999999];
+  @apply bg-amber-500;
 }
 
 .accent-closed {
-  @apply bg-[#222222];
+  @apply bg-slate-400;
 }
 
 
@@ -326,15 +326,15 @@
 }
 
 .icon-open {
-  @apply bg-[#d5d5d5] text-[#444444];
+  @apply bg-emerald-100 text-emerald-600;
 }
 
 .icon-resolved {
-  @apply bg-[#d0d0d0] text-[#555555];
+  @apply bg-amber-100 text-amber-600;
 }
 
 .icon-closed {
-  @apply bg-[#c9c9c9] text-[#333333];
+  @apply bg-slate-200 text-slate-600;
 }
 
 
@@ -403,15 +403,15 @@
 /* Card left accent */
 
 .card-accent-open {
-  @apply border-l-[#555555];
+  @apply border-l-emerald-500;
 }
 
 .card-accent-resolved {
-  @apply border-l-[#999999];
+  @apply border-l-amber-500;
 }
 
 .card-accent-closed {
-  @apply border-l-[#222222];
+  @apply border-l-slate-400;
 }
 
 

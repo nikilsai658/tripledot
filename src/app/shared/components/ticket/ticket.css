@@ -11,6 +11,39 @@
 
 
 /* ============================================================
+   SUCCESS TOAST
+============================================================ */
+
+.ticket-toast {
+  @apply fixed right-6 flex items-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold text-white;
+  top: 90px;
+  z-index: 2000;
+  background: #16a34a;
+  box-shadow: 0 10px 25px rgba(22, 163, 74, 0.3);
+  animation: toast-in-out 2s ease forwards;
+}
+
+.ticket-toast svg {
+  @apply h-5 w-5 shrink-0;
+}
+
+@keyframes toast-in-out {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10%, 85% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+
+/* ============================================================
    HEADER
 ============================================================ */
 

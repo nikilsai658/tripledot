@@ -1,6 +1,6 @@
 @import "tailwindcss";
 .overlay{
-  @apply fixed inset-0 bg-black/40 z-40;
+  @apply fixed inset-0 bg-black/50 backdrop-blur-[2px] z-40 transition-opacity duration-300;
 }
 
 /* Sidebar */
@@ -21,16 +21,14 @@
 }
 
 .sidebar-header{
-  @apply flex items-center justify-between p-5 border-b border-gray-600;
+  @apply flex items-center justify-between p-5 border-b border-white/10;
 }
-
-
 
 .sidebar-body{
     flex:1;
     overflow-y:auto;
     overflow-x:hidden;
-    padding:10px 0;
+    padding:12px 0;
     scrollbar-width:none;
 }
 
@@ -39,23 +37,27 @@
 }
 
 .company-logo{
-  @apply h-10 w-10 sm:h-12 sm:w-12 rounded-lg;
+  @apply h-10 w-10 sm:h-12 sm:w-12 rounded-lg object-cover ring-1 ring-white/10;
 }
 
 .company-title{
-  @apply text-xs sm:text-sm font-semibold text-gray-300 leading-5;
+  @apply text-xs sm:text-sm font-semibold text-gray-200 leading-5 tracking-wide;
 }
 
 .close-btn{
-  @apply text-2xl hover:text-[#24c0c5];
+  @apply text-2xl leading-none text-gray-300 hover:text-[#24c0c5] transition-colors duration-200;
 }
 
 .sidebar-nav{
-  @apply mt-5;
+  @apply mt-3 flex flex-col gap-0.5 px-2;
 }
 
 .nav-link{
-  @apply block px-6 py-4 hover:bg-[#3d5058] transition;
+  @apply flex items-center gap-3 px-4 py-3 rounded-md
+  text-[0.9rem] font-medium text-gray-300
+  border-l-4 border-transparent
+  hover:bg-white/5 hover:text-white
+  transition-all duration-200;
 }
 
 .nav-group-toggle{
@@ -63,7 +65,7 @@
 }
 
 .chevron-icon{
-  @apply w-4 h-4 transition-transform duration-200;
+  @apply w-4 h-4 text-gray-400 transition-transform duration-200;
 }
 
 .chevron-icon.rotate-180{
@@ -71,21 +73,26 @@
 }
 
 .nav-submenu{
-  @apply flex flex-col bg-black/20;
+  @apply flex flex-col gap-0.5 mt-0.5 mb-1 ml-4 pl-2
+  border-l border-white/10;
 }
 
 .nav-sublink{
-  @apply block pl-10 pr-6 py-3 text-sm hover:bg-[#3d5058] transition;
+  @apply flex items-center px-4 py-2.5 rounded-md
+  text-[0.85rem] text-gray-400
+  border-l-4 border-transparent
+  hover:bg-white/5 hover:text-white
+  transition-all duration-200;
 }
 
 .active-link{
-  @apply bg-[#24c0c5] text-black;
+  @apply bg-[#24c0c5]/10 text-white font-semibold border-[#24c0c5];
 }
 
 /* Header */
 
 .main-header{
-  @apply bg-white shadow;
+  @apply sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm;
 }
 
 .header-container{
@@ -97,7 +104,7 @@
 }
 
 .menu-btn{
-  @apply p-2 rounded-lg hover:bg-gray-200 transition;
+  @apply p-2 rounded-lg text-gray-600 hover:bg-[#24c0c5]/10 hover:text-[#24c0c5] transition-colors duration-200;
 }
 
 .menu-icon{
@@ -109,7 +116,7 @@
 }
 
 .divider{
-  @apply hidden md:block h-10 w-px bg-gray-300;
+  @apply hidden md:block h-10 w-px bg-gray-200;
 }
 
 .company-logo-small{
@@ -121,11 +128,12 @@
 }
 
 .profile-btn{
-  @apply flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg hover:bg-gray-100;
+  @apply flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg
+  text-gray-700 hover:bg-gray-100 transition-colors duration-200;
 }
 
 .profile-icon{
-  @apply w-8 h-8 sm:w-9 sm:h-9;
+  @apply w-8 h-8 sm:w-9 sm:h-9 rounded-full ring-1 ring-gray-200;
 }
 
 .username{
@@ -133,7 +141,9 @@
 }
 
 .change-password-btn{
-  @apply flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-700;
+  @apply flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg
+  text-gray-600 hover:bg-[#24c0c5]/10 hover:text-[#24c0c5]
+  transition-colors duration-200;
 }
 
 .change-password-icon{
@@ -145,9 +155,11 @@
 }
 
 .logout-btn{
-  @apply bg-[#2F3E46] hover:bg-[#435861]
+  @apply bg-[#2F3E46] hover:bg-[#1F2A30]
   text-white font-semibold rounded-lg
   px-3 sm:px-5 py-2
   text-sm sm:text-base
-  transition;
+  border border-transparent hover:border-[#24c0c5]/60
+  shadow-sm hover:shadow
+  transition-all duration-200;
 }

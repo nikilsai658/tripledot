@@ -50,6 +50,7 @@ export class CollegeDepartmentComponent implements OnInit {
   submitted = false;
   loading = false;
   editMode = false;
+  showModal = false;
 
   selectedId: number | null = null;
 
@@ -224,6 +225,20 @@ loadDepartments(): void {
   }
 
   //==========================
+  // MODAL
+  //==========================
+
+  openAddModal() {
+    this.resetForm();
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.resetForm();
+  }
+
+  //==========================
   // SAVE
   //==========================
 
@@ -256,7 +271,7 @@ loadDepartments(): void {
 
             this.loadMappings();
 
-            this.resetForm();
+            this.closeModal();
 
           }
 
@@ -273,7 +288,7 @@ loadDepartments(): void {
 
             this.loadMappings();
 
-            this.resetForm();
+            this.closeModal();
 
           }
 
@@ -300,6 +315,8 @@ edit(item: any) {
     collegeName: item.collegeName,
     departmentName: item.departmentName
   });
+
+  this.showModal = true;
 }
 
   //==========================

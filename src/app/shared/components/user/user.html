@@ -10,53 +10,58 @@
       <p>Manage users, roles and user details</p>
     </div>
 
-    <button
-      type="button"
-      class="refresh-btn"
-      (click)="refresh()"
-    >
-      ↻ Refresh
-    </button>
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="add-btn"
+        (click)="openAddModal()"
+      >
+        <span class="plus">+</span>
+        Add User
+      </button>
+
+      <button
+        type="button"
+        class="refresh-btn"
+        (click)="refresh()"
+      >
+        ↻ Refresh
+      </button>
+
+    </div>
 
   </div>
 
 
   <!-- ==========================
-       USER FORM
+       ADD / EDIT USER DIALOG
   =========================== -->
-  <div class="form-card">
+  <div class="modal-overlay" *ngIf="showModal">
 
-    <div class="form-header">
+    <div class="modal-card animate-modal">
 
-      <div>
-        <h2>
-          {{ editMode ? 'Edit User' : 'Create User' }}
-        </h2>
+      <div class="modal-header">
 
-        <p>
-          {{
-            editMode
-              ? 'Update the user information'
-              : 'Add a new user'
-          }}
-        </p>
+        <h3>
+          {{ editMode ? 'Edit User' : 'Add User' }}
+        </h3>
+
+        <button
+          type="button"
+          class="modal-close"
+          (click)="closeModal()"
+        >
+          &times;
+        </button>
+
       </div>
-
-      <button
-        *ngIf="editMode"
-        type="button"
-        class="cancel-btn"
-        (click)="cancelEdit()"
-      >
-        Cancel Edit
-      </button>
-
-    </div>
 
 
     <form
       [formGroup]="userForm"
       (ngSubmit)="saveUser()"
+      class="modal-form"
     >
 
       <!-- ==========================
@@ -455,33 +460,38 @@
       <div class="form-actions">
 
         <button
+          type="button"
+          class="cancel-btn"
+          (click)="closeModal()"
+        >
+          Cancel
+        </button>
+
+        <button
+          *ngIf="!editMode"
           type="submit"
           class="save-btn"
           [disabled]="loading"
         >
-
-          <span *ngIf="!loading">
-            {{ editMode ? 'Update User' : 'Create User' }}
-          </span>
-
-          <span *ngIf="loading">
-            Processing...
-          </span>
-
+          <span *ngIf="!loading">Save</span>
+          <span *ngIf="loading">Processing...</span>
         </button>
 
         <button
           *ngIf="editMode"
-          type="button"
-          class="cancel-btn"
-          (click)="cancelEdit()"
+          type="submit"
+          class="update-btn"
+          [disabled]="loading"
         >
-          Cancel
+          <span *ngIf="!loading">Update</span>
+          <span *ngIf="loading">Processing...</span>
         </button>
 
       </div>
 
     </form>
+
+    </div>
 
   </div>
 
@@ -490,18 +500,6 @@
        UPLOAD USERS
   =========================== -->
   <div class="upload-card">
-
-    <div class="upload-header">
-
-      <div>
-        <h2>Bulk User Upload</h2>
-
-        <p>
-          Upload users using a supported file
-        </p>
-      </div>
-
-    </div>
 
     <div class="upload-content">
 
@@ -526,6 +524,131 @@
       >
         {{ selectedFile.name }}
       </span>
+
+    </div>
+
+    <!-- Upload Results Loading -->
+    <div
+      class="loading"
+      *ngIf="uploadResultsLoading"
+    >
+      Processing uploaded users...
+    </div>
+
+    <!-- Upload Results -->
+    <div
+      class="upload-results"
+      *ngIf="showUploadResults && !uploadResultsLoading"
+    >
+
+      <div class="upload-results-header">
+
+        <div class="upload-results-summary">
+          <span class="result-badge result-badge-success">
+            Success: {{ successUsers.length }}
+          </span>
+          <span class="result-badge result-badge-failed">
+            Failed: {{ failedUsers.length }}
+          </span>
+        </div>
+
+        <div class="upload-results-actions">
+
+          <!-- Print Success -->
+          <button
+            type="button"
+            class="print-success-btn"
+            *ngIf="successUsers.length"
+            (click)="printSuccessUsers()"
+          >
+            🖨 Print Success
+          </button>
+
+          <!-- Print Failed -->
+          <button
+            type="button"
+            class="print-failed-btn"
+            *ngIf="failedUsers.length"
+            (click)="printFailedUsers()"
+          >
+            🖨 Print Failed
+          </button>
+
+          <!-- Close -->
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="closeUploadResults()"
+          >
+            Close
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Success Users -->
+      <div class="upload-results-block" *ngIf="successUsers.length">
+
+        <h3 class="upload-results-title upload-results-title-success">
+          Successfully Created Users
+        </h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of successUsers">
+                <td>{{ user?.fullName ?? user?.name ?? '-' }}</td>
+                <td>{{ user?.email ?? '-' }}</td>
+                <td>{{ user?.roleName ?? user?.role ?? '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- Failed Users -->
+      <div class="upload-results-block" *ngIf="failedUsers.length">
+
+        <h3 class="upload-results-title upload-results-title-failed">
+          Failed Users
+        </h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of failedUsers">
+                <td>{{ user?.fullName ?? user?.name ?? '-' }}</td>
+                <td>{{ user?.email ?? '-' }}</td>
+                <td>{{ user?.reason ?? user?.error ?? user?.errorMessage ?? user?.message ?? '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div
+        class="empty-state"
+        *ngIf="!successUsers.length && !failedUsers.length"
+      >
+        No results returned for this upload.
+      </div>
 
     </div>
 
@@ -1024,35 +1147,74 @@
       "
     >
 
-      <button
-        type="button"
-        (click)="previousPage()"
-        [disabled]="page === 1"
-      >
-        Previous
-      </button>
-
-
-      <span>
-        Page {{ page }}
+      <p class="pagination-info">
+        Showing <strong>{{ rangeStart }}</strong>
+        &ndash;
+        <strong>{{ rangeEnd }}</strong>
         of
-        {{
-          Math.ceil(
-            totalRecords / pageSize
-          )
-        }}
-      </span>
+        <strong>{{ totalRecords }}</strong>
+      </p>
 
+      <div class="pagination-controls">
 
-      <button
-        type="button"
-        (click)="nextPage()"
-        [disabled]="
-          page * pageSize >= totalRecords
-        "
-      >
-        Next
-      </button>
+        <button
+          type="button"
+          class="nav-btn"
+          (click)="goToPage(1)"
+          [disabled]="page === 1"
+        >
+          «
+        </button>
+
+        <button
+          type="button"
+          class="nav-btn"
+          (click)="previousPage()"
+          [disabled]="page === 1"
+        >
+          Prev
+        </button>
+
+        <ng-container *ngFor="let p of visiblePages">
+
+          <span
+            *ngIf="p === '...'"
+            class="page-ellipsis"
+          >
+            &hellip;
+          </span>
+
+          <button
+            *ngIf="p !== '...'"
+            type="button"
+            class="page-btn"
+            [class.active]="p === page"
+            (click)="goToPage(p)"
+          >
+            {{ p }}
+          </button>
+
+        </ng-container>
+
+        <button
+          type="button"
+          class="nav-btn"
+          (click)="nextPage()"
+          [disabled]="page * pageSize >= totalRecords"
+        >
+          Next
+        </button>
+
+        <button
+          type="button"
+          class="nav-btn"
+          (click)="goToPage(totalPages)"
+          [disabled]="page * pageSize >= totalRecords"
+        >
+          »
+        </button>
+
+      </div>
 
     </div>
 

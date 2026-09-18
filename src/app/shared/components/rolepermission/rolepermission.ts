@@ -10,6 +10,8 @@ import {
   CommonModule
 } from '@angular/common';
 
+import { RouterLink } from '@angular/router';
+
 import {
   FormBuilder,
   FormGroup,
@@ -32,7 +34,8 @@ import { RolepermissionService } from '../../../features/services/rolepermission
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './rolepermission.html',
   styleUrls: ['./rolepermission.css']
@@ -49,9 +52,7 @@ export class RolePermissionComponent implements OnInit {
 
   submitted = false;
   loading = false;
-
-  editMode = false;
-  selectedId: number | null = null;
+  showModal = false;
 
   searchText = '';
 
@@ -98,6 +99,20 @@ export class RolePermissionComponent implements OnInit {
 
   }
 
+  //==========================
+  // MODAL
+  //==========================
+
+  openAddModal(): void {
+    this.resetForm();
+    this.showModal = true;
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.resetForm();
+  }
+
   //=====================================
   // LOAD ROLES
   //=====================================
@@ -109,7 +124,7 @@ export class RolePermissionComponent implements OnInit {
       next: (res: any) => {
 
         this.roles = res.data || [];
-        
+
         this.cd.detectChanges();
 
       },
@@ -195,6 +210,8 @@ export class RolePermissionComponent implements OnInit {
 
     this.submitted = true;
 
+    if (!this.auth.hasPermission('CREATE_ROLE_PERMISSION')) return;
+
     if (this.rolePermissionForm.invalid) {
 
       this.rolePermissionForm.markAllAsTouched();
@@ -216,7 +233,7 @@ export class RolePermissionComponent implements OnInit {
 
           this.loadMappings();
 
-          this.resetForm();
+          this.closeModal();
 
         }
 
@@ -255,10 +272,6 @@ export class RolePermissionComponent implements OnInit {
   resetForm(): void {
 
     this.submitted = false;
-
-    this.editMode = false;
-
-    this.selectedId = null;
 
     this.rolePermissionForm.reset({
 
@@ -309,6 +322,50 @@ export class RolePermissionComponent implements OnInit {
     return Array.from(
       { length: this.totalPages },
       (_, i) => i + 1
+    );
+
+  }
+
+  get visiblePages(): (number | '...')[] {
+
+    const total = this.totalPages;
+    const current = this.currentPage;
+    const pages: (number | '...')[] = [];
+
+    for (let i = 1; i <= total; i++) {
+
+      const isEdge = i === 1 || i === total;
+      const isNearCurrent = i >= current - 1 && i <= current + 1;
+
+      if (isEdge || isNearCurrent) {
+
+        pages.push(i);
+
+      } else if (pages[pages.length - 1] !== '...') {
+
+        pages.push('...');
+
+      }
+
+    }
+
+    return pages;
+
+  }
+
+  get rangeStart(): number {
+
+    return this.filteredMappings.length === 0
+      ? 0
+      : (this.currentPage - 1) * this.pageSize + 1;
+
+  }
+
+  get rangeEnd(): number {
+
+    return Math.min(
+      this.currentPage * this.pageSize,
+      this.filteredMappings.length
     );
 
   }

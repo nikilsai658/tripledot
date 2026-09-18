@@ -1,364 +1,422 @@
-<div class="min-h-screen bg-gray-100 p-6">
+<div *ngIf="auth.hasPermission('VIEW_ROLE_PERMISSION'); else noPermission"
+    class="min-h-screen bg-gray-100 p-6">
 
-  <!-- ================= HEADER ================= -->
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
 
-  <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-[#2F3E46]">
+                Role Permission Mapping
+            </h1>
 
-    <div>
+            <p class="text-gray-500 mt-1">
+                Assign Permissions to Roles
+            </p>
+        </div>
 
-      <h1 class="text-3xl font-bold text-[#2F3E46]">
-        Role Permission Mapping
-      </h1>
+        <div class="flex items-center gap-4">
 
-      <p class="text-gray-500 mt-1">
-        Assign Permissions to Roles
-      </p>
+            <div class="bg-white rounded-xl shadow px-6 py-4">
+                <p class="text-sm text-gray-500">
+                    Total Mappings
+                </p>
+
+                <h2 class="text-3xl font-bold text-[#24c0c5]">
+                    {{ filteredMappings?.length || 0 }}
+                </h2>
+
+            </div>
+
+            <button
+                *ngIf="auth.hasPermission('CREATE_ROLE_PERMISSION')"
+                type="button"
+                (click)="openAddModal()"
+                style="background-color:#2F3E46"
+                class="flex items-center gap-2 hover:opacity-90 text-white px-5 py-3 rounded-xl font-semibold shadow-sm transition-opacity h-full">
+                <span class="text-lg leading-none">+</span>
+                Add Mapping
+            </button>
+
+        </div>
 
     </div>
 
-    <div class="bg-white rounded-xl shadow px-6 py-4">
+    <!-- Search -->
 
-      <p class="text-sm text-gray-500">
-        Total Mappings
-      </p>
+    <div class="mb-5">
 
-      <h2 class="text-3xl font-bold text-[#24c0c5]">
-        {{ filteredMappings.length }}
-      </h2>
-
-    </div>
-
-  </div>
-
-  <div class="grid lg:grid-cols-3 gap-8">
-
-    <!-- ================= FORM ================= -->
-
-    <div class="bg-white rounded-2xl shadow-lg p-6">
-
-      <h2 class="text-2xl font-bold text-[#2F3E46] mb-6">
-
-        {{ editMode ? 'Update Role Permission' : 'Assign Role Permission' }}
-
-      </h2>
-
-      <form
-        [formGroup]="rolePermissionForm"
-        (ngSubmit)="save()">
-
-        <!-- Role -->
-
-        <div class="mb-5">
-
-          <label class="block font-semibold mb-2">
-
-            Role <span class="text-red-500">*</span>
-
-          </label>
-
-          <select
-            formControlName="roleName"
-            class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5]">
-
-            <option value="">
-              Select Role
-            </option>
-
-            <option
-              *ngFor="let role of roles"
-              [value]="role.name">
-
-              {{ role.name }}
-
-            </option>
-
-          </select>
-
-          <small
-            class="text-red-500"
-            *ngIf="submitted && rolePermissionForm.get('roleName')?.invalid">
-
-            Role is required
-
-          </small>
-
-        </div>
-
-        <!-- Permission -->
-
-        <div class="mb-5">
-
-          <label class="block font-semibold mb-2">
-
-            Permission <span class="text-red-500">*</span>
-
-          </label>
-
-          <select
-            formControlName="permissionCode"
-            class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5]">
-
-            <option value="">
-              Select Permission
-            </option>
-
-            <option
-              *ngFor="let permission of permissions"
-              [value]="permission.code">
-
-              {{ permission.name }}
-
-            </option>
-
-          </select>
-
-          <small
-            class="text-red-500"
-            *ngIf="submitted && rolePermissionForm.get('permissionCode')?.invalid">
-
-            Permission is required
-
-          </small>
-
-        </div>
-
-        <!-- Delegate -->
-
-        <div class="mb-6">
-
-          <label class="flex items-center gap-3">
-
-            <input
-              type="checkbox"
-              formControlName="canDelegate"
-              class="w-5 h-5 accent-[#24c0c5]">
-
-            <span class="font-semibold">
-
-              Can Delegate
-
-            </span>
-
-          </label>
-
-        </div>
-
-        <!-- Buttons -->
-
-        <div class="flex gap-3">
-
-          <button
-            *ngIf="!editMode && auth.hasPermission('CREATE_ROLE_PERMISSION')"
-            type="submit"
-            class="flex-1 bg-[#24c0c5] hover:bg-[#1db0b5] text-white py-3 rounded-lg font-semibold">
-
-            Create
-
-          </button>
-
-          <button
-            *ngIf="editMode && auth.hasPermission('UPDATE_ROLE_PERMISSION')"
-            type="submit"
-            class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-lg font-semibold">
-
-            Update
-
-          </button>
-
-          <button
-            type="button"
-            (click)="resetForm()"
-            class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold">
-
-            Reset
-
-          </button>
-
-        </div>
-
-      </form>
+        <input
+            type="text"
+            [(ngModel)]="searchText"
+            (keyup)="search()"
+            [ngModelOptions]="{standalone:true}"
+            placeholder="Search by role or permission..."
+            class="w-full md:w-96 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
     </div>
 
     <!-- ================= TABLE ================= -->
 
-    <div
-      class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden"
-      *ngIf="auth.hasPermission('VIEW_ROLE_PERMISSION')">
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
 
-      <!-- Header -->
+        <div class="bg-[#2F3E46] text-white px-6 py-4">
 
-      <div class="flex justify-between items-center bg-[#2F3E46] text-white px-6 py-4">
-
-        <h2 class="text-xl font-bold">
-
-          Role Permission List
-
-        </h2>
-
-        <!-- Search -->
-
-        <input
-          type="text"
-          [(ngModel)]="searchText"
-          (keyup)="search()"
-          [ngModelOptions]="{standalone:true}"
-          placeholder="Search..."
-          class="rounded-lg px-4 py-2 text-black w-64">
-
-      </div>
-
-      <div class="overflow-x-auto">
-
-        <table class="min-w-full">
-
-          <thead class="bg-gray-100">
-
-            <tr>
-
-              <th class="px-5 py-4 text-left">#</th>
-
-              <th class="px-5 py-4 text-left">Role</th>
-
-              <th class="px-5 py-4 text-left">Permission</th>
-
-              <th class="px-5 py-4 text-center">Delegate</th>
-
-              <th class="px-5 py-4 text-center">Actions</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            <tr
-              *ngFor="let item of pagedMappings; let i=index"
-              class="border-b hover:bg-gray-50">
-
-              <td class="px-5 py-4">
-
-                {{ (currentPage - 1) * pageSize + i + 1 }}
-
-              </td>
-
-              <td class="px-5 py-4 font-semibold">
-
-                {{ item.roleName }}
-
-              </td>
-
-              <td class="px-5 py-4">
-
-                {{ item.permissionCode }}
-
-              </td>
-
-              <td class="px-5 py-4 text-center">
-
-                <span
-                  class="px-3 py-1 rounded-full text-xs font-semibold"
-                  [ngClass]="item.canDelegate ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
-
-                  {{ item.canDelegate ? 'Yes' : 'No' }}
-
-                </span>
-
-              </td>
-
-              <td class="px-5 py-4">
-
-                <div class="flex justify-center gap-3">
-
-                  <button
-                    *ngIf="auth.hasPermission('DELETE_ROLE_PERMISSION')"
-                    (click)="delete(item.id)"
-                    class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white">
-
-                    Delete
-
-                  </button>
-
-                </div>
-
-              </td>
-
-            </tr>
-
-            <tr *ngIf="filteredMappings.length === 0">
-
-              <td colspan="5" class="text-center py-8 text-gray-500">
-
-                No Role Permission Mapping Found
-
-              </td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-      <!-- Pagination -->
-
-      <div
-        *ngIf="filteredMappings.length > 0"
-        class="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4 border-t">
-
-        <p class="text-sm text-gray-500">
-
-          Page {{ currentPage }} of {{ totalPages }}
-          ({{ filteredMappings.length }} total)
-
-        </p>
-
-        <div class="flex items-center gap-2">
-
-          <button
-            type="button"
-            (click)="prevPage()"
-            [disabled]="currentPage === 1"
-            class="px-4 py-2 rounded-lg border text-sm font-semibold
-                   disabled:opacity-40 disabled:cursor-not-allowed
-                   hover:bg-gray-100">
-
-            Prev
-
-          </button>
-
-          <button
-            *ngFor="let page of pageNumbers"
-            type="button"
-            (click)="goToPage(page)"
-            class="w-9 h-9 rounded-lg text-sm font-semibold"
-            [ngClass]="page === currentPage
-              ? 'bg-[#24c0c5] text-white'
-              : 'border hover:bg-gray-100'">
-
-            {{ page }}
-
-          </button>
-
-          <button
-            type="button"
-            (click)="nextPage()"
-            [disabled]="currentPage === totalPages"
-            class="px-4 py-2 rounded-lg border text-sm font-semibold
-                   disabled:opacity-40 disabled:cursor-not-allowed
-                   hover:bg-gray-100">
-
-            Next
-
-          </button>
+            <h2 class="text-xl font-bold">
+                Mappings List
+            </h2>
 
         </div>
 
-      </div>
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full">
+
+                <thead class="bg-gray-100">
+
+                    <tr>
+
+                        <th class="px-5 py-4 text-left">#</th>
+
+                        <th class="px-5 py-4 text-left">Role</th>
+
+                        <th class="px-5 py-4 text-left">Permission</th>
+
+                        <th class="px-5 py-4 text-center">Delegate</th>
+
+                        <th
+                            *ngIf="auth.hasPermission('DELETE_ROLE_PERMISSION')"
+                            class="px-5 py-4 text-center">
+
+                            Actions
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr
+                        *ngFor="let item of pagedMappings; let i = index"
+                        class="border-b hover:bg-gray-50">
+
+                        <!-- Serial Number -->
+                        <td class="px-5 py-4">
+                            {{ (currentPage - 1) * pageSize + i + 1 }}
+                        </td>
+
+                        <!-- Role -->
+                        <td class="px-5 py-4 font-semibold">
+                            {{ item.roleName }}
+                        </td>
+
+                        <!-- Permission -->
+                        <td class="px-5 py-4">
+                            {{ item.permissionCode }}
+                        </td>
+
+                        <!-- Delegate -->
+                        <td class="px-5 py-4 text-center">
+                            <span
+                                class="px-3 py-1 rounded-full text-xs font-semibold"
+                                [ngClass]="item.canDelegate ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+
+                                {{ item.canDelegate ? 'Yes' : 'No' }}
+
+                            </span>
+                        </td>
+
+                        <!-- Actions -->
+                        <td
+                            *ngIf="auth.hasPermission('DELETE_ROLE_PERMISSION')"
+                            class="px-5 py-4">
+
+                            <div class="flex justify-center gap-3">
+
+                                <!-- Delete -->
+                                <button
+                                    *ngIf="auth.hasPermission('DELETE_ROLE_PERMISSION')"
+                                    type="button"
+                                    (click)="delete(item.id)"
+                                    class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition">
+
+                                    Delete
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    <!-- Empty State -->
+
+                    <tr *ngIf="filteredMappings.length === 0">
+
+                        <td
+                            colspan="5"
+                            class="text-center py-12 text-gray-500 font-medium">
+
+                            No Mapping Found
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- ================= PAGINATION ================= -->
+
+        <div
+            *ngIf="filteredMappings.length > 0"
+            class="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
+
+            <p class="text-sm text-gray-500">
+                Showing <span class="font-semibold text-gray-700">{{ rangeStart }}</span>
+                &ndash;
+                <span class="font-semibold text-gray-700">{{ rangeEnd }}</span>
+                of
+                <span class="font-semibold text-gray-700">{{ filteredMappings.length }}</span>
+            </p>
+
+            <div class="flex items-center gap-1.5">
+
+                <button
+                    type="button"
+                    (click)="goToPage(1)"
+                    [disabled]="currentPage === 1"
+                    class="px-3 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition">
+                    «
+                </button>
+
+                <button
+                    type="button"
+                    (click)="prevPage()"
+                    [disabled]="currentPage === 1"
+                    class="px-4 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition">
+                    Prev
+                </button>
+
+                <ng-container *ngFor="let page of visiblePages">
+
+                    <span
+                        *ngIf="page === '...'"
+                        class="w-9 h-9 flex items-center justify-center text-sm text-gray-400">
+                        &hellip;
+                    </span>
+
+                    <button
+                        *ngIf="page !== '...'"
+                        type="button"
+                        (click)="goToPage(page)"
+                        class="w-9 h-9 rounded-lg text-sm font-semibold transition"
+                        [ngClass]="page === currentPage
+                            ? 'text-white shadow-sm'
+                            : 'border border-gray-300 text-gray-600 hover:bg-gray-100'"
+                        [style.background-color]="page === currentPage ? '#2F3E46' : null">
+                        {{ page }}
+                    </button>
+
+                </ng-container>
+
+                <button
+                    type="button"
+                    (click)="nextPage()"
+                    [disabled]="currentPage === totalPages"
+                    class="px-4 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition">
+                    Next
+                </button>
+
+                <button
+                    type="button"
+                    (click)="goToPage(totalPages)"
+                    [disabled]="currentPage === totalPages"
+                    class="px-3 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition">
+                    »
+                </button>
+
+            </div>
+
+        </div>
 
     </div>
 
-  </div>
+    <!-- ================= ADD DIALOG ================= -->
+
+    <div
+        *ngIf="showModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+
+        <div class="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden animate-modal">
+
+            <!-- Dialog Header -->
+
+            <div class="flex items-center justify-between px-6 py-4" style="background-color:#2F3E46">
+                <h3 class="text-white text-lg font-semibold">
+                    Add Mapping
+                </h3>
+                <button
+                    type="button"
+                    (click)="closeModal()"
+                    class="text-white/80 hover:text-white text-xl leading-none">
+                    &times;
+                </button>
+            </div>
+
+            <!-- Dialog Body -->
+
+            <form [formGroup]="rolePermissionForm" (ngSubmit)="save()" class="px-6 py-6" *ngIf="rolePermissionForm">
+
+                <div class="mb-4">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Role
+                    </label>
+                    <select
+                        formControlName="roleName"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+                        <option value="">Select Role</option>
+
+                        <option
+                            *ngFor="let role of roles"
+                            [value]="role.name">
+
+                            {{ role.name }}
+
+                        </option>
+
+                    </select>
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="submitted && rolePermissionForm.get('roleName')?.invalid">
+                        Role is required
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Permission
+                    </label>
+                    <select
+                        formControlName="permissionCode"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+                        <option value="">Select Permission</option>
+
+                        <option
+                            *ngFor="let permission of permissions"
+                            [value]="permission.code">
+
+                            {{ permission.name }}
+
+                        </option>
+
+                    </select>
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="submitted && rolePermissionForm.get('permissionCode')?.invalid">
+                        Permission is required
+                    </p>
+                </div>
+
+                <div class="mb-2">
+                    <label class="flex items-center gap-3">
+                        <input
+                            type="checkbox"
+                            formControlName="canDelegate"
+                            class="w-5 h-5 accent-[#2F3E46]">
+                        <span class="text-sm font-medium text-gray-700">
+                            Can Delegate
+                        </span>
+                    </label>
+                </div>
+
+            </form>
+
+            <!-- Dialog Footer -->
+
+            <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
+
+                <button
+                    type="button"
+                    (click)="closeModal()"
+                    class="px-5 py-2 rounded-lg font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 transition-colors">
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    (click)="save()"
+                    class="px-5 py-2 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= END PAGE ================= -->
 
 </div>
+
+<!-- ================= NO PERMISSION ================= -->
+
+<ng-template #noPermission>
+
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+
+        <div class="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
+
+            <div class="flex justify-center mb-6">
+
+                <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-10 h-10 text-red-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"/>
+
+                    </svg>
+
+                </div>
+
+            </div>
+
+            <h2 class="text-3xl font-bold text-[#2F3E46] mb-3">
+
+                Access Denied
+
+            </h2>
+
+            <p class="text-gray-500 mb-8">
+
+                You don't have permission to access the Role Permission Mapping module.
+
+            </p>
+
+            <button
+                routerLink="/dashboard"
+                class="w-full bg-[#24c0c5] hover:bg-[#1ca9ad] text-white font-semibold py-3 rounded-lg transition">
+
+                Go to Dashboard
+
+            </button>
+
+        </div>
+
+    </div>
+
+</ng-template>

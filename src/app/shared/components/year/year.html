@@ -14,41 +14,175 @@
             </p>
         </div>
 
-        <div
-            class="bg-white rounded-xl shadow px-6 py-4"
-            *ngIf="auth.hasPermission('VIEW_YEAR')">
+        <div class="flex items-center gap-4">
 
-            <p class="text-sm text-gray-500">
-                Total Years
-            </p>
+            <div
+                class="bg-white rounded-xl shadow px-6 py-4"
+                *ngIf="auth.hasPermission('VIEW_YEAR')">
 
-            <h2 class="text-3xl font-bold text-[#24c0c5]">
-                {{ years.length }}
-            </h2>
+                <p class="text-sm text-gray-500">
+                    Total Years
+                </p>
+
+                <h2 class="text-3xl font-bold text-[#24c0c5]">
+                    {{ years.length }}
+                </h2>
+
+            </div>
+
+            <button
+                *ngIf="auth.hasPermission('CREATE_YEAR')"
+                type="button"
+                (click)="openAddModal()"
+                style="background-color:#2F3E46"
+                class="flex items-center gap-2 hover:opacity-90 text-white px-5 py-3 rounded-xl font-semibold shadow-sm transition-opacity h-full">
+                <span class="text-lg leading-none">+</span>
+                Add Year
+            </button>
 
         </div>
 
     </div>
 
-    <div class="grid lg:grid-cols-3 gap-8">
+    <!-- ================= TABLE ================= -->
 
-        <!-- ================= LEFT FORM ================= -->
+    <div
+        class="bg-white rounded-2xl shadow-lg overflow-hidden"
+        *ngIf="auth.hasPermission('VIEW_YEAR')">
 
-        <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div style="background-color:#2F3E46" class="text-white px-6 py-4">
 
-            <h2 class="text-2xl font-bold text-[#2F3E46] mb-6">
-
-                {{ isEditMode ? 'Update Year' : 'Create Year' }}
-
+            <h2 class="text-xl font-bold">
+                Year List
             </h2>
 
-            <form [formGroup]="yearForm">
+        </div>
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full">
+
+                <thead style="background-color:#2F3E46" class="text-white">
+
+                    <tr>
+
+                        <th class="px-5 py-4 text-left text-sm font-semibold">
+                            #
+                        </th>
+
+                        <th class="px-5 py-4 text-left text-sm font-semibold">
+                            Year Number
+                        </th>
+
+                        <th class="px-5 py-4 text-left text-sm font-semibold">
+                            Semester
+                        </th>
+
+                        <th class="px-5 py-4 text-center text-sm font-semibold">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr
+                        *ngFor="let year of years; let i=index"
+                        class="border-b hover:bg-gray-50 transition-colors">
+
+                        <td class="px-5 py-4">
+                            {{ i + 1 }}
+                        </td>
+
+                        <td class="px-5 py-4 font-semibold">
+                            {{ year.yearNumber }}
+                        </td>
+
+                        <td class="px-5 py-4">
+                            Semester {{ year.semester }}
+                        </td>
+
+                        <td class="px-5 py-4">
+
+                            <div class="flex justify-center gap-3">
+
+                                <button
+                                    *ngIf="auth.hasPermission('UPDATE_YEAR')"
+                                    (click)="editYear(year)"
+                                    class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition-colors">
+
+                                    Edit
+
+                                </button>
+
+                                <button
+                                    *ngIf="auth.hasPermission('DELETE_YEAR')"
+                                    (click)="deleteYear(year.id)"
+                                    class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition-colors">
+
+                                    Delete
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="years.length === 0">
+
+                        <td
+                            colspan="4"
+                            class="text-center py-10 text-gray-500">
+
+                            No Years Found
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- ================= ADD / EDIT DIALOG ================= -->
+
+    <div
+        *ngIf="showModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+
+        <div class="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden animate-modal">
+
+            <!-- Dialog Header -->
+
+            <div class="flex items-center justify-between px-6 py-4" style="background-color:#2F3E46">
+                <h3 class="text-white text-lg font-semibold">
+                    {{ isEditMode ? 'Edit Year' : 'Add Year' }}
+                </h3>
+                <button
+                    type="button"
+                    (click)="closeModal()"
+                    class="text-white/80 hover:text-white text-xl leading-none">
+                    &times;
+                </button>
+            </div>
+
+            <!-- Dialog Body -->
+
+            <form [formGroup]="yearForm" class="px-6 py-6">
 
                 <!-- Year Number -->
 
-                <div class="mb-5">
+                <div class="mb-4">
 
-                    <label class="font-semibold">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
                         Year Number
                     </label>
 
@@ -56,29 +190,29 @@
                         type="number"
                         formControlName="yearNumber"
                         placeholder="Enter Year Number"
-                        class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
-                    <small
-                        class="text-red-500"
+                    <p
+                        class="text-xs text-red-500 mt-1"
                         *ngIf="yearForm.get('yearNumber')?.invalid && yearForm.get('yearNumber')?.touched">
 
                         Year Number is required
 
-                    </small>
+                    </p>
 
                 </div>
 
                 <!-- Semester -->
 
-                <div class="mb-6">
+                <div class="mb-2">
 
-                    <label class="font-semibold">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
                         Semester
                     </label>
 
                     <select
                         formControlName="semester"
-                        class="mt-2 w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
                         <option value="">Select Semester</option>
 
@@ -88,158 +222,44 @@
 
                     </select>
 
-                    <small
-                        class="text-red-500"
+                    <p
+                        class="text-xs text-red-500 mt-1"
                         *ngIf="yearForm.get('semester')?.invalid && yearForm.get('semester')?.touched">
 
                         Semester is required
 
-                    </small>
-
-                </div>
-
-                <!-- Buttons -->
-
-                <div class="flex gap-3">
-
-                    <button
-                        *ngIf="!isEditMode && auth.hasPermission('CREATE_YEAR')"
-                        type="button"
-                        (click)="createYear()"
-                        class="flex-1 bg-[#24c0c5] hover:bg-[#1eb3b8] text-white py-3 rounded-lg font-bold">
-
-                        Create
-
-                    </button>
-
-                    <button
-                        *ngIf="isEditMode && auth.hasPermission('UPDATE_YEAR')"
-                        type="button"
-                        (click)="updateYear()"
-                        class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold">
-
-                        Update
-
-                    </button>
-
-                    <button
-                        type="button"
-                        (click)="resetForm()"
-                        class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-bold">
-
-                        Reset
-
-                    </button>
+                    </p>
 
                 </div>
 
             </form>
 
-        </div>
+            <!-- Dialog Footer -->
 
-        <!-- ================= TABLE ================= -->
+            <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
 
-        <div
-            class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden"
-            *ngIf="auth.hasPermission('VIEW_YEAR')">
+                <button
+                    type="button"
+                    (click)="closeModal()"
+                    class="px-5 py-2 rounded-lg font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 transition-colors">
+                    Cancel
+                </button>
 
-            <div class="bg-[#2F3E46] text-white px-6 py-4">
+                <button
+                    *ngIf="!isEditMode"
+                    type="button"
+                    (click)="createYear()"
+                    class="px-5 py-2 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
+                    Save
+                </button>
 
-                <h2 class="text-xl font-bold">
-                    Year List
-                </h2>
-
-            </div>
-
-            <div class="overflow-x-auto">
-
-                <table class="min-w-full">
-
-                    <thead class="bg-gray-100">
-
-                        <tr>
-
-                            <th class="px-5 py-4 text-left">
-                                #
-                            </th>
-
-                            <th class="px-5 py-4 text-left">
-                                Year Number
-                            </th>
-
-                            <th class="px-5 py-4 text-left">
-                                Semester
-                            </th>
-
-                            <th class="px-5 py-4 text-center">
-                                Actions
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <tr
-                            *ngFor="let year of years; let i=index"
-                            class="border-b hover:bg-gray-50">
-
-                            <td class="px-5 py-4">
-                                {{ i + 1 }}
-                            </td>
-
-                            <td class="px-5 py-4 font-semibold">
-                                {{ year.yearNumber }}
-                            </td>
-
-                            <td class="px-5 py-4">
-                                Semester {{ year.semester }}
-                            </td>
-
-                            <td class="px-5 py-4">
-
-                                <div class="flex justify-center gap-3">
-
-                                    <button
-                                        *ngIf="auth.hasPermission('UPDATE_YEAR')"
-                                        (click)="editYear(year)"
-                                        class="px-4 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white">
-
-                                        Edit
-
-                                    </button>
-
-                                    <button
-                                        *ngIf="auth.hasPermission('DELETE_YEAR')"
-                                        (click)="deleteYear(year.id)"
-                                        class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white">
-
-                                        Delete
-
-                                    </button>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                        <tr *ngIf="years.length === 0">
-
-                            <td
-                                colspan="4"
-                                class="text-center py-10 text-gray-500">
-
-                                No Years Found
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
+                <button
+                    *ngIf="isEditMode"
+                    type="button"
+                    (click)="updateYear()"
+                    class="px-5 py-2 rounded-lg font-medium text-white bg-amber-500 hover:bg-amber-600 transition-colors">
+                    Update
+                </button>
 
             </div>
 

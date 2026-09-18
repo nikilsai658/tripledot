@@ -1,355 +1,402 @@
-<div class="min-h-screen bg-gray-100 p-6">
+<div *ngIf="auth.hasPermission('VIEW_COURSE_ASSIGNMENT_MAP'); else noPermission"
+    class="min-h-screen bg-gray-100 p-6">
 
-  <!-- Header -->
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
 
-  <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-[#2F3E46]">
+                Course Assignment Mapping
+            </h1>
 
-    <div>
+            <p class="text-gray-500 mt-1">
+                Map Assignments to Courses
+            </p>
+        </div>
 
-      <h1 class="text-3xl font-bold text-[#2F3E46]">
-        Course Assignment Mapping
-      </h1>
+        <div class="flex items-center gap-4">
 
-      <p class="text-gray-500 mt-1">
-        Create and Manage Course Assignment Mapping
-      </p>
+            <div class="bg-white rounded-xl shadow px-6 py-4">
+                <p class="text-sm text-gray-500">
+                    Total Mappings
+                </p>
+
+                <h2 class="text-3xl font-bold text-[#24c0c5]">
+                    {{ mappings?.length || 0 }}
+                </h2>
+
+            </div>
+
+            <button
+                *ngIf="auth.hasPermission('CREATE_COURSE_ASSIGNMENT_MAP')"
+                type="button"
+                (click)="openAddModal()"
+                style="background-color:#2F3E46"
+                class="flex items-center gap-2 hover:opacity-90 text-white px-5 py-3 rounded-xl font-semibold shadow-sm transition-opacity h-full">
+                <span class="text-lg leading-none">+</span>
+                Add Mapping
+            </button>
+
+        </div>
 
     </div>
 
-    <div
-      *ngIf="auth.hasPermission('VIEW_COURSE_ASSIGNMENT_MAP')"
-      class="bg-white rounded-xl shadow px-6 py-4">
-
-      <p class="text-sm text-gray-500">
-        Total Mappings
-      </p>
-
-      <h2 class="text-3xl font-bold text-[#24c0c5]">
-
-        {{ mappings.length }}
-
-      </h2>
-
-    </div>
-
-  </div>
-
-  <div class="grid lg:grid-cols-3 gap-8">
-
-    <!-- ================= FORM ================= -->
-
-    <div class="bg-white rounded-2xl shadow-lg p-6">
-
-      <h2 class="text-2xl font-bold text-[#2F3E46] mb-6">
-
-        {{ isEditMode ? 'Update Mapping' : 'Create Mapping' }}
-
-      </h2>
-
-      <form
-        [formGroup]="courseAssignmentForm"
-        (ngSubmit)="isEditMode ? updateMapping() : createMapping()">
-
-        <!-- Course -->
-
-        <div class="mb-5">
-
-          <label class="font-semibold">
-            Course
-          </label>
-
-          <select
-            formControlName="courseName"
-            class="mt-2 w-full border rounded-lg p-3">
-
-            <option value="">
-              Select Course
-            </option>
-
-            <option
-              *ngFor="let course of courses"
-              [value]="course.name">
-
-              {{ course.name }}
-
-            </option>
-
-          </select>
-
-          <small
-            class="text-red-500"
-            *ngIf="courseAssignmentForm.get('courseName')?.touched &&
-                   courseAssignmentForm.get('courseName')?.invalid">
-
-            Course is required
-
-          </small>
-
-        </div>
-
-        <!-- Assignment -->
-
-        <div class="mb-5">
-
-          <label class="font-semibold">
-            Assignment
-          </label>
-
-          <select
-            formControlName="assignmentTitle"
-            class="mt-2 w-full border rounded-lg p-3">
-
-            <option value="">
-              Select Assignment
-            </option>
-
-            <option
-              *ngFor="let assignment of assignments"
-              [value]="assignment.title">
-
-              {{ assignment.title }}
-
-            </option>
-
-          </select>
-
-          <small
-            class="text-red-500"
-            *ngIf="courseAssignmentForm.get('assignmentTitle')?.touched &&
-                   courseAssignmentForm.get('assignmentTitle')?.invalid">
-
-            Assignment is required
-
-          </small>
-
-        </div>
-
-        <!-- Sequence -->
-
-        <div class="mb-5">
-
-          <label class="font-semibold">
-            Sequence No
-          </label>
-
-          <input
-            type="number"
-            formControlName="sequenceNo"
-            class="mt-2 w-full border rounded-lg p-3">
-
-        </div>
-
-        <!-- Mandatory -->
-
-        <div class="mb-5">
-
-          <label class="flex items-center gap-3">
-
-            <input
-              type="checkbox"
-              formControlName="isMandatory">
-
-            Is Mandatory
-
-          </label>
-
-        </div>
-
-        <!-- Active -->
-
-        <div class="mb-6">
-
-          <label class="flex items-center gap-3">
-
-            <input
-              type="checkbox"
-              formControlName="isActive">
-
-            Is Active
-
-          </label>
-
-        </div>
-
-        <!-- Buttons -->
-
-        <div class="flex gap-3">
-
-          <button
-            *ngIf="!isEditMode && auth.hasPermission('CREATE_COURSE_ASSIGNMENT_MAP')"
-            type="submit"
-            class="flex-1 bg-[#24c0c5] hover:bg-[#1eb3b8] text-white py-3 rounded-lg font-bold">
-
-            Create
-
-          </button>
-
-          <button
-            *ngIf="isEditMode && auth.hasPermission('UPDATE_COURSE_ASSIGNMENT_MAP')"
-            type="submit"
-            class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-lg font-bold">
-
-            Update
-
-          </button>
-
-          <button
-            type="button"
-            (click)="resetForm()"
-            class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-bold">
-
-            Reset
-
-          </button>
-
-        </div>
-
-      </form>
+    <!-- Search -->
+
+    <div class="mb-5">
+
+        <input
+            type="text"
+            [(ngModel)]="searchText"
+            (keyup)="search()"
+            [ngModelOptions]="{standalone:true}"
+            placeholder="Search by course or assignment..."
+            class="w-full md:w-96 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
     </div>
 
     <!-- ================= TABLE ================= -->
 
-    <div
-      class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden"
-      *ngIf="auth.hasPermission('VIEW_COURSE_ASSIGNMENT_MAP')">
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
 
-      <div class="bg-[#2F3E46] text-white px-6 py-4">
+        <div class="bg-[#2F3E46] text-white px-6 py-4">
 
-        <h2 class="text-xl font-bold">
+            <h2 class="text-xl font-bold">
+                Mappings List
+            </h2>
 
-          Course Assignment Mapping List
+        </div>
 
-        </h2>
+        <div class="overflow-x-auto">
 
-      </div>
+            <table class="min-w-full">
 
-      <div class="overflow-x-auto">
+                <thead class="bg-gray-100">
 
-        <table class="min-w-full">
+                    <tr>
 
-          <thead class="bg-gray-100">
+                        <th class="px-5 py-4 text-left">#</th>
 
-            <tr>
+                        <th class="px-5 py-4 text-left">Course</th>
 
-              <th class="px-5 py-4 text-left">#</th>
+                        <th class="px-5 py-4 text-left">Assignment</th>
 
-              <th class="px-5 py-4 text-left">Course</th>
+                        <th class="px-5 py-4 text-center">Sequence</th>
 
-              <th class="px-5 py-4 text-left">Assignment</th>
+                        <th class="px-5 py-4 text-center">Mandatory</th>
 
-              <th class="px-5 py-4 text-center">Sequence</th>
+                        <th class="px-5 py-4 text-center">Active</th>
 
-              <th class="px-5 py-4 text-center">Mandatory</th>
+                        <th
+                            *ngIf="auth.hasPermission('UPDATE_COURSE_ASSIGNMENT_MAP') || auth.hasPermission('DELETE_COURSE_ASSIGNMENT_MAP')"
+                            class="px-5 py-4 text-center">
 
-              <th class="px-5 py-4 text-center">Active</th>
+                            Actions
 
-              <th class="px-5 py-4 text-center">Actions</th>
+                        </th>
 
-            </tr>
+                    </tr>
 
-          </thead>
+                </thead>
 
-          <tbody>
+                <tbody>
 
-            <tr
-              *ngFor="let item of mappings; let i=index"
-              class="border-b hover:bg-gray-50">
+                    <tr
+                        *ngFor="let item of filteredMappings; let i = index"
+                        class="border-b hover:bg-gray-50">
 
-              <td class="px-5 py-4">
+                        <!-- Serial Number -->
+                        <td class="px-5 py-4">
+                            {{ i + 1 }}
+                        </td>
 
-                {{ i + 1 }}
+                        <!-- Course -->
+                        <td class="px-5 py-4 font-semibold">
+                            {{ item.courseName }}
+                        </td>
 
-              </td>
+                        <!-- Assignment -->
+                        <td class="px-5 py-4">
+                            {{ item.assignmentTitle }}
+                        </td>
 
-              <td class="px-5 py-4">
+                        <!-- Sequence -->
+                        <td class="px-5 py-4 text-center">
+                            {{ item.sequenceNo }}
+                        </td>
 
-                {{ item.courseName }}
+                        <!-- Mandatory -->
+                        <td class="px-5 py-4 text-center">
+                            <span [class]="item.isMandatory ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
+                                {{ item.isMandatory ? '✔' : '✘' }}
+                            </span>
+                        </td>
 
-              </td>
+                        <!-- Active -->
+                        <td class="px-5 py-4 text-center">
+                            <span [class]="item.isActive ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
+                                {{ item.isActive ? 'Active' : 'Inactive' }}
+                            </span>
+                        </td>
 
-              <td class="px-5 py-4">
+                        <!-- Actions -->
+                        <td
+                            *ngIf="auth.hasPermission('UPDATE_COURSE_ASSIGNMENT_MAP') || auth.hasPermission('DELETE_COURSE_ASSIGNMENT_MAP')"
+                            class="px-5 py-4">
 
-                {{ item.assignmentTitle }}
+                            <div class="flex justify-center gap-3">
 
-              </td>
+                                <!-- Edit -->
+                                <button
+                                    *ngIf="auth.hasPermission('UPDATE_COURSE_ASSIGNMENT_MAP')"
+                                    type="button"
+                                    (click)="edit(item)"
+                                    class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition">
 
-              <td class="px-5 py-4 text-center">
+                                    Edit
 
-                {{ item.sequenceNo }}
+                                </button>
 
-              </td>
+                                <!-- Delete -->
+                                <button
+                                    *ngIf="auth.hasPermission('DELETE_COURSE_ASSIGNMENT_MAP')"
+                                    type="button"
+                                    (click)="delete(item.id)"
+                                    class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition">
 
-              <td class="px-5 py-4 text-center">
+                                    Delete
 
-                <span
-                  [class]="item.isMandatory ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
+                                </button>
 
-                  {{ item.isMandatory ? '✔' : '✘' }}
+                            </div>
 
-                </span>
+                        </td>
 
-              </td>
+                    </tr>
 
-              <td class="px-5 py-4 text-center">
+                    <!-- Empty State -->
 
-                <span
-                  [class]="item.isActive ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
+                    <tr *ngIf="filteredMappings.length === 0 && !loading">
 
-                  {{ item.isActive ? 'Active' : 'Inactive' }}
+                        <td
+                            colspan="7"
+                            class="text-center py-12 text-gray-500 font-medium">
 
-                </span>
+                            No Mapping Found
 
-              </td>
+                        </td>
 
-              <td class="px-5 py-4">
+                    </tr>
 
-                <div class="flex justify-center gap-2">
+                </tbody>
 
-                  <button
-                    *ngIf="auth.hasPermission('UPDATE_COURSE_ASSIGNMENT_MAP')"
-                    (click)="editMapping(item)"
-                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+            </table>
 
-                    Edit
-
-                  </button>
-
-                  <button
-                    *ngIf="auth.hasPermission('DELETE_COURSE_ASSIGNMENT_MAP')"
-                    (click)="deleteMapping(item.id)"
-                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
-
-                    Delete
-
-                  </button>
-
-                </div>
-
-              </td>
-
-            </tr>
-
-            <tr *ngIf="mappings.length === 0">
-
-              <td
-                colspan="7"
-                class="text-center py-8 text-gray-500">
-
-                No Course Assignment Mapping Found
-
-              </td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
+        </div>
 
     </div>
 
-  </div>
+    <!-- ================= ADD / EDIT DIALOG ================= -->
+
+    <div
+        *ngIf="showModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+
+        <div class="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden animate-modal">
+
+            <!-- Dialog Header -->
+
+            <div class="flex items-center justify-between px-6 py-4" style="background-color:#2F3E46">
+                <h3 class="text-white text-lg font-semibold">
+                    {{ editMode ? 'Edit Mapping' : 'Add Mapping' }}
+                </h3>
+                <button
+                    type="button"
+                    (click)="closeModal()"
+                    class="text-white/80 hover:text-white text-xl leading-none">
+                    &times;
+                </button>
+            </div>
+
+            <!-- Dialog Body -->
+
+            <form [formGroup]="courseAssignmentForm" (ngSubmit)="save()" class="px-6 py-6" *ngIf="courseAssignmentForm">
+
+                <div class="mb-4">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Course
+                    </label>
+                    <select
+                        formControlName="courseName"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+                        <option value="">Select Course</option>
+
+                        <option
+                            *ngFor="let course of courses"
+                            [value]="course.name">
+
+                            {{ course.name }}
+
+                        </option>
+
+                    </select>
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="submitted && courseAssignmentForm.get('courseName')?.invalid">
+                        Course is required
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Assignment
+                    </label>
+                    <select
+                        formControlName="assignmentTitle"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+                        <option value="">Select Assignment</option>
+
+                        <option
+                            *ngFor="let assignment of assignments"
+                            [value]="assignment.title">
+
+                            {{ assignment.title }}
+
+                        </option>
+
+                    </select>
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="submitted && courseAssignmentForm.get('assignmentTitle')?.invalid">
+                        Assignment is required
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Sequence No
+                    </label>
+                    <input
+                        type="number"
+                        formControlName="sequenceNo"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="submitted && courseAssignmentForm.get('sequenceNo')?.invalid">
+                        Sequence No is required
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-6 mb-2">
+
+                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
+                        <input
+                            type="checkbox"
+                            formControlName="isMandatory"
+                            class="h-4 w-4 rounded border-gray-300 text-[#2F3E46] focus:ring-[#2F3E46]">
+                        Is Mandatory
+                    </label>
+
+                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
+                        <input
+                            type="checkbox"
+                            formControlName="isActive"
+                            class="h-4 w-4 rounded border-gray-300 text-[#2F3E46] focus:ring-[#2F3E46]">
+                        Is Active
+                    </label>
+
+                </div>
+
+            </form>
+
+            <!-- Dialog Footer -->
+
+            <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
+
+                <button
+                    type="button"
+                    (click)="closeModal()"
+                    class="px-5 py-2 rounded-lg font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 transition-colors">
+                    Cancel
+                </button>
+
+                <button
+                    *ngIf="!editMode"
+                    type="button"
+                    (click)="save()"
+                    class="px-5 py-2 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
+                    Save
+                </button>
+
+                <button
+                    *ngIf="editMode"
+                    type="button"
+                    (click)="save()"
+                    class="px-5 py-2 rounded-lg font-medium text-white bg-amber-500 hover:bg-amber-600 transition-colors">
+                    Update
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= END PAGE ================= -->
 
 </div>
+
+<!-- ================= NO PERMISSION ================= -->
+
+<ng-template #noPermission>
+
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+
+        <div class="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
+
+            <div class="flex justify-center mb-6">
+
+                <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-10 h-10 text-red-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"/>
+
+                    </svg>
+
+                </div>
+
+            </div>
+
+            <h2 class="text-3xl font-bold text-[#2F3E46] mb-3">
+
+                Access Denied
+
+            </h2>
+
+            <p class="text-gray-500 mb-8">
+
+                You don't have permission to access the Course Assignment Mapping module.
+
+            </p>
+
+            <button
+                routerLink="/dashboard"
+                class="w-full bg-[#24c0c5] hover:bg-[#1ca9ad] text-white font-semibold py-3 rounded-lg transition">
+
+                Go to Dashboard
+
+            </button>
+
+        </div>
+
+    </div>
+
+</ng-template>

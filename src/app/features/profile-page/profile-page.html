@@ -1,71 +1,174 @@
-<div class="resetpassword">
-    <h1 class="companyname">Technex Cloud Networks </h1>
-    <span class="companyname">Pvt Ltd</span>
-   <form class="form" [formGroup]="Form" (ngSubmit)="onSubmit()">
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="fullName"
-            id="on_label"
-            name="text"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">Username or Email</label>
-    </p-floatlabel>
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="firstName"
-            id="on_label"
-            name="text"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">Username or Email</label>
-    </p-floatlabel>
-    <p-floatlabel>
-        <input
-            pInputText
-            formControlName="middleName"
-            id="on_label"
-            name="text"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">middle Name</label>
-    </p-floatlabel>
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="lastName"
-            id="on_label"
-            name="text"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">last Name</label>
-    </p-floatlabel>
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="phoneNumber"
-            id="on_label"
-            name="number"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">phoneNumber</label>
-    </p-floatlabel>
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="alternatePhoneNumber"
-            id="on_label"
-            name="number"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">Alternate PhoneNumber</label>
-    </p-floatlabel>
-     <p-floatlabel>
-        <input
-            pInputText
-            formControlName="alternateEmail"
-            id="on_label"
-            name="email"
-            autocomplete="off" />
-        <label for="on_label" class="p-floatlabel">Alternate Email</label>
-    </p-floatlabel>
+<div class="profile-page">
 
-    <p-button label="submit" type="submit"></p-button>
-</form>
+  <!-- ================= PROFILE CARD ================= -->
+  <div class="profile-card">
+
+    <!-- ================= HEADER ================= -->
+    <div class="profile-header">
+
+      <h1 class="profile-title">
+        Complete Your Profile Details
+      </h1>
+
+      <p class="profile-description">
+        Please confirm your personal and contact details to finish setting up
+        your account. These can also be modified later in settings.
+      </p>
+
+    </div>
+
+
+    <!-- ================= FORM ================= -->
+    <form
+      class="profile-form"
+      [formGroup]="Form"
+      (ngSubmit)="onSubmit()"
+    >
+
+      <!-- ================= FULL NAME ================= -->
+      <div class="form-field form-field-full">
+
+        <label for="fullName" class="form-label">
+          FULL NAME <span class="required">*</span>
+        </label>
+
+        <input
+          pInputText
+          id="fullName"
+          type="text"
+          formControlName="fullName"
+          autocomplete="name"
+          placeholder="fullName"
+          class="profile-input"
+        />
+
+      </div>
+
+
+      <!-- ================= FIRST + LAST NAME ================= -->
+      <div class="form-row">
+
+        <div class="form-field">
+
+          <label for="firstName" class="form-label">
+            FIRST NAME <span class="required">*</span>
+          </label>
+
+          <input
+            pInputText
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            autocomplete="given-name"
+            placeholder="firstName"
+            class="profile-input"
+          />
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label for="lastName" class="form-label">
+            LAST NAME <span class="required">*</span>
+          </label>
+
+          <input
+            pInputText
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            autocomplete="family-name"
+            placeholder="lastName"
+            class="profile-input"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- ================= PHONE + ALTERNATE PHONE ================= -->
+      <div class="form-row">
+
+        <div class="form-field">
+
+          <label for="phoneNumber" class="form-label">
+            PHONE NUMBER <span class="required">*</span>
+          </label>
+
+          <input
+            pInputText
+            id="phoneNumber"
+            type="tel"
+            formControlName="phoneNumber"
+            autocomplete="tel"
+            placeholder="+91 98765 43210"
+            class="profile-input"
+          />
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label for="alternatePhoneNumber" class="form-label">
+            ALTERNATE PHONE NUMBER
+            <span class="optional">(optional)</span>
+          </label>
+
+          <input
+            pInputText
+            id="alternatePhoneNumber"
+            type="tel"
+            formControlName="alternatePhoneNumber"
+            autocomplete="tel"
+            placeholder="+91 98765 43211"
+            class="profile-input"
+          />
+
+        </div>
+
+      </div>
+
+
+      <!-- ================= ALTERNATE EMAIL ================= -->
+      <div class="form-field form-field-full">
+
+        <label for="alternateEmail" class="form-label">
+          ALTERNATE EMAIL
+          <span class="optional">(optional)</span>
+        </label>
+
+        <input
+          pInputText
+          id="alternateEmail"
+          type="email"
+          formControlName="alternateEmail"
+          autocomplete="email"
+          placeholder="e.g. personal.backup@gmail.com"
+          class="profile-input"
+        />
+
+      </div>
+
+
+      <!-- ================= FOOTER ================= -->
+      <div class="form-footer">
+
+        <button
+          pButton
+          type="submit"
+          label="Save & Complete Setup"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          class="submit-button"
+        ></button>
+
+      </div>
+
+    </form>
+
+  </div>
+
 </div>

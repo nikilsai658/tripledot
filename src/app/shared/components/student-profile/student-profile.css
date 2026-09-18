@@ -56,29 +56,6 @@
 
 
 /* =========================================================
-   EDIT BUTTON
-   ========================================================= */
-
-.edit-btn {
-  @apply cursor-pointer
-         border
-         border-white
-         bg-transparent
-         px-5 py-2
-         text-sm
-         font-medium
-         text-white
-         transition-all
-         duration-200;
-}
-
-.edit-btn:hover {
-  @apply bg-white
-         text-[#2F3E46];
-}
-
-
-/* =========================================================
    MAIN PROFILE LAYOUT
    ========================================================= */
 
@@ -587,12 +564,6 @@
     @apply mt-1
            text-xs
            leading-5;
-  }
-
-
-  .edit-btn {
-    @apply w-full
-           py-2.5;
   }
 
 

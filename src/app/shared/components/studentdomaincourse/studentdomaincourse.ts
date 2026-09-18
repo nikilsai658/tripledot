@@ -15,10 +15,11 @@ import {
   FormBuilder,
   FormGroup,
   Validators,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  FormsModule
 } from '@angular/forms';
 
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
@@ -30,7 +31,9 @@ import { DomainServices } from '../../../features/services/domain/domain-service
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './studentdomaincourse.html',
   styleUrls: ['./studentdomaincourse.css']
@@ -38,8 +41,7 @@ import { DomainServices } from '../../../features/services/domain/domain-service
 export class StudentDomainMapComponent implements OnInit {
 
   mappings: any[] = [];
-
-  students: any[] = [];
+  filteredMappings: any[] = [];
 
   domains: any[] = [];
 
@@ -47,9 +49,17 @@ export class StudentDomainMapComponent implements OnInit {
 
   loading = false;
 
-  isEditMode = false;
+  submitted = false;
+  showModal = false;
 
-  selectedId = 0;
+  searchText = '';
+
+  //=====================================
+  // PAGINATION
+  //=====================================
+
+  currentPage = 1;
+  pageSize = 10;
 
   constructor(
     private fb: FormBuilder,
@@ -64,13 +74,7 @@ export class StudentDomainMapComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.studentDomainForm = this.fb.group({
-
-      studentEmail: ['', Validators.required],
-
-      domainName: ['', Validators.required]
-
-    });
+    this.buildForm();
 
     if (!isPlatformBrowser(this.platformId)) return;
 
@@ -91,6 +95,32 @@ export class StudentDomainMapComponent implements OnInit {
 
   }
 
+  buildForm(): void {
+
+    this.studentDomainForm = this.fb.group({
+
+      studentEmail: ['', Validators.required],
+
+      domainName: ['', Validators.required]
+
+    });
+
+  }
+
+  //==========================
+  // MODAL
+  //==========================
+
+  openAddModal(): void {
+    this.resetForm();
+    this.showModal = true;
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.resetForm();
+  }
+
   //============================
   // Load Domains
   //============================
@@ -102,6 +132,8 @@ export class StudentDomainMapComponent implements OnInit {
       next: (res: any) => {
 
         this.domains = res.data || res.result || res || [];
+
+        this.cd.detectChanges();
 
       },
 
@@ -133,6 +165,10 @@ export class StudentDomainMapComponent implements OnInit {
 
         }
 
+        this.filteredMappings = [...this.mappings];
+
+        this.currentPage = 1;
+
         this.cd.detectChanges();
 
       },
@@ -149,19 +185,15 @@ export class StudentDomainMapComponent implements OnInit {
 
   }
 
-  //============================
-  // CREATE
-  //============================
+  //==========================
+  // SAVE
+  //==========================
 
-  createMapping() {
+  save(): void {
 
-    if (!this.auth.hasPermission('CREATE_STUDENT_DOMAIN_COURSE_MAP')) {
+    this.submitted = true;
 
-      alert('Permission Denied');
-
-      return;
-
-    }
+    if (!this.auth.hasPermission('CREATE_STUDENT_DOMAIN_COURSE_MAP')) return;
 
     if (this.studentDomainForm.invalid) {
 
@@ -177,11 +209,9 @@ export class StudentDomainMapComponent implements OnInit {
 
         next: () => {
 
-          alert('Mapping Created Successfully');
-
-          this.resetForm();
-
           this.loadMappings();
+
+          this.closeModal();
 
         },
 
@@ -192,99 +222,20 @@ export class StudentDomainMapComponent implements OnInit {
   }
 
   //============================
-  // EDIT
-  //============================
-
-  /*editMapping(item: any) {
-
-    this.isEditMode = true;
-
-    this.selectedId = item.id;
-
-    this.studentDomainForm.patchValue({
-
-      studentEmail: item.studentEmail,
-
-      domainName: item.domainName
-
-    });
-
-
-  }*/
-
-  //============================
-  // UPDATE
-  //============================
-
-  /*updateMapping() {
-
-    if (!this.auth.hasPermission('UPDATE_STUDENT_DOMAIN_COURSE_MAP')) {
-
-      alert('Permission Denied');
-
-      return;
-
-    }
-
-    if (this.studentDomainForm.invalid) {
-
-      this.studentDomainForm.markAllAsTouched();
-
-      return;
-
-    }
-
-    this.api.updateStudentdomaincoursemap(
-
-      this.selectedId,
-
-      this.studentDomainForm.value
-
-    ).subscribe({
-
-      next: () => {
-
-        alert('Updated Successfully');
-
-        this.resetForm();
-
-        this.loadMappings();
-
-      },
-
-      error: err => console.log(err)
-
-    });
-
-  }*/
-
-  //============================
   // DELETE
   //============================
 
-  deleteMapping(id: number) {
+  delete(id: number) {
 
-    if (!this.auth.hasPermission('DELETE_STUDENT_DOMAIN_COURSE_MAP')) {
+    if (!this.auth.hasPermission('DELETE_STUDENT_DOMAIN_COURSE_MAP')) return;
 
-      alert('Permission Denied');
-
-      return;
-
-    }
-
-    if (!confirm('Delete this Mapping?')) {
-
-      return;
-
-    }
+    if (!confirm('Delete this mapping?')) return;
 
     this.api.deleteStudentdomaincoursemap(id)
 
       .subscribe({
 
         next: () => {
-
-          alert('Deleted Successfully');
 
           this.loadMappings();
 
@@ -302,9 +253,7 @@ export class StudentDomainMapComponent implements OnInit {
 
   resetForm() {
 
-    this.isEditMode = false;
-
-    this.selectedId = 0;
+    this.submitted = false;
 
     this.studentDomainForm.reset({
 
@@ -313,6 +262,113 @@ export class StudentDomainMapComponent implements OnInit {
       domainName: ''
 
     });
+
+  }
+
+  //==========================
+  // SEARCH
+  //==========================
+
+  search(): void {
+
+    const value = this.searchText.toLowerCase();
+
+    this.filteredMappings = this.mappings.filter(x =>
+
+      (x.email || '').toLowerCase().includes(value) ||
+
+      (x.domainName || '').toLowerCase().includes(value)
+
+    );
+
+    this.currentPage = 1;
+
+  }
+
+  //=====================================
+  // PAGINATION
+  //=====================================
+
+  get totalPages(): number {
+
+    return Math.ceil(
+      this.filteredMappings.length / this.pageSize
+    ) || 1;
+
+  }
+
+  get pagedMappings(): any[] {
+
+    const start = (this.currentPage - 1) * this.pageSize;
+
+    return this.filteredMappings.slice(
+      start,
+      start + this.pageSize
+    );
+
+  }
+
+  get visiblePages(): (number | '...')[] {
+
+    const total = this.totalPages;
+    const current = this.currentPage;
+    const pages: (number | '...')[] = [];
+
+    for (let i = 1; i <= total; i++) {
+
+      const isEdge = i === 1 || i === total;
+      const isNearCurrent = i >= current - 1 && i <= current + 1;
+
+      if (isEdge || isNearCurrent) {
+
+        pages.push(i);
+
+      } else if (pages[pages.length - 1] !== '...') {
+
+        pages.push('...');
+
+      }
+
+    }
+
+    return pages;
+
+  }
+
+  get rangeStart(): number {
+
+    return this.filteredMappings.length === 0
+      ? 0
+      : (this.currentPage - 1) * this.pageSize + 1;
+
+  }
+
+  get rangeEnd(): number {
+
+    return Math.min(
+      this.currentPage * this.pageSize,
+      this.filteredMappings.length
+    );
+
+  }
+
+  goToPage(page: number): void {
+
+    if (page < 1 || page > this.totalPages) return;
+
+    this.currentPage = page;
+
+  }
+
+  prevPage(): void {
+
+    this.goToPage(this.currentPage - 1);
+
+  }
+
+  nextPage(): void {
+
+    this.goToPage(this.currentPage + 1);
 
   }
 

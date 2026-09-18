@@ -1,0 +1,835 @@
+/* =========================================================
+   CONVERSATION PAGE
+========================================================= */
+
+@import "tailwindcss";
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.conversation-page {
+  @apply min-h-screen w-full bg-[#F8FAFC];
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
+
+.conversation-container {
+  @apply mx-auto flex min-h-screen w-full flex-col bg-white;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.conversation-header {
+  @apply flex h-[76px] w-full shrink-0 items-center
+         justify-between
+         border-b border-[#E5E7EB]
+         bg-white
+         px-8;
+}
+
+
+/* =========================================================
+   HEADER LEFT
+========================================================= */
+
+.conversation-header-left {
+  @apply flex min-w-0 items-center;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.back-button {
+  @apply mr-4 flex h-9 w-9 shrink-0
+         items-center justify-center
+         rounded-lg
+         border border-transparent
+         bg-transparent
+         p-0
+         text-[#475569]
+         outline-none
+         transition-all duration-200
+         hover:border-[#E2E8F0]
+         hover:bg-[#F8FAFC]
+         hover:text-[#172033]
+         disabled:cursor-not-allowed
+         disabled:opacity-50;
+}
+
+
+/* =========================================================
+   BACK ARROW
+========================================================= */
+
+.back-arrow {
+  @apply block text-[26px]
+         font-light
+         leading-none;
+}
+
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.conversation-heading {
+  @apply flex min-w-0 flex-col;
+}
+
+
+.conversation-title {
+  @apply m-0 truncate
+         text-[21px]
+         font-bold
+         leading-7
+         tracking-[-0.2px]
+         text-[#172033];
+}
+
+
+.conversation-subtitle {
+  @apply m-0 mt-0.5
+         text-[12px]
+         font-normal
+         leading-5
+         text-[#64748B];
+}
+
+
+/* =========================================================
+   REFRESH BUTTON
+========================================================= */
+
+.refresh-button {
+  @apply flex shrink-0
+         items-center gap-2
+         rounded-lg
+         border border-transparent
+         bg-transparent
+         px-3
+         py-2
+         text-[12px]
+         font-semibold
+         text-[#334155]
+         outline-none
+         transition-all duration-200
+         hover:border-[#E2E8F0]
+         hover:bg-[#F8FAFC]
+         hover:text-[#172033]
+         disabled:cursor-not-allowed
+         disabled:opacity-50;
+}
+
+
+/* =========================================================
+   REFRESH ICON
+========================================================= */
+
+.refresh-icon {
+  @apply flex h-[20px] w-[20px]
+         items-center justify-center
+         rounded-full
+         border-[1.5px]
+         border-current
+         text-[13px]
+         font-medium
+         leading-none;
+}
+
+
+/* =========================================================
+   CHAT AREA
+========================================================= */
+
+.chat-messages {
+  @apply relative flex-1
+         overflow-y-auto
+         bg-[#FCFCFD]
+         px-8
+         py-10;
+}
+
+
+/* =========================================================
+   MESSAGE LIST
+========================================================= */
+
+.message-list {
+  @apply mx-auto w-full max-w-[780px]
+         space-y-9;
+}
+
+
+/* =========================================================
+   MESSAGE ROW
+========================================================= */
+
+.message-row {
+  @apply flex w-full;
+}
+
+
+.message-row-user {
+  @apply justify-start;
+}
+
+
+.message-row-support {
+  @apply justify-end;
+}
+
+
+/* =========================================================
+   MESSAGE WRAPPER
+
+   IMPORTANT:
+   w-fit makes wrapper only as wide as its content.
+   max-w-[610px] prevents very long messages from becoming
+   too wide.
+========================================================= */
+
+.message-wrapper {
+  @apply flex w-fit max-w-[610px] flex-col;
+}
+
+
+.message-row-user .message-wrapper {
+  @apply items-start;
+}
+
+
+.message-row-support .message-wrapper {
+  @apply items-end;
+}
+
+
+/* =========================================================
+   SENDER ROW
+========================================================= */
+
+.sender-row {
+  @apply mb-2 flex w-full items-center gap-2;
+}
+
+
+.sender-row-user {
+  @apply justify-start;
+}
+
+
+.sender-row-support {
+  @apply justify-end;
+}
+
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+.sender-avatar {
+  @apply flex h-[30px] w-[30px]
+         shrink-0
+         items-center justify-center
+         rounded-[8px]
+         bg-[#202B3D]
+         text-[13px]
+         font-semibold
+         leading-none
+         text-white;
+}
+
+
+/* =========================================================
+   SENDER NAME
+========================================================= */
+
+.sender-name {
+  @apply text-[13px]
+         font-semibold
+         leading-5
+         text-[#334155];
+}
+
+
+/* =========================================================
+   MESSAGE BUBBLE
+
+   IMPORTANT:
+   w-fit = bubble fits message content
+   max-w-full = cannot exceed wrapper width
+========================================================= */
+
+.message-bubble {
+  @apply w-fit max-w-full
+         px-5
+         py-4;
+}
+
+
+/* =========================================================
+   USER MESSAGE
+========================================================= */
+
+.message-bubble-user {
+  @apply rounded-[10px]
+         border
+         border-[#E2E8F0]
+         bg-white
+         text-[#172033]
+         shadow-[0_1px_2px_rgba(15,23,42,0.03)];
+}
+
+
+/* =========================================================
+   SUPPORT MESSAGE
+========================================================= */
+
+.message-bubble-support {
+  @apply rounded-[10px]
+         bg-[#202B3D]
+         text-white
+         shadow-[0_2px_5px_rgba(15,23,42,0.08)];
+}
+
+
+/* =========================================================
+   MESSAGE TEXT
+========================================================= */
+
+.message-text {
+  @apply m-0
+         whitespace-pre-wrap
+         break-words
+         text-[14px]
+         font-normal
+         leading-[1.6];
+}
+
+
+/* =========================================================
+   TIME
+========================================================= */
+
+.message-time {
+  @apply mt-2
+         px-1
+         text-[10px]
+         leading-4;
+}
+
+
+.message-time-user {
+  @apply text-left
+         text-[#94A3B8];
+}
+
+
+.message-time-support {
+  @apply text-right
+         text-[#94A3B8];
+}
+
+
+/* =========================================================
+   LOADING / EMPTY STATE
+========================================================= */
+
+.conversation-state {
+  @apply flex h-full min-h-[400px]
+         items-center justify-center;
+}
+
+
+.loading-content,
+.empty-content {
+  @apply text-center;
+}
+
+
+/* =========================================================
+   LOADING SPINNER
+========================================================= */
+
+.loading-spinner {
+  @apply mx-auto mb-3
+         h-7 w-7
+         animate-spin
+         rounded-full
+         border-[3px]
+         border-[#E2E8F0]
+         border-t-[#202B3D];
+}
+
+
+.loading-text {
+  @apply m-0
+         text-[13px]
+         text-[#64748B];
+}
+
+
+/* =========================================================
+   EMPTY MESSAGE
+========================================================= */
+
+.empty-icon {
+  @apply mx-auto mb-3
+         flex h-12 w-12
+         items-center justify-center
+         rounded-full
+         bg-[#F1F5F9]
+         text-lg;
+}
+
+
+.empty-title {
+  @apply m-0
+         text-[14px]
+         font-semibold
+         text-[#475569];
+}
+
+
+.empty-description {
+  @apply m-0 mt-1
+         text-[12px]
+         text-[#94A3B8];
+}
+
+
+/* =========================================================
+   CLOSED TICKET
+========================================================= */
+
+.ticket-closed {
+  @apply shrink-0
+         border-t border-[#E5E7EB]
+         bg-[#F8FAFC]
+         px-6
+         py-4
+         text-center
+         text-[13px]
+         text-[#64748B];
+}
+
+
+/* =========================================================
+   REPLY SECTION
+========================================================= */
+
+.reply-section {
+  @apply shrink-0
+         border-t border-[#E5E7EB]
+         bg-white
+         px-8
+         py-5;
+}
+
+
+/* =========================================================
+   REPLY CONTAINER
+========================================================= */
+
+.reply-container {
+  @apply mx-auto flex w-full
+         max-w-[780px]
+         items-center;
+}
+
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.message-input-wrapper {
+  @apply relative flex w-full items-center;
+}
+
+
+/* =========================================================
+   MESSAGE INPUT
+========================================================= */
+
+.message-input {
+  @apply min-h-[54px]
+         w-full
+         resize-none
+         rounded-[10px]
+         border
+         border-[#CBD5E1]
+         bg-white
+         px-4
+         py-4
+         pr-14
+         text-[14px]
+         leading-5
+         text-[#172033]
+         outline-none
+         transition-all duration-200
+         placeholder:text-[#94A3B8]
+         focus:border-[#94A3B8]
+         focus:ring-0
+         disabled:cursor-not-allowed
+         disabled:bg-[#F8FAFC];
+}
+
+
+/* =========================================================
+   SEND BUTTON
+========================================================= */
+
+.send-button {
+  @apply -ml-[49px]
+         flex h-[40px] w-[40px]
+         shrink-0
+         items-center justify-center
+         rounded-[8px]
+         border-0
+         bg-[#202B3D]
+         p-0
+         text-white
+         outline-none
+         transition-all duration-200
+         hover:bg-[#172033]
+         disabled:cursor-not-allowed
+         disabled:opacity-40;
+}
+
+
+/* =========================================================
+   SEND ARROW
+========================================================= */
+
+.send-arrow {
+  @apply block
+         translate-x-[1px]
+         text-[17px]
+         font-semibold
+         leading-none;
+}
+
+
+/* =========================================================
+   SENDING SPINNER
+========================================================= */
+
+.send-spinner {
+  @apply h-4 w-4
+         animate-spin
+         rounded-full
+         border-2
+         border-white/40
+         border-t-white;
+}
+
+
+.sending-text {
+  @apply ml-2
+         text-xs
+         font-medium;
+}
+
+
+/* =========================================================
+   REPLY INFORMATION
+========================================================= */
+
+.reply-information {
+  @apply mx-auto mt-2
+         flex w-full
+         max-w-[780px]
+         items-center
+         justify-between;
+}
+
+
+.reply-help-text {
+  @apply m-0
+         text-[10px]
+         text-[#94A3B8];
+}
+
+
+.character-count {
+  @apply text-[10px];
+}
+
+
+.character-count-normal {
+  @apply text-[#94A3B8];
+}
+
+
+.character-count-limit {
+  @apply text-red-500;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.chat-messages::-webkit-scrollbar {
+  @apply w-1.5;
+}
+
+
+.chat-messages::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+
+.chat-messages::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-[#CBD5E1];
+}
+
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  @apply bg-[#94A3B8];
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .conversation-header {
+    @apply h-[70px] px-5;
+  }
+
+
+  .conversation-title {
+    @apply text-[19px];
+  }
+
+
+  .conversation-subtitle {
+    @apply text-[11px];
+  }
+
+
+  .chat-messages {
+    @apply px-5 py-8;
+  }
+
+
+  .message-list {
+    @apply space-y-8;
+  }
+
+
+  /* Message width adapts to content,
+     but long messages can use up to 88% */
+
+  .message-wrapper {
+    @apply max-w-[88%];
+  }
+
+
+  .message-row-user .message-wrapper,
+  .message-row-support .message-wrapper {
+    @apply max-w-[88%];
+  }
+
+
+  .message-bubble {
+    @apply px-4 py-4;
+  }
+
+
+  .message-text {
+    @apply text-[13px];
+  }
+
+
+  .reply-section {
+    @apply px-5 py-4;
+  }
+
+
+  .reply-information {
+    @apply px-1;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .conversation-header {
+    @apply h-[64px] px-3;
+  }
+
+
+  .conversation-header-left {
+    @apply min-w-0;
+  }
+
+
+  .back-button {
+    @apply mr-2 h-8 w-8;
+  }
+
+
+  .back-arrow {
+    @apply text-[24px];
+  }
+
+
+  .conversation-title {
+    @apply max-w-[190px]
+           text-[17px]
+           leading-6;
+  }
+
+
+  .conversation-subtitle {
+    @apply text-[10px]
+           leading-4;
+  }
+
+
+  .refresh-button {
+    @apply gap-1
+           px-2
+           text-[10px];
+  }
+
+
+  .refresh-icon {
+    @apply h-[18px]
+           w-[18px]
+           text-[12px];
+  }
+
+
+  .chat-messages {
+    @apply px-3
+           py-6;
+  }
+
+
+  .message-list {
+    @apply space-y-7;
+  }
+
+
+  .message-wrapper,
+  .message-row-user .message-wrapper,
+  .message-row-support .message-wrapper {
+    @apply max-w-[94%];
+  }
+
+
+  .sender-row {
+    @apply mb-1.5 gap-1.5;
+  }
+
+
+  .sender-avatar {
+    @apply h-[27px]
+           w-[27px]
+           rounded-[7px]
+           text-[12px];
+  }
+
+
+  .sender-name {
+    @apply text-[12px];
+  }
+
+
+  .message-bubble {
+    @apply rounded-[9px]
+           px-3.5
+           py-3.5;
+  }
+
+
+  .message-text {
+    @apply text-[13px]
+           leading-[1.55];
+  }
+
+
+  .message-time {
+    @apply mt-1.5
+           text-[9px];
+  }
+
+
+  .reply-section {
+    @apply px-3
+           py-3;
+  }
+
+
+  .reply-container {
+    @apply max-w-full;
+  }
+
+
+  .message-input {
+    @apply min-h-[52px]
+           rounded-[9px]
+           px-3
+           py-3.5
+           pr-12
+           text-[13px];
+  }
+
+
+  .send-button {
+    @apply -ml-[44px]
+           h-[36px]
+           w-[36px]
+           rounded-[7px];
+  }
+
+
+  .send-arrow {
+    @apply text-[16px];
+  }
+
+
+  .reply-information {
+    @apply mt-1.5
+           max-w-full
+           px-1;
+  }
+
+
+  .reply-help-text {
+    @apply max-w-[75%]
+           text-[9px];
+  }
+
+
+  .character-count {
+    @apply text-[9px];
+  }
+
+
+  .ticket-closed {
+    @apply px-4
+           py-3
+           text-[12px];
+  }
+
+}

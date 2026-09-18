@@ -64,4 +64,10 @@ uploadUsers(file: File) {
   return this.api.POST('User/BulkUpload', formData);
 
 }
+successusers(uploadId: string) {
+  return this.api.GET(`User/BulkUpload/${uploadId}/success`);
+}
+failedusers(uploadId: string) {
+  return this.api.GET(`User/BulkUpload/${uploadId}/failed`);
+}
 }

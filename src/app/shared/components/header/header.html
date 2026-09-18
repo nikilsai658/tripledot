@@ -18,13 +18,6 @@
           src="../../../../assets/images/logo.jpeg"
           class="company-logo">
 
-        <div>
-          <p class="company-title">
-            Technex Cloud Networks
-            <br>
-            Pvt Ltd
-          </p>
-        </div>
 
       </div>
 
@@ -51,7 +44,7 @@
       </a>
 
       <a
-      *ngIf="this.auth.hasPermission('VIEW_STUDENT_DOMAIN')"
+      *ngIf="this.auth.hasPermission('LEADERBOARD_DOMAIN')"
         routerLink="/main/leadership"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
@@ -62,7 +55,7 @@
       </a>
 
       <a
-      *ngIf="this.auth.hasPermission('VIEW_STUDENT_DOMAIN')"
+      *ngIf="this.auth.hasPermission('LEADERBOARD_DOMAIN')"
         routerLink="/main/certificate"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"

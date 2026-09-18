@@ -1,278 +1,343 @@
-<div *ngIf="auth.hasPermission('VIEW_COLLEGE_DEPARTMENT')" class="p-6">
+<div *ngIf="auth.hasPermission('VIEW_COLLEGE_DEPARTMENT'); else noPermission"
+    class="min-h-screen bg-gray-100 p-6">
 
-  <!-- Header -->
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row justify-between items-center gap-5 mb-8">
 
-    <div>
-      <h2 class="text-2xl font-bold text-[#2F3E46]">
-        College Department Mapping
-      </h2>
+        <div>
+            <h1 class="text-3xl font-bold text-[#2F3E46]">
+                College Department Mapping
+            </h1>
 
-      <p class="text-gray-500">
-        Manage College & Department Mapping
-      </p>
-    </div>
+            <p class="text-gray-500 mt-1">
+                Map Departments to Colleges
+            </p>
+        </div>
 
-  </div>
+        <div class="flex items-center gap-4">
 
-  <!-- Form -->
+            <div class="bg-white rounded-xl shadow px-6 py-4">
+                <p class="text-sm text-gray-500">
+                    Total Mappings
+                </p>
 
-  <form
-    [formGroup]="collegeDepartmentForm"
-    (ngSubmit)="save()"
-    class="bg-white shadow rounded-lg p-6 mb-6">
+                <h2 class="text-3xl font-bold text-[#24c0c5]">
+                    {{ mappings?.length || 0 }}
+                </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            </div>
 
-      <!-- College -->
+            <button
+                *ngIf="auth.hasPermission('CREATE_COLLEGE_DEPARTMENT')"
+                type="button"
+                (click)="openAddModal()"
+                style="background-color:#2F3E46"
+                class="flex items-center gap-2 hover:opacity-90 text-white px-5 py-3 rounded-xl font-semibold shadow-sm transition-opacity h-full">
+                <span class="text-lg leading-none">+</span>
+                Add Mapping
+            </button>
 
-      <div>
-
-        <label class="block mb-2 font-medium">
-          College
-        </label>
-
-        <select
-          formControlName="collegeName"
-          class="w-full border rounded-lg p-3">
-
-          <option value="">Select College</option>
-
-          <option
-              *ngFor="let college of colleges; let i = index"
-            [value]="college.name">
-
-            {{college.name  }}
-
-          </option>
-
-        </select>
-
-        <small
-          class="text-red-500"
-          *ngIf="submitted && collegeDepartmentForm.get('collegeName')?.invalid">
-
-          College is required
-
-        </small>
-
-      </div>
-
-      <!-- Department -->
-
-      <div>
-
-        <label class="block mb-2 font-medium">
-          Department
-        </label>
-
-        <select
-          formControlName="departmentName"
-          class="w-full border rounded-lg p-3">
-
-          <option value="">Select Department</option>
-
-          <option
-           *ngFor="let department of departments; let i = index"
-            [value]="department.name">
-
-            {{department.name}}
-
-          </option>
-
-        </select>
-
-        <small
-          class="text-red-500"
-          *ngIf="submitted && collegeDepartmentForm.get('departmentName')?.invalid">
-
-          Department is required
-
-        </small>
-
-      </div>
+        </div>
 
     </div>
 
-    <!-- Buttons -->
+    <!-- Search -->
+
+    <div class="mb-5">
+
+        <input
+            type="text"
+            [(ngModel)]="searchText"
+            (keyup)="search()"
+            [ngModelOptions]="{standalone:true}"
+            placeholder="Search by college or department..."
+            class="w-full md:w-96 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+    </div>
+
+    <!-- ================= TABLE ================= -->
+
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+
+        <div class="bg-[#2F3E46] text-white px-6 py-4">
+
+            <h2 class="text-xl font-bold">
+                Mappings List
+            </h2>
+
+        </div>
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full">
+
+                <thead class="bg-gray-100">
+
+                    <tr>
+
+                        <th class="px-5 py-4 text-left">#</th>
+
+                        <th class="px-5 py-4 text-left">College</th>
+
+                        <th class="px-5 py-4 text-left">Department</th>
+
+                        <th
+                            *ngIf="auth.hasPermission('UPDATE_COLLEGE_DEPARTMENT') || auth.hasPermission('DELETE_COLLEGE_DEPARTMENT')"
+                            class="px-5 py-4 text-center">
+
+                            Actions
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr
+                        *ngFor="let item of filteredMappings; let i = index"
+                        class="border-b hover:bg-gray-50">
+
+                        <!-- Serial Number -->
+                        <td class="px-5 py-4">
+                            {{ i + 1 }}
+                        </td>
+
+                        <!-- College -->
+                        <td class="px-5 py-4 font-semibold">
+                            {{ item.collegeName }}
+                        </td>
+
+                        <!-- Department -->
+                        <td class="px-5 py-4">
+                            {{ item.departmentName }}
+                        </td>
+
+                        <!-- Actions -->
+                        <td
+                            *ngIf="auth.hasPermission('UPDATE_COLLEGE_DEPARTMENT') || auth.hasPermission('DELETE_COLLEGE_DEPARTMENT')"
+                            class="px-5 py-4">
+
+                            <div class="flex justify-center gap-3">
+
+                                <!-- Edit -->
+                                <button
+                                    *ngIf="auth.hasPermission('UPDATE_COLLEGE_DEPARTMENT')"
+                                    type="button"
+                                    (click)="edit(item)"
+                                    class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition">
+
+                                    Edit
+
+                                </button>
+
+                                <!-- Delete -->
+                                <button
+                                    *ngIf="auth.hasPermission('DELETE_COLLEGE_DEPARTMENT')"
+                                    type="button"
+                                    (click)="delete(item.id)"
+                                    class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition">
+
+                                    Delete
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    <!-- Empty State -->
+
+                    <tr *ngIf="filteredMappings.length === 0 && !loading">
+
+                        <td
+                            colspan="4"
+                            class="text-center py-12 text-gray-500 font-medium">
+
+                            No Mapping Found
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- ================= ADD / EDIT DIALOG ================= -->
 
     <div
-      class="flex gap-3 mt-6"
-       *ngIf="auth.hasPermission('CREATE_COLLEGE_DEPARTMENT')">
+        *ngIf="showModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
 
-      <button
-        type="submit"
-        class="bg-[#24c0c5] hover:bg-[#1ca5aa] text-white px-6 py-2 rounded">
+        <div class="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden animate-modal">
 
-        {{editMode ? 'Update Mapping' : 'Save Mapping'}}
+            <!-- Dialog Header -->
 
-      </button>
+            <div class="flex items-center justify-between px-6 py-4" style="background-color:#2F3E46">
+                <h3 class="text-white text-lg font-semibold">
+                    {{ editMode ? 'Edit Mapping' : 'Add Mapping' }}
+                </h3>
+                <button
+                    type="button"
+                    (click)="closeModal()"
+                    class="text-white/80 hover:text-white text-xl leading-none">
+                    &times;
+                </button>
+            </div>
 
-      <button
-        type="button"
-        (click)="resetForm()"
-        class="bg-gray-500 text-white px-6 py-2 rounded">
+            <!-- Dialog Body -->
 
-        Reset
+            <form [formGroup]="collegeDepartmentForm" class="px-6 py-6" *ngIf="collegeDepartmentForm">
 
-      </button>
+                <div class="mb-4">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        College
+                    </label>
+                    <select
+                        formControlName="collegeName"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+                        <option value="">Select College</option>
+
+                        <option
+                            *ngFor="let college of colleges"
+                            [value]="college.name">
+
+                            {{ college.name }}
+
+                        </option>
+
+                    </select>
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="submitted && collegeDepartmentForm.get('collegeName')?.invalid">
+                        College is required
+                    </p>
+                </div>
+
+                <div class="mb-2">
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Department
+                    </label>
+                    <select
+                        formControlName="departmentName"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+                        <option value="">Select Department</option>
+
+                        <option
+                            *ngFor="let department of departments"
+                            [value]="department.name">
+
+                            {{ department.name }}
+
+                        </option>
+
+                    </select>
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="submitted && collegeDepartmentForm.get('departmentName')?.invalid">
+                        Department is required
+                    </p>
+                </div>
+
+            </form>
+
+            <!-- Dialog Footer -->
+
+            <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
+
+                <button
+                    type="button"
+                    (click)="closeModal()"
+                    class="px-5 py-2 rounded-lg font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 transition-colors">
+                    Cancel
+                </button>
+
+                <button
+                    *ngIf="!editMode"
+                    type="button"
+                    (click)="save()"
+                    class="px-5 py-2 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
+                    Save
+                </button>
+
+                <button
+                    *ngIf="editMode"
+                    type="button"
+                    (click)="save()"
+                    class="px-5 py-2 rounded-lg font-medium text-white bg-amber-500 hover:bg-amber-600 transition-colors">
+                    Update
+                </button>
+
+            </div>
+
+        </div>
 
     </div>
 
-  </form>
-
-  <!-- Search -->
-
-  <div class="mb-5">
-
-    <input
-      type="text"
-      [(ngModel)]="searchText"
-      (keyup)="search()"
-      [ngModelOptions]="{standalone:true}"
-      placeholder="Search..."
-      class="w-full md:w-96 border rounded-lg p-3">
-
-  </div>
-
-  <!-- Table -->
-
-  <div class="overflow-x-auto bg-white rounded-lg shadow">
-
-    <table class="min-w-full">
-
-      <thead class="bg-[#2F3E46] text-white">
-
-        <tr>
-
-          <th class="px-4 py-3 text-left">
-            #
-          </th>
-
-          <th class="px-4 py-3 text-left">
-            College
-          </th>
-
-          <th class="px-4 py-3 text-left">
-            Department
-          </th>
-
-          <th
-            class="px-4 py-3 text-center"
-            *ngIf="true">
-
-            Actions
-
-          </th>
-
-        </tr>
-
-      </thead>
-
-      <tbody>
-
-        <tr
-          *ngFor="let item of filteredMappings; let i=index"
-          class="border-b hover:bg-gray-50">
-
-          <td class="px-4 py-3">
-
-            {{i+1}}
-
-          </td>
-
-          <td class="px-4 py-3">
-
-            {{item.collegeName}}
-
-          </td>
-
-          <td class="px-4 py-3">
-
-            {{item.departmentName}}
-
-          </td>
-
-          <td
-            class="px-4 py-3 text-center"
-            *ngIf="auth.hasPermission('VIEW_COLLEGE_DEPARTMENT')">
-
-            <button
-              *ngIf="auth.hasPermission('UPDATE_COLLEGE_DEPARTMENT')"
-              (click)="edit(item)"
-              class="bg-blue-600 text-white px-3 py-1 rounded mr-2">
-
-              Edit
-
-            </button>
-
-            <button
-               *ngIf="auth.hasPermission('DELETE_COLLEGE_DEPARTMENT')"
-              (click)="delete(item.id)"
-              class="bg-red-600 text-white px-3 py-1 rounded">
-
-              Delete
-
-            </button>
-
-          </td>
-
-        </tr>
-
-        <!-- Empty -->
-
-        <tr *ngIf="filteredMappings.length===0 && !loading">
-
-          <td
-            colspan="4"
-            class="text-center py-8 text-gray-500">
-
-            No Mapping Found
-
-          </td>
-
-        </tr>
-
-        <!-- Loading -->
-
-        <tr *ngIf="loading">
-
-          <td
-            colspan="4"
-            class="text-center py-8">
-
-            Loading...
-
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
+    <!-- ================= END PAGE ================= -->
 
 </div>
 
-<!-- No Permission -->
+<!-- ================= NO PERMISSION ================= -->
 
 <ng-template #noPermission>
 
-  <div class="text-center mt-20">
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
 
-    <h2 class="text-red-600 text-2xl font-bold">
+        <div class="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
 
-      Access Denied
+            <div class="flex justify-center mb-6">
 
-    </h2>
+                <div class="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
 
-    <p class="text-gray-500 mt-2">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-10 h-10 text-red-600"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
 
-      You don't have permission to view this page.
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"/>
 
-    </p>
+                    </svg>
 
-  </div>
+                </div>
+
+            </div>
+
+            <h2 class="text-3xl font-bold text-[#2F3E46] mb-3">
+
+                Access Denied
+
+            </h2>
+
+            <p class="text-gray-500 mb-8">
+
+                You don't have permission to access the College Department Mapping module.
+
+            </p>
+
+            <button
+                routerLink="/dashboard"
+                class="w-full bg-[#24c0c5] hover:bg-[#1ca9ad] text-white font-semibold py-3 rounded-lg transition">
+
+                Go to Dashboard
+
+            </button>
+
+        </div>
+
+    </div>
 
 </ng-template>

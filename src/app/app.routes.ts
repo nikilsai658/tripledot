@@ -45,6 +45,7 @@ import { permissionGuard } from './core/guards/permission-guard';
 import { NotFoundComponent } from './shared/components/page-not-found/page-not-found';
 import { Viewcertificate } from './shared/components/viewcertificate/viewcertificate';
 import { ChangePassword } from './shared/components/change-password/change-password';
+import { Task } from './shared/components/task/task';
 export const routes: Routes = [
 
   {
@@ -100,6 +101,9 @@ export const routes: Routes = [
       },
       {
         path:'assignment',component:AssignmentComponent, data: { permission: 'UPDATE_ASSIGNMENT' }
+      },
+      {
+        path:'task-management',component:Task, data: { permission: 'VIEW_TASK' }
       },
       {
         path:'year',component:Year, data: { permission: 'VIEW_YEAR' }

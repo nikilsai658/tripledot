@@ -23,4 +23,10 @@ export class AuthServices {
   profileupdate(data:any){
     return this.api.POST('Auth/complete-profile',data);
   }
+  logout(data:any){
+    return this.api.POST('Auth/logout',data);
+  }
+  logoutAll(data:any){
+    return this.api.POST('Auth/logout-all',data);
+  }
 }

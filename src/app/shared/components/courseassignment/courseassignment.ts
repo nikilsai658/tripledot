@@ -15,10 +15,11 @@ import {
   FormBuilder,
   FormGroup,
   Validators,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  FormsModule
 } from '@angular/forms';
 
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
@@ -31,7 +32,9 @@ import { AssignmentService } from '../../../features/services/assignment/assignm
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './courseassignment.html',
   styleUrls: ['./courseassignment.css']
@@ -41,6 +44,7 @@ export class CourseAssignmentMapComponent implements OnInit {
   courseAssignmentForm!: FormGroup;
 
   mappings: any[] = [];
+  filteredMappings: any[] = [];
 
   courses: any[] = [];
 
@@ -48,9 +52,13 @@ export class CourseAssignmentMapComponent implements OnInit {
 
   loading = false;
 
-  isEditMode = false;
+  submitted = false;
+  editMode = false;
+  showModal = false;
 
-  selectedId = 0;
+  selectedId: number | null = null;
+
+  searchText = '';
 
   constructor(
     private fb: FormBuilder,
@@ -66,19 +74,7 @@ export class CourseAssignmentMapComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.courseAssignmentForm = this.fb.group({
-
-      courseName: ['', Validators.required],
-
-      assignmentTitle: ['', Validators.required],
-
-      sequenceNo: [1, Validators.required],
-
-      isMandatory: [true],
-
-      isActive: [true]
-
-    });
+    this.buildForm();
 
     if (!isPlatformBrowser(this.platformId)) {
       return;
@@ -102,6 +98,38 @@ export class CourseAssignmentMapComponent implements OnInit {
 
   }
 
+  buildForm(): void {
+
+    this.courseAssignmentForm = this.fb.group({
+
+      courseName: ['', Validators.required],
+
+      assignmentTitle: ['', Validators.required],
+
+      sequenceNo: [1, Validators.required],
+
+      isMandatory: [true],
+
+      isActive: [true]
+
+    });
+
+  }
+
+  //==========================
+  // MODAL
+  //==========================
+
+  openAddModal(): void {
+    this.resetForm();
+    this.showModal = true;
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.resetForm();
+  }
+
   //============================
   // Load Courses
   //============================
@@ -113,6 +141,8 @@ export class CourseAssignmentMapComponent implements OnInit {
       next: (res: any) => {
 
         this.courses = res.data || res.result || res || [];
+
+        this.cd.detectChanges();
 
       },
 
@@ -133,6 +163,8 @@ export class CourseAssignmentMapComponent implements OnInit {
       next: (res: any) => {
 
         this.assignments = res.data || res.result || res || [];
+
+        this.cd.detectChanges();
 
       },
 
@@ -164,6 +196,8 @@ export class CourseAssignmentMapComponent implements OnInit {
 
         }
 
+        this.filteredMappings = [...this.mappings];
+
         this.cd.detectChanges();
 
       },
@@ -180,17 +214,21 @@ export class CourseAssignmentMapComponent implements OnInit {
 
   }
 
-  //============================
-  // CREATE
-  //============================
+  //==========================
+  // SAVE
+  //==========================
 
-  createMapping() {
+  save(): void {
 
-    if (!this.auth.hasPermission('CREATE_COURSE_ASSIGNMENT_MAP')) {
+    this.submitted = true;
 
-      alert('Permission Denied');
+    if (this.editMode) {
 
-      return;
+      if (!this.auth.hasPermission('UPDATE_COURSE_ASSIGNMENT_MAP')) return;
+
+    } else {
+
+      if (!this.auth.hasPermission('CREATE_COURSE_ASSIGNMENT_MAP')) return;
 
     }
 
@@ -202,17 +240,19 @@ export class CourseAssignmentMapComponent implements OnInit {
 
     }
 
-    this.api.createcourseassignment(this.courseAssignmentForm.value)
+    const payload = this.courseAssignmentForm.value;
 
-      .subscribe({
+    if (this.editMode) {
+
+      if (this.selectedId == null) return;
+
+      this.api.updatecourseassignment(this.selectedId, payload).subscribe({
 
         next: () => {
 
-          alert('Course Assignment Mapping Created Successfully');
-
-          this.resetForm();
-
           this.loadMappings();
+
+          this.closeModal();
 
         },
 
@@ -220,15 +260,35 @@ export class CourseAssignmentMapComponent implements OnInit {
 
       });
 
+    } else {
+
+      this.api.createcourseassignment(payload).subscribe({
+
+        next: () => {
+
+          this.loadMappings();
+
+          this.closeModal();
+
+        },
+
+        error: err => console.log(err)
+
+      });
+
+    }
+
   }
 
   //============================
   // EDIT
   //============================
 
-  editMapping(item: any) {
+  edit(item: any) {
 
-    this.isEditMode = true;
+    if (!this.auth.hasPermission('UPDATE_COURSE_ASSIGNMENT_MAP')) return;
+
+    this.editMode = true;
 
     this.selectedId = item.id;
 
@@ -246,43 +306,23 @@ export class CourseAssignmentMapComponent implements OnInit {
 
     });
 
+    this.showModal = true;
+
   }
 
   //============================
-  // UPDATE
+  // DELETE
   //============================
 
-  updateMapping() {
+  delete(id: number) {
 
-    if (!this.auth.hasPermission('UPDATE_COURSE_ASSIGNMENT_MAP')) {
+    if (!this.auth.hasPermission('DELETE_COURSE_ASSIGNMENT_MAP')) return;
 
-      alert('Permission Denied');
+    if (!confirm('Delete this mapping?')) return;
 
-      return;
-
-    }
-
-    if (this.courseAssignmentForm.invalid) {
-
-      this.courseAssignmentForm.markAllAsTouched();
-
-      return;
-
-    }
-
-    this.api.updatecourseassignment(
-
-      this.selectedId,
-
-      this.courseAssignmentForm.value
-
-    ).subscribe({
+    this.api.deletecourseassignment(id).subscribe({
 
       next: () => {
-
-        alert('Updated Successfully');
-
-        this.resetForm();
 
         this.loadMappings();
 
@@ -295,52 +335,16 @@ export class CourseAssignmentMapComponent implements OnInit {
   }
 
   //============================
-  // DELETE
-  //============================
-
-  deleteMapping(id: number) {
-
-    if (!this.auth.hasPermission('DELETE_COURSE_ASSIGNMENT_MAP')) {
-
-      alert('Permission Denied');
-
-      return;
-
-    }
-
-    if (!confirm('Delete this Mapping?')) {
-
-      return;
-
-    }
-
-    this.api.deletecourseassignment(id)
-
-      .subscribe({
-
-        next: () => {
-
-          alert('Deleted Successfully');
-
-          this.loadMappings();
-
-        },
-
-        error: err => console.log(err)
-
-      });
-
-  }
-
-  //============================
   // RESET
   //============================
 
   resetForm() {
 
-    this.isEditMode = false;
+    this.submitted = false;
 
-    this.selectedId = 0;
+    this.editMode = false;
+
+    this.selectedId = null;
 
     this.courseAssignmentForm.reset({
 
@@ -355,6 +359,24 @@ export class CourseAssignmentMapComponent implements OnInit {
       isActive: true
 
     });
+
+  }
+
+  //==========================
+  // SEARCH
+  //==========================
+
+  search(): void {
+
+    const value = this.searchText.toLowerCase();
+
+    this.filteredMappings = this.mappings.filter(x =>
+
+      x.courseName.toLowerCase().includes(value) ||
+
+      x.assignmentTitle.toLowerCase().includes(value)
+
+    );
 
   }
 

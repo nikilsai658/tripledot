@@ -89,6 +89,7 @@
     @apply w-full
            flex items-center justify-between
            bg-transparent
+           text-white
            cursor-pointer
            hover:text-gray-200
            transition-colors;
@@ -138,7 +139,7 @@
            rounded-lg
            border border-gray-700
            bg-[#1E1E1E]
-           text-gray-200
+           text-white
            text-sm
            p-2
            resize-none

@@ -1,26 +1,130 @@
-
 <div class="domain-page">
 
-  <!-- =====================================================
-       DOMAIN COUNT
-  ====================================================== -->
-  <div class="domain-toolbar">
+  <!-- =========================================================
+       PAGE HEADER
+  ========================================================== -->
 
-    <div class="toolbar-title">
-      <span class="page-label">LEARNING PORTAL</span>
+  <div class="domain-container">
 
-      <h1>
-        My Domains
-      </h1>
+    <div class="domain-toolbar">
 
-      <p>
-        Explore your assigned learning domains and continue your learning journey.
-      </p>
+      <!-- TITLE -->
+
+      <div class="toolbar-title">
+
+        <span class="page-label">
+          LEARNING PORTAL
+        </span>
+
+        <h1>
+          My Domains
+        </h1>
+
+        <p>
+          Explore your assigned learning domains and continue your
+          learning journey.
+        </p>
+
+      </div>
+
+
+      <!-- =======================================================
+           DOMAIN COUNT
+      ======================================================== -->
+
+      <div class="domain-count">
+
+        <div class="count-icon">
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor">
+
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v11a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 014 17.5v-11z" />
+
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M8 8h8M8 12h8M8 16h4" />
+
+          </svg>
+
+        </div>
+
+        <div class="count-content">
+
+          <span>
+            AVAILABLE
+          </span>
+
+          <div class="count-number">
+
+            <strong>
+              {{ domain.length }}
+            </strong>
+
+            <small>
+              Domains
+            </small>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <div class="domain-count">
 
-      <div class="count-icon">
+
+    <!-- =========================================================
+         LOADING
+    ========================================================== -->
+
+    <section
+      *ngIf="loading"
+      class="domain-grid">
+
+      <article
+        *ngFor="let x of [1,2,3,4,5,6]"
+        class="skeleton-card">
+
+        <div class="skeleton-content">
+
+          <div class="skeleton-circle"></div>
+
+          <div class="skeleton-title"></div>
+
+          <div class="skeleton-description"></div>
+
+          <div class="skeleton-info"></div>
+
+          <div class="skeleton-button"></div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+
+    <!-- =========================================================
+         EMPTY STATE
+    ========================================================== -->
+
+    <section
+      *ngIf="!loading && domain.length === 0"
+      class="empty-state">
+
+      <div class="empty-icon">
+
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -29,175 +133,188 @@
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="1.8"
+            stroke-width="1.7"
             d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v11a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 014 17.5v-11z" />
 
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="1.8"
-            d="M8 8h8M8 12h8M8 16h4" />
+            stroke-width="1.7"
+            d="M8 9h8M8 13h5" />
 
         </svg>
-      </div>
-
-      <div class="count-content">
-        <span>Available</span>
-
-        <div class="count-number">
-          <strong>{{ domain.length }}</strong>
-          <small>Domains</small>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =====================================================
-       LOADING SKELETON
-  ====================================================== -->
-  <section
-    *ngIf="loading"
-    class="domain-grid">
-
-    <article
-      *ngFor="let x of [1,2,3,4,5,6]"
-      class="domain-card skeleton-card">
-
-      <div class="skeleton-top"></div>
-
-      <div class="skeleton-body">
-
-        <div class="skeleton-line skeleton-title"></div>
-
-        <div class="skeleton-line"></div>
-
-        <div class="skeleton-line skeleton-short"></div>
-
-        <div class="skeleton-footer"></div>
 
       </div>
 
-    </article>
+      <h3>
+        No Domains Available
+      </h3>
 
-  </section>
+      <p>
+        Your assigned learning domains will appear here.
+      </p>
 
-
-  <!-- =====================================================
-       EMPTY STATE
-  ====================================================== -->
-  <section
-    *ngIf="!loading && domain.length === 0"
-    class="empty-state">
-
-    <div class="empty-icon">
-
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor">
-
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="1.7"
-          d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v11a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 014 17.5v-11z" />
-
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="1.7"
-          d="M8 9h8M8 13h5" />
-
-      </svg>
-
-    </div>
-
-    <h3>
-      No Domains Available
-    </h3>
-
-    <p>
-      Your assigned learning domains will appear here.
-    </p>
-
-  </section>
+    </section>
 
 
-  <!-- =====================================================
-       DOMAIN CARDS
-  ====================================================== -->
-  <section
-    *ngIf="!loading && domain.length > 0"
-    class="domain-grid">
 
-    <article
-      *ngFor="let item of domain"
-      class="domain-card">
+    <!-- =========================================================
+         DOMAIN CARDS
+    ========================================================== -->
 
-      <!-- =================================================
-           CARD CONTENT
-      ================================================== -->
-      <div class="card-content">
-
-        <span class="domain-label">
-          LEARNING DOMAIN
-        </span>
-
-        <h2>
-          {{ item.domainName }}
-        </h2>
-
-        <p>
-          {{
-            item.description ||
-            'Start learning this domain and improve your technical skills.'
-          }}
-        </p>
+    <section
+      *ngIf="!loading && domain.length > 0"
+      class="domain-grid">
 
 
-        <!-- =================================================
-             CARD FOOTER
-        ================================================== -->
-        <div class="card-footer">
+      <!-- =======================================================
+           DOMAIN CARD
+      ======================================================== -->
 
-          <div class="domain-info">
+      <article
+        *ngFor="let item of domain"
+        class="domain-card">
+
+
+        <!-- DECORATIVE GLOW -->
+
+        <div class="card-glow-top"></div>
+
+        <div class="card-glow-bottom"></div>
+
+
+        <!-- =====================================================
+             CARD INNER
+        ====================================================== -->
+
+        <div class="card-inner">
+
+
+          <!-- ===================================================
+               ICON
+          ==================================================== -->
+
+          <div class="domain-icon">
 
             <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor">
+              viewBox="0 0 48 48"
+              fill="none">
 
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.8"
-                d="M12 6v6l4 2" />
+                d="M24 5
+                   L38 10
+                   V21
+                   C38 30 32 37 24 42
+                   C16 37 10 30 10 21
+                   V10
+                   L24 5Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linejoin="round" />
+
+              <rect
+                x="18"
+                y="21"
+                width="12"
+                height="10"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="2" />
+
+              <path
+                d="M21 21V18
+                   C21 14.7 27 14.7 27 18V21"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round" />
 
               <circle
-                cx="12"
-                cy="12"
-                r="9"
-                stroke-width="1.8" />
+                cx="24"
+                cy="25.5"
+                r="1.2"
+                fill="currentColor" />
+
+              <path
+                d="M24 26.7V28.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round" />
 
             </svg>
-
-            <span>
-              Continue Learning
-            </span>
 
           </div>
 
 
+
+          <!-- ===================================================
+               LABEL
+          ==================================================== -->
+
+          <span class="domain-label">
+            LEARNING DOMAIN
+          </span>
+
+
+
+          <!-- ===================================================
+               DOMAIN NAME
+               IMPORTANT: item.domainName
+          ==================================================== -->
+
+          <h2 class="domain-name">
+
+            {{ item.domainName }}
+
+          </h2>
+
+
+
+          <!-- ===================================================
+               DESCRIPTION
+               IMPORTANT: item.description
+          ==================================================== -->
+
+          <p class="domain-description">
+
+            {{ item.description }}
+
+          </p>
+
+
+
+          <!-- ===================================================
+               INFO
+          ==================================================== -->
+
+          <div class="domain-info">
+
+            <div>
+              Courses & Learning Materials
+            </div>
+
+            <div>
+              Assignments & Assessments
+            </div>
+
+            <div>
+              Track Your Progress
+            </div>
+
+          </div>
+
+
+
+          <!-- ===================================================
+               VIEW BUTTON
+          ==================================================== -->
+
           <button
             type="button"
-            class="view-button"
-            (click)="view(item.domainId)">
+            (click)="view(item.domainId)"
+            class="view-button">
 
             <span>
-              View
+              VIEW
             </span>
 
             <svg
@@ -215,13 +332,13 @@
 
           </button>
 
+
         </div>
 
-      </div>
+      </article>
 
-    </article>
+    </section>
 
-  </section>
+  </div>
 
 </div>
-

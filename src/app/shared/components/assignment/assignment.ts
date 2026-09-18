@@ -47,6 +47,8 @@ export class AssignmentComponent implements OnInit {
 
   selectedId = 0;
 
+  showModal = false;
+
   constructor(
     private fb: FormBuilder,
     private api: AssignmentService,
@@ -136,6 +138,29 @@ export class AssignmentComponent implements OnInit {
     }
 
     this.testCases.removeAt(index);
+
+  }
+
+  //=========================
+  // MODAL CONTROLS
+  //=========================
+
+  openAddModal(): void {
+
+    if (!this.auth.hasPermission('CREATE_ASSIGNMENT')) {
+      alert('Permission Denied');
+      return;
+    }
+
+    this.resetForm();
+
+    this.showModal = true;
+
+  }
+
+  closeModal(): void {
+
+    this.resetForm();
 
   }
 
@@ -273,6 +298,8 @@ export class AssignmentComponent implements OnInit {
       }));
     });
 
+    this.showModal = true;
+
   }
 
   //=========================
@@ -350,6 +377,7 @@ export class AssignmentComponent implements OnInit {
 
   this.isEditMode = false;
   this.selectedId = 0;
+  this.showModal = false;
 
   this.assignmentForm.reset({
     title: '',

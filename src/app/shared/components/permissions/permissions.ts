@@ -44,6 +44,8 @@ export class Permission implements OnInit {
 
   selectedPermissionId = 0;
 
+  showModal = false;
+
   constructor(
     private api: PermissionService,
     private fb: FormBuilder,
@@ -119,6 +121,35 @@ export class Permission implements OnInit {
   }
 
   //============================
+  // Modal Controls
+  //============================
+
+  openAddModal(): void {
+
+    if (!this.auth.hasPermission('CREATE_PERMISSION')) {
+      alert('No Permission');
+      return;
+    }
+
+    this.isEditMode = false;
+
+    this.selectedPermissionId = 0;
+
+    this.permissionForm.reset();
+
+    this.showModal = true;
+
+  }
+
+  closeModal(): void {
+
+    this.showModal = false;
+
+    this.resetForm();
+
+  }
+
+  //============================
   // Create
   //============================
 
@@ -174,6 +205,8 @@ export class Permission implements OnInit {
       code: permission.code
 
     });
+
+    this.showModal = true;
 
   }
 
@@ -264,6 +297,8 @@ export class Permission implements OnInit {
     this.isEditMode = false;
 
     this.selectedPermissionId = 0;
+
+    this.showModal = false;
 
   }
 

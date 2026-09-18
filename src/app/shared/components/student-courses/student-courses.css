@@ -239,18 +239,18 @@
            flex
            h-[36px]
            w-full
+           bg-[#2F3E46]
            items-center
            justify-center
            gap-[8px]
            rounded-[7px]
            border border-[#2f3e46]
-           bg-white
            px-[15px]
            text-[11px]
            font-semibold
            uppercase
            tracking-[0.1px]
-           text-[#172832]
+           text-white
            transition-all
            duration-200
            cursor-pointer;

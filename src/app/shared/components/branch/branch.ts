@@ -46,6 +46,8 @@ export class Branch implements OnInit {
 
   selectedBranchId = 0;
 
+  showModal = false;
+
   constructor(
     private api: BranchService,
     private fb: FormBuilder,
@@ -141,6 +143,30 @@ export class Branch implements OnInit {
   }
 
   //=====================================
+  // Modal Controls
+  //=====================================
+
+  openAddModal(): void {
+
+    this.isEditMode = false;
+
+    this.selectedBranchId = 0;
+
+    this.branchForm.reset();
+
+    this.showModal = true;
+
+  }
+
+  closeModal(): void {
+
+    this.showModal = false;
+
+    this.resetForm();
+
+  }
+
+  //=====================================
   // Create Branch
   //=====================================
 
@@ -161,6 +187,8 @@ export class Branch implements OnInit {
         alert('Branch Created Successfully');
 
         this.branchForm.reset();
+
+        this.showModal = false;
 
         this.loadBranches();
 
@@ -196,6 +224,8 @@ export class Branch implements OnInit {
 
     });
 
+    this.showModal = true;
+
   }
 
   //=====================================
@@ -229,6 +259,8 @@ export class Branch implements OnInit {
         this.isEditMode = false;
 
         this.selectedBranchId = 0;
+
+        this.showModal = false;
 
         this.loadBranches();
 
@@ -287,6 +319,8 @@ export class Branch implements OnInit {
     this.isEditMode = false;
 
     this.selectedBranchId = 0;
+
+    this.showModal = false;
 
   }
 

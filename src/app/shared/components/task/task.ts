@@ -22,32 +22,34 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
-import { CourseService } from '../../../features/services/course/course-service';
+import { TaskService } from '../../../features/services/task/task-service';
 
 @Component({
-  selector: 'app-course',
+  selector: 'app-task',
   standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule
   ],
-  templateUrl: './course.html',
-  styleUrls: ['./course.css']
+  templateUrl: './task.html',
+  styleUrls: ['./task.css']
 })
-export class Course implements OnInit {
+export class Task implements OnInit {
 
-  courses: any[] = [];
+  tasks: any[] = [];
 
-  courseForm!: FormGroup;
+  taskForm!: FormGroup;
+
+  loading = false;
 
   isEditMode = false;
 
-  selectedCourseId = 0;
+  selectedTaskId = 0;
 
   showModal = false;
 
   constructor(
-    private api: CourseService,
+    private api: TaskService,
     private fb: FormBuilder,
     private cookie: CookieService,
     private router: Router,
@@ -58,11 +60,16 @@ export class Course implements OnInit {
 
   ngOnInit(): void {
 
-    this.courseForm = this.fb.group({
+    // Create Form
+    this.taskForm = this.fb.group({
 
-      name: ['', Validators.required],
+      title: ['', Validators.required],
 
-      description: ['', Validators.required]
+      description: [''],
+
+      dueDate: ['', Validators.required],
+
+      status: ['Pending', Validators.required]
 
     });
 
@@ -73,45 +80,71 @@ export class Course implements OnInit {
     const token = this.cookie.get('token');
 
     if (!token) {
+
       this.router.navigate(['/auth/login']);
+
       return;
+
     }
 
-    if (this.auth.hasPermission('VIEW_COURSE')) {
-      this.loadCourses();
+    // Permission Based View
+    if (this.auth.hasPermission('VIEW_TASK')) {
+
+      this.loadTasks();
+
     }
 
   }
 
   //=====================================
-  // Load Courses
+  // Load Tasks
   //=====================================
 
-  loadCourses(): void {
+  loadTasks(): void {
 
-    this.api.getCourses().subscribe({
+    this.loading = true;
+
+    this.api.getTask().subscribe({
 
       next: (res: any) => {
 
+        this.loading = false;
+
         if (Array.isArray(res)) {
-          this.courses = res;
+
+          this.tasks = res;
+
         }
+
         else if (Array.isArray(res.data)) {
-          this.courses = res.data;
+
+          this.tasks = res.data;
+
         }
+
         else if (Array.isArray(res.result)) {
-          this.courses = res.result;
+
+          this.tasks = res.result;
+
         }
+
         else {
-          this.courses = [];
+
+          this.tasks = [];
+
         }
+
         this.cd.detectChanges();
+
       },
 
       error: (err) => {
 
+        this.loading = false;
+
         console.error(err);
-        this.courses = [];
+
+        this.tasks = [];
 
       }
 
@@ -125,16 +158,24 @@ export class Course implements OnInit {
 
   openAddModal(): void {
 
-    if (!this.auth.hasPermission('CREATE_COURSE')) {
-      alert('No Permission');
+    if (!this.auth.hasPermission('CREATE_TASK')) {
+
+      alert('You do not have permission to create tasks.');
+
       return;
+
     }
 
     this.isEditMode = false;
 
-    this.selectedCourseId = 0;
+    this.selectedTaskId = 0;
 
-    this.courseForm.reset();
+    this.taskForm.reset({
+      title: '',
+      description: '',
+      dueDate: '',
+      status: 'Pending'
+    });
 
     this.showModal = true;
 
@@ -142,40 +183,41 @@ export class Course implements OnInit {
 
   closeModal(): void {
 
-    this.showModal = false;
-
     this.resetForm();
 
   }
 
   //=====================================
-  // Create Course
+  // Create Task
   //=====================================
 
-  createCourse(): void {
+  createTask(): void {
 
-    if (!this.auth.hasPermission('CREATE_COURSE')) {
-      alert('No Permission');
-      return;
-    }
+    if (!this.auth.hasPermission('CREATE_TASK')) {
 
-    if (this.courseForm.invalid) {
-
-      this.courseForm.markAllAsTouched();
+      alert('You do not have permission to create tasks.');
 
       return;
 
     }
 
-    this.api.createCourse(this.courseForm.value).subscribe({
+    if (this.taskForm.invalid) {
+
+      this.taskForm.markAllAsTouched();
+
+      return;
+
+    }
+
+    this.api.postTask(this.taskForm.value).subscribe({
 
       next: () => {
 
-        alert('Course Created Successfully');
+        alert('Task Created Successfully');
 
         this.resetForm();
 
-        this.loadCourses();
+        this.loadTasks();
 
       },
 
@@ -190,25 +232,32 @@ export class Course implements OnInit {
   }
 
   //=====================================
-  // Edit Course
+  // Edit Task
   //=====================================
 
-  editCourse(course: any): void {
+  editTask(task: any): void {
 
-    if (!this.auth.hasPermission('UPDATE_COURSE')) {
-      alert('No Permission');
+    if (!this.auth.hasPermission('UPDATE_TASK')) {
+
+      alert('You do not have permission to edit.');
+
       return;
+
     }
 
     this.isEditMode = true;
 
-    this.selectedCourseId = course.id;
+    this.selectedTaskId = task.id;
 
-    this.courseForm.patchValue({
+    this.taskForm.patchValue({
 
-      name: course.name,
+      title: task.title,
 
-      description: course.description
+      description: task.description,
+
+      dueDate: task.dueDate ? String(task.dueDate).slice(0, 10) : '',
+
+      status: task.status || 'Pending'
 
     });
 
@@ -217,39 +266,42 @@ export class Course implements OnInit {
   }
 
   //=====================================
-  // Update Course
+  // Update Task
   //=====================================
 
-  updateCourse(): void {
+  updateTask(): void {
 
-    if (!this.auth.hasPermission('UPDATE_COURSE')) {
-      alert('No Permission');
-      return;
-    }
+    if (!this.auth.hasPermission('UPDATE_TASK')) {
 
-    if (this.courseForm.invalid) {
-
-      this.courseForm.markAllAsTouched();
+      alert('You do not have permission to update.');
 
       return;
 
     }
 
-    this.api.updateCourse(
+    if (this.taskForm.invalid) {
 
-      this.selectedCourseId,
+      this.taskForm.markAllAsTouched();
 
-      this.courseForm.value
+      return;
+
+    }
+
+    this.api.UpdateTask(
+
+      this.selectedTaskId,
+
+      this.taskForm.value
 
     ).subscribe({
 
       next: () => {
 
-        alert('Course Updated Successfully');
+        alert('Task Updated Successfully');
 
         this.resetForm();
 
-        this.loadCourses();
+        this.loadTasks();
 
       },
 
@@ -264,27 +316,32 @@ export class Course implements OnInit {
   }
 
   //=====================================
-  // Delete Course
+  // Delete Task
   //=====================================
 
-  deleteCourse(id: number): void {
+  deleteTask(id: number): void {
 
-    if (!this.auth.hasPermission('DELETE_COURSE')) {
-      alert('No Permission');
+    if (!this.auth.hasPermission('DELETE_TASK')) {
+
+      alert('You do not have permission to delete.');
+
       return;
+
     }
 
-    if (!confirm('Delete this Course?')) {
+    if (!confirm('Are you sure you want to delete this task?')) {
+
       return;
+
     }
 
-    this.api.deleteCourse(id).subscribe({
+    this.api.deleteTask(id).subscribe({
 
       next: () => {
 
-        alert('Course Deleted Successfully');
+        alert('Task Deleted Successfully');
 
-        this.loadCourses();
+        this.loadTasks();
 
       },
 
@@ -304,17 +361,16 @@ export class Course implements OnInit {
 
   resetForm(): void {
 
-    this.courseForm.reset({
-
-      name: '',
-
-      description: ''
-
+    this.taskForm.reset({
+      title: '',
+      description: '',
+      dueDate: '',
+      status: 'Pending'
     });
 
     this.isEditMode = false;
 
-    this.selectedCourseId = 0;
+    this.selectedTaskId = 0;
 
     this.showModal = false;
 

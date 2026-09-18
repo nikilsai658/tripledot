@@ -2,160 +2,53 @@
 
   <!-- Header -->
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-3xl font-bold text-[#2F3E46]">
-      Role Management
-    </h2>
-  </div>
 
-  <!-- Create / Update Form -->
-  <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-
-    <h3 class="text-xl font-semibold mb-5">
-      {{ isEditMode ? 'Update Role' : 'Create Role' }}
-    </h3>
-<!-- ================= FORM ================= -->
-
-<div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-
-  <div class="flex justify-between items-center mb-5">
-
-    <h3 class="text-2xl font-bold text-[#2F3E46]">
-
-      {{ isEditMode ? 'Update Role' : 'Create Role' }}
-
-    </h3>
-
-    <span
-      *ngIf="isEditMode"
-      class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-lg font-semibold">
-
-      Editing Role
-
-    </span>
-
-  </div>
-
-  <form
-    [formGroup]="roleForm"
-    (ngSubmit)="isEditMode ? updateRole() : createRole()">
-
-    <!-- Role Name -->
-    <div class="mb-5">
-
-      <label class="block mb-2 font-semibold">
-        Role Name
-      </label>
-
-      <input
-        type="text"
-        formControlName="name"
-        placeholder="Enter Role Name"
-        class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-[#24c0c5] outline-none">
-
-      <p
-        class="text-red-500 text-sm mt-1"
-        *ngIf="roleForm.get('name')?.invalid && roleForm.get('name')?.touched">
-
-        Role Name is required.
-
+    <div>
+      <h2 class="text-2xl font-bold" style="color:#2F3E46">
+        Role Management
+      </h2>
+      <p class="text-sm text-gray-500 mt-1">
+        Create, update and manage roles and their data access
       </p>
-
     </div>
 
-    <!-- Access -->
-
-    <h4 class="font-semibold text-lg mb-3">
-      Data Access
-    </h4>
-
-    <div class="grid md:grid-cols-2 gap-4 mb-6">
-
-      <label class="flex items-center gap-2">
-        <input type="checkbox" formControlName="requiresCollege">
-        College Required
-      </label>
-
-      <label class="flex items-center gap-2">
-        <input type="checkbox" formControlName="requiresDepartment">
-        Department Required
-      </label>
-
-      <label class="flex items-center gap-2">
-        <input type="checkbox" formControlName="requiresBranch">
-        Branch Required
-      </label>
-
-      <label class="flex items-center gap-2">
-        <input type="checkbox" formControlName="requiresYear">
-        Year Required
-      </label>
-
-    </div>
-
-    <!-- Buttons -->
-
-    <div class="flex gap-3">
-
-      <button
-        *ngIf="!isEditMode && auth.hasPermission('CREATE_ROLE')"
-        type="submit"
-        class="bg-[#24c0c5] hover:bg-[#1ea9ad] text-white px-6 py-2 rounded-lg">
-
-        Create Role
-
-      </button>
-
-      <button
-        *ngIf="isEditMode && auth.hasPermission('UPDATE_ROLE')"
-        type="submit"
-        class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg">
-
-        Save Changes
-
-      </button>
-
-      <button
-        type="button"
-        (click)="resetForm()"
-        class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
-
-        Cancel
-
-      </button>
-
-    </div>
-
-  </form>
-
-</div>
+    <button
+      *ngIf="auth.hasPermission('CREATE_ROLE')"
+      type="button"
+      (click)="openAddModal()"
+      style="background-color:#2F3E46"
+      class="flex items-center gap-2 hover:opacity-90 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-opacity">
+      <span class="text-lg leading-none">+</span>
+      Add Role
+    </button>
 
   </div>
 
   <!-- Role List -->
 
   <div
-    class="bg-white rounded-xl shadow-lg overflow-hidden"
+    class="bg-white rounded-xl shadow border border-gray-200 overflow-hidden"
     *ngIf="auth.hasPermission('VIEW_ROLE')">
 
     <div class="overflow-x-auto">
 
-      <table class="min-w-full">
+      <table class="min-w-full text-left">
 
-        <thead class="bg-[#2F3E46] text-white">
+        <thead style="background-color:#2F3E46" class="text-white">
 
           <tr>
 
-            <th class="p-4 text-left">Role</th>
+            <th class="p-3 text-sm font-semibold">Role</th>
 
-            <th class="p-4 text-center">College</th>
+            <th class="p-3 text-sm font-semibold text-center">College</th>
 
-            <th class="p-4 text-center">Department</th>
+            <th class="p-3 text-sm font-semibold text-center">Department</th>
 
-            <th class="p-4 text-center">Branch</th>
+            <th class="p-3 text-sm font-semibold text-center">Branch</th>
 
-            <th class="p-4 text-center">Year</th>
+            <th class="p-3 text-sm font-semibold text-center">Year</th>
 
-            <th class="p-4 text-center">Actions</th>
+            <th class="p-3 text-sm font-semibold text-center">Actions</th>
 
           </tr>
 
@@ -165,13 +58,13 @@
 
           <tr
             *ngFor="let role of roles"
-            class="border-b hover:bg-gray-50">
+            class="border-t border-gray-100 hover:bg-gray-50 transition-colors">
 
-            <td class="p-4 font-medium">
+            <td class="p-3 font-medium text-gray-800">
               {{ role.name }}
             </td>
 
-            <td class="text-center p-4">
+            <td class="text-center p-3">
 
               <span
                 [class]="role.requiresCollege ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
@@ -182,7 +75,7 @@
 
             </td>
 
-            <td class="text-center p-4">
+            <td class="text-center p-3">
 
               <span
                 [class]="role.requiresDepartment ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
@@ -193,7 +86,7 @@
 
             </td>
 
-            <td class="text-center p-4">
+            <td class="text-center p-3">
 
               <span
                 [class]="role.requiresBranch ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
@@ -204,7 +97,7 @@
 
             </td>
 
-            <td class="text-center p-4">
+            <td class="text-center p-3">
 
               <span
                 [class]="role.requiresYear ? 'text-green-600 font-bold' : 'text-red-600 font-bold'">
@@ -215,14 +108,14 @@
 
             </td>
 
-            <td class="p-4">
+            <td class="p-3">
 
               <div class="flex justify-center gap-2">
 
                 <button
                   *ngIf="auth.hasPermission('UPDATE_ROLE')"
                   (click)="editRole(role)"
-                  class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+                  class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors">
 
                   Edit
 
@@ -231,7 +124,7 @@
                 <button
                   *ngIf="auth.hasPermission('DELETE_ROLE')"
                   (click)="deleteRole(role.id)"
-                  class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                  class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors">
 
                   Delete
 
@@ -247,7 +140,7 @@
 
             <td
               colspan="6"
-              class="text-center py-6 text-gray-500">
+              class="p-6 text-center text-gray-400">
 
               No Roles Found
 
@@ -258,6 +151,121 @@
         </tbody>
 
       </table>
+
+    </div>
+
+  </div>
+
+  <!-- Add / Edit Role Dialog -->
+
+  <div
+    *ngIf="showModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+
+    <div class="bg-white w-full max-w-md rounded-xl shadow-2xl overflow-hidden animate-modal">
+
+      <!-- Dialog Header -->
+
+      <div class="flex items-center justify-between px-6 py-4" style="background-color:#2F3E46">
+        <h3 class="text-white text-lg font-semibold">
+          {{ isEditMode ? 'Edit Role' : 'Add Role' }}
+        </h3>
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="text-white/80 hover:text-white text-xl leading-none">
+          &times;
+        </button>
+      </div>
+
+      <!-- Dialog Body -->
+
+      <form [formGroup]="roleForm" class="px-6 py-6">
+
+        <div class="mb-5">
+
+          <label class="block mb-1.5 text-sm font-medium text-gray-700">
+            Role Name
+          </label>
+
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Enter Role Name"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+          <p
+            class="text-xs text-red-500 mt-1"
+            *ngIf="roleForm.get('name')?.invalid && roleForm.get('name')?.touched">
+
+            Role Name is required.
+
+          </p>
+
+        </div>
+
+        <div class="mb-2">
+
+          <h4 class="font-semibold text-sm text-gray-700 mb-3">
+            Data Access
+          </h4>
+
+          <div class="grid grid-cols-2 gap-3">
+
+            <label class="flex items-center gap-2 text-sm text-gray-700">
+              <input type="checkbox" formControlName="requiresCollege" class="accent-[#2F3E46]">
+              College Required
+            </label>
+
+            <label class="flex items-center gap-2 text-sm text-gray-700">
+              <input type="checkbox" formControlName="requiresDepartment" class="accent-[#2F3E46]">
+              Department Required
+            </label>
+
+            <label class="flex items-center gap-2 text-sm text-gray-700">
+              <input type="checkbox" formControlName="requiresBranch" class="accent-[#2F3E46]">
+              Branch Required
+            </label>
+
+            <label class="flex items-center gap-2 text-sm text-gray-700">
+              <input type="checkbox" formControlName="requiresYear" class="accent-[#2F3E46]">
+              Year Required
+            </label>
+
+          </div>
+
+        </div>
+
+      </form>
+
+      <!-- Dialog Footer -->
+
+      <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
+
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="px-5 py-2 rounded-lg font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 transition-colors">
+          Cancel
+        </button>
+
+        <button
+          *ngIf="!isEditMode"
+          type="button"
+          (click)="createRole()"
+          class="px-5 py-2 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
+          Save
+        </button>
+
+        <button
+          *ngIf="isEditMode"
+          type="button"
+          (click)="updateRole()"
+          class="px-5 py-2 rounded-lg font-medium text-white bg-amber-500 hover:bg-amber-600 transition-colors">
+          Update
+        </button>
+
+      </div>
 
     </div>
 

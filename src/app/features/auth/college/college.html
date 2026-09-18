@@ -1,19 +1,107 @@
-<div class="main-container">
-    <app-logo></app-logo>
-    <h1 class="companyname">Technex Cloud Networks</h1>
-    <span class="companyname">Pvt Ltd</span>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
-        <p-select
-            [options]="colleges"
-            formControlName="college"
-            optionLabel="name"
-            [filter]="true"
-            filterBy="name"
-            [showClear]="true"
-            placeholder="Select a Country"
-            class="country-select">
-        </p-select>
-        
-        <p-button label="Go" type="submit" styleClass="go-btn"></p-button>
-    </form>
+<div class="login-page">
+
+  <div class="login-card">
+
+    <!-- LEFT VISUAL SECTION -->
+    <div class="login-visual">
+
+      <div class="purple-orb orb-1"></div>
+      <div class="purple-orb orb-2"></div>
+      <div class="purple-orb orb-3"></div>
+
+      <div class="visual-overlay"></div>
+
+      <div class="brand">
+        <app-logo></app-logo>
+
+        <div class="brand-name">
+          <span>Tripledot Ai</span>
+          <span class="brand-highlight">Technologies</span>
+        </div>
+      </div>
+
+      <div class="visual-content">
+        <p class="small-text">GET STARTED</p>
+
+        <h2>
+          Select Your
+          <br />
+          College
+        </h2>
+
+        <p>
+          Choose your institution to
+          <br />
+          personalize your learning experience.
+        </p>
+      </div>
+
+      <div class="visual-dots">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT SECTION -->
+    <div class="login-form-section">
+
+      <!-- CONTENT -->
+      <div class="login-content">
+
+        <div class="mobile-logo">
+          <app-logo></app-logo>
+        </div>
+
+        <h1>Select College</h1>
+
+        <p class="subtitle">
+          Pick your college to continue
+        </p>
+
+
+        <form
+          class="form"
+          [formGroup]="form"
+          (ngSubmit)="onSubmit()">
+
+
+          <!-- COLLEGE SELECT -->
+          <div class="input-wrapper">
+
+            <span class="input-icon">
+              <i class="pi pi-building"></i>
+            </span>
+
+            <p-select
+              [options]="colleges"
+              formControlName="college"
+              optionLabel="name"
+              [filter]="true"
+              filterBy="name"
+              [showClear]="true"
+              placeholder="Select a college"
+              class="country-select">
+            </p-select>
+
+          </div>
+
+
+          <!-- GO BUTTON -->
+          <p-button
+            label="Go"
+            type="submit"
+            styleClass="login-button">
+          </p-button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
