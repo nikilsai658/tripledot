@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+.task-page {
+  @apply min-h-screen px-10 py-10;
+  background-color: #f7f7f7;
+}
+
+.back-btn {
+  @apply mb-6 text-sm font-semibold cursor-pointer;
+  color: #2F3E46;
+}
+
+.detail-card {
+  @apply relative bg-white rounded-2xl p-8 max-w-3xl;
+  @apply border border-slate-200 shadow-sm;
+}
+
+.detail-card::before {
+  content: "";
+  @apply absolute left-0 right-0 top-0 h-1 rounded-t-2xl;
+  background: linear-gradient(90deg, #2F3E46, #24c0c5);
+}
+
+.detail-header {
+  @apply flex items-start justify-between gap-4 mb-6;
+}
+
+.detail-label {
+  @apply block text-xs font-semibold uppercase tracking-wide mb-1;
+  color: #64748b;
+}
+
+.page-title {
+  @apply text-2xl font-bold leading-tight;
+  color: #2F3E46;
+}
+
+.status-pill {
+  @apply text-xs font-semibold px-3 py-1 rounded-full;
+}
+
+.status-pill.is-pending {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.status-pill.is-done {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.question-box,
+.submission-box {
+  @apply rounded-xl p-5 mb-5 bg-slate-50 border border-slate-100;
+}
+
+.question-box p,
+.submission-box p {
+  @apply text-sm leading-relaxed whitespace-pre-line;
+  color: #2F3E46;
+}
+
+.action-row {
+  @apply flex items-center gap-3 pt-2;
+}
+
+.download-btn,
+.upload-btn {
+  @apply px-6 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer transition-all duration-200;
+}
+
+.download-btn {
+  background-color: #2F3E46;
+}
+
+.upload-btn {
+  background-color: #24c0c5;
+}
+
+.download-btn:hover,
+.upload-btn:hover {
+  @apply opacity-90;
+}
+
+.upload-btn.disabled {
+  @apply opacity-60 cursor-not-allowed;
+}
+
+.empty-card {
+  @apply bg-white rounded-2xl shadow-sm p-8 text-center;
+  color: #64748b;
+}

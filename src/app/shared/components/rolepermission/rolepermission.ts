@@ -55,6 +55,7 @@ export class RolePermissionComponent implements OnInit {
   showModal = false;
 
   searchText = '';
+  selectedRole = '';
 
   //=====================================
   // PAGINATION
@@ -123,7 +124,13 @@ export class RolePermissionComponent implements OnInit {
 
       next: (res: any) => {
 
-        this.roles = res.data || [];
+        this.roles = Array.isArray(res)
+          ? res
+          : Array.isArray(res.data)
+            ? res.data
+            : Array.isArray(res.result)
+              ? res.result
+              : [];
 
         this.cd.detectChanges();
 
@@ -149,7 +156,13 @@ export class RolePermissionComponent implements OnInit {
 
       next: (res: any) => {
 
-        this.permissions = res.data || [];
+        this.permissions = Array.isArray(res)
+          ? res
+          : Array.isArray(res.data)
+            ? res.data
+            : Array.isArray(res.result)
+              ? res.result
+              : [];
 
         this.cd.detectChanges();
 
@@ -180,9 +193,32 @@ export class RolePermissionComponent implements OnInit {
 
         next: (res: any) => {
 
-          this.mappings = res.data || [];
+          const data = res?.data ?? res ?? {};
 
-          this.filteredMappings = [...this.mappings];
+          const adminMappings = Array.isArray(data.adminRolePermissions)
+            ? data.adminRolePermissions.map((m: any) => ({ ...m, scope: 'Admin' }))
+            : [];
+
+          const collegeMappings = Array.isArray(data.collegeRolePermissions)
+            ? data.collegeRolePermissions.map((m: any) => ({ ...m, scope: 'College' }))
+            : [];
+
+          const combined = adminMappings.length || collegeMappings.length
+            ? [...adminMappings, ...collegeMappings]
+            : Array.isArray(data)
+              ? data
+              : Array.isArray(data.result)
+                ? data.result
+                : [];
+
+          this.mappings = combined.map((m: any) => ({
+            ...m,
+            permissionCode: m.permissionCode
+              ?? this.permissions.find(p => p.id === m.permissionId)?.code
+              ?? m.permissionId
+          }));
+
+          this.applyFilters();
 
           this.currentPage = 1;
 
@@ -291,17 +327,41 @@ export class RolePermissionComponent implements OnInit {
 
   search(): void {
 
+    this.applyFilters();
+
+  }
+
+  filterByRole(): void {
+
+    this.applyFilters();
+
+  }
+
+  applyFilters(): void {
+
     const value = this.searchText.toLowerCase();
 
     this.filteredMappings = this.mappings.filter(x =>
 
-      x.roleName.toLowerCase().includes(value) ||
+      (!this.selectedRole || x.roleName === this.selectedRole) &&
 
-      x.permissionCode.toLowerCase().includes(value)
+      (
+        !value ||
+        (x.roleName ?? '').toLowerCase().includes(value) ||
+        String(x.permissionCode ?? '').toLowerCase().includes(value)
+      )
 
     );
 
     this.currentPage = 1;
+
+  }
+
+  get uniqueRoleNames(): string[] {
+
+    return Array.from(
+      new Set(this.mappings.map(x => x.roleName).filter(Boolean))
+    );
 
   }
 

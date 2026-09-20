@@ -1,18 +1,18 @@
 <div class="assignment-page">
 
   <!-- Header -->
-  <div class="page-header">
+  <div class="page-header" *ngIf="!loading">
 
     <div>
-      <h1 class="page-title">Assignments</h1>
+      <h1 class="page-title">{{ assignments.length==0 && tasks.length>0 ? 'Tasks' : 'Assignments' }}</h1>
       <p class="page-subtitle">
-        Complete assignments to unlock the next challenge.
+        {{ assignments.length==0 && tasks.length>0 ? 'Open a task to view its question and submit your work.' : 'Complete assignments to unlock the next challenge.' }}
       </p>
     </div>
 
     <div class="total-card">
-      <span>Total Assignments :</span>
-      <strong>{{ assignments.length }}</strong>
+      <span>{{ assignments.length==0 && tasks.length>0 ? 'Total Tasks :' : 'Total Assignments :' }}</span>
+      <strong>{{ assignments.length==0 && tasks.length>0 ? tasks.length : assignments.length }}</strong>
     </div>
 
   </div>
@@ -96,13 +96,52 @@
 
   </div>
 
+  <!-- Tasks (only when the course has no assignments) -->
+
+  <div class="task-grid" *ngIf="assignments.length==0 && tasks.length>0">
+
+    <div class="task-card" *ngFor="let task of tasks; let i=index">
+
+      <div class="task-top">
+
+        <span class="task-index">Task {{ i + 1 }}</span>
+
+        <span
+          class="task-status"
+          [ngClass]="{
+            'is-pending': (task.status || 'Pending') == 'Pending',
+            'is-done': (task.status || 'Pending') != 'Pending'
+          }">
+          {{ task.status || 'Pending' }}
+        </span>
+
+      </div>
+
+      <h2 class="task-title">{{ task.taskTitle }}</h2>
+
+      <p class="task-question" *ngIf="task.question">{{ task.question }}</p>
+
+      <div class="task-meta" *ngIf="task.hasSubmission">
+        <span class="task-file">&#128206; {{ task.fileName }}</span>
+      </div>
+
+      <div class="task-footer">
+        <button class="task-btn" (click)="openTask(task)">
+          {{ task.hasSubmission ? 'View Submission' : 'Open Task' }}
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
   <!-- Empty -->
 
   <div
     class="empty-card"
-    *ngIf="assignments.length==0">
+    *ngIf="!loading && assignments.length==0 && tasks.length==0">
 
-    No Assignments Available
+    No Assignments or Tasks Available
 
   </div>
 

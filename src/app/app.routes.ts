@@ -8,6 +8,7 @@ import { StudentDomain } from './shared/components/student-domain/student-domain
 import { StudentCourses } from './shared/components/student-courses/student-courses';
 import { StudentAssignments } from './shared/components/student-assignments/student-assignments';
 import { StudentAssignment } from './shared/components/student-assignment/student-assignment';
+import { StudentTask } from './shared/components/student-task/student-task';
 import { Department } from './shared/components/department/department';
 import { Branch } from './shared/components/branch/branch';
 import { DomainComponent } from './shared/components/domain/domain';
@@ -28,6 +29,7 @@ import { AllTicketsComponent } from './shared/components/alltickets/alltickets';
 import { SupportTicketDetailsComponent } from './shared/components/support-ticket-details/support-ticket-details';
 import { CollegeDepartmentComponent } from './shared/components/collegedepartment/collegedepartment';
 import { DepartmentBranchComponent } from './shared/components/departmentbranch/departmentbranch';
+import { CourseTask } from './shared/components/course-task/course-task';
 import { DomainCourseMapComponent } from './shared/components/domaincourse/domaincourse';
 import { CourseAssignmentMapComponent } from './shared/components/courseassignment/courseassignment';
 import { RolePermissionComponent } from './shared/components/rolepermission/rolepermission';
@@ -82,6 +84,10 @@ export const routes: Routes = [
       },
 
       {
+        path: 'student-task', component: StudentTask
+      },
+
+      {
         path: 'student-assignment', canActivate: [authGuard, assignmentGuard],  component: StudentAssignment
       },
       {
@@ -103,7 +109,7 @@ export const routes: Routes = [
         path:'assignment',component:AssignmentComponent, data: { permission: 'UPDATE_ASSIGNMENT' }
       },
       {
-        path:'task-management',component:Task, data: { permission: 'VIEW_TASK' }
+        path:'task',component:Task, data: { permission: 'VIEW_TASK' }
       },
       {
         path:'year',component:Year, data: { permission: 'VIEW_YEAR' }
@@ -149,6 +155,9 @@ export const routes: Routes = [
       },
       {
         path:'department-branch-mapping',component:DepartmentBranchComponent, data: { permission: 'VIEW_DEPARTMENT_BRANCH' }
+      },
+      {
+        path:'course-task-mapping',component:CourseTask, data: { permission: 'VIEW_COURSE_TASK_MAP' }
       },
       {
         path:'domain-course-mapping',component:DomainCourseMapComponent, data: { permission: 'VIEW_DOMAIN_COURSE_MAP' }

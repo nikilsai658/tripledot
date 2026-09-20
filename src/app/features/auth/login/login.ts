@@ -24,6 +24,8 @@ export class Login implements OnInit{
   collegecode:any;
   errorMessage = '';
   loading = false;
+  showSuggestions = false;
+  recentUsers: string[] = [];
    constructor(private fb: FormBuilder, private router:Router,private cookie:CookieService,private auth:AuthServices,private userStore:UserStore,private cd: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object){
     this.Form=this.fb.group({
       userNameOrEmail: ['',Validators.required],
@@ -39,6 +41,8 @@ export class Login implements OnInit{
       if (this.collegecode) {
         this.Form.patchValue({ collegeCode: this.collegecode });
       }
+
+      this.recentUsers = this.readRecentUsers();
     }
   }
      
@@ -52,6 +56,7 @@ export class Login implements OnInit{
       this.auth.login(this.Form.value).subscribe({
         next:(res :any)=>{
           this.loading = false;
+          this.rememberUser(this.Form.value.userNameOrEmail);
 
           const token=res.data.accessToken;
           const refresh=res.data.refreshToken;
@@ -77,6 +82,44 @@ export class Login implements OnInit{
         }
       })
     }
+   }
+
+   get filteredUsers(): string[] {
+    const typed = (this.Form.value.userNameOrEmail || '').trim().toLowerCase();
+
+    return this.recentUsers.filter(u => u.toLowerCase().includes(typed) && u.toLowerCase() !== typed);
+   }
+
+   selectUser(user: string) {
+    this.Form.patchValue({ userNameOrEmail: user });
+    this.showSuggestions = false;
+   }
+
+   removeUser(user: string) {
+    this.recentUsers = this.recentUsers.filter(u => u !== user);
+    this.saveRecentUsers();
+   }
+
+   private rememberUser(user: string) {
+    const name = (user || '').trim();
+
+    if (!name) return;
+
+    this.recentUsers = [name, ...this.recentUsers.filter(u => u !== name)].slice(0, 5);
+    this.saveRecentUsers();
+   }
+
+   private readRecentUsers(): string[] {
+    try {
+      const list = JSON.parse(localStorage.getItem('recentUsers') || '[]');
+      return Array.isArray(list) ? list.filter(u => typeof u === 'string') : [];
+    } catch {
+      return [];
+    }
+   }
+
+   private saveRecentUsers() {
+    localStorage.setItem('recentUsers', JSON.stringify(this.recentUsers));
    }
 
    private extractErrorMessage(err: any): string {

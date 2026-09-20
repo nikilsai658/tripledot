@@ -81,9 +81,12 @@
                 pInputText
                 formControlName="userNameOrEmail"
                 id="username"
-                name="email"
-                autocomplete="username"
+                name="username"
+                autocomplete="off"
                 class="custom-input"
+                (focus)="showSuggestions = true"
+                (blur)="showSuggestions = false"
+                (keydown.escape)="showSuggestions = false"
               />
 
               <label for="username">
@@ -91,6 +94,32 @@
               </label>
 
             </p-floatlabel>
+
+            <!-- RECENT USERNAMES -->
+            <ul
+              class="suggestions"
+              *ngIf="showSuggestions && filteredUsers.length">
+
+              <li
+                *ngFor="let user of filteredUsers"
+                class="suggestion-item"
+                (mousedown)="$event.preventDefault(); selectUser(user)">
+
+                <i class="pi pi-user"></i>
+
+                <span class="suggestion-text">{{ user }}</span>
+
+                <button
+                  type="button"
+                  class="suggestion-remove"
+                  aria-label="Remove suggestion"
+                  (mousedown)="$event.preventDefault(); $event.stopPropagation(); removeUser(user)">
+                  <i class="pi pi-times"></i>
+                </button>
+
+              </li>
+
+            </ul>
 
           </div>
 

@@ -21,4 +21,25 @@ export class Superadmin {
   getsuperadmincollege_domain_student_assignment_code(collegeId:number,domainId:number,studentId:any,assignmentId:any){
     return this.api.GET(`SuperAdmin/college/${collegeId}/domain/${domainId}/student/${studentId}/assignment/${assignmentId}/code`)
   }
+  collegelicense(collegeId:number,data:any){
+    return this.api.POST(`SuperAdmin/college/${collegeId}/license`,data);
+  }
+  collegelock(collegeId:number,data:any){
+    return this.api.POST(`SuperAdmin/college/${collegeId}/lock`,data);
+  }
+  collegeunlock(collegeId:number,data:any){
+    return this.api.POST(`SuperAdmin/college/${collegeId}/unlock`,data);
+  }
+  studentlock(studentId:any,data:any){
+    return this.api.POST(`SuperAdmin/student/${studentId}/lock`,data);
+  }
+  studentunlock(studentId:any,data:any){
+    return this.api.POST(`SuperAdmin/student/${studentId}/unlock`,data);
+  }
+  student1ocked(){
+    return this.api.GET(`SuperAdmin/students/locked`);
+  }
+  collegelocked(){
+    return this.api.GET(`SuperAdmin/colleges/locked`);
+  }
 }

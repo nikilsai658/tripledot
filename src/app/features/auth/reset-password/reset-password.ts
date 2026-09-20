@@ -20,6 +20,7 @@ export class ResetPassword implements OnInit {
   Form !: FormGroup;
   collegecode:any;
   message = '';
+  loading = false;
   messageType: 'success' | 'error' = 'error';
   constructor(private router:Router,private auth:AuthServices , private fb:FormBuilder, private route:ActivatedRoute,private cd: ChangeDetectorRef,@Inject(PLATFORM_ID) private platformId: Object){
     this.Form=this.fb.group({
@@ -55,8 +56,12 @@ export class ResetPassword implements OnInit {
       userId: this.userId,
       token: this.token
     };
+    this.loading = true;
+    this.cd.markForCheck();
+
     this.auth.resetpassword(body).subscribe({
       next:()=>{
+        this.loading = false;
         this.messageType = 'success';
         this.message = 'Password changed successfully';
         this.cd.markForCheck();
@@ -65,6 +70,7 @@ export class ResetPassword implements OnInit {
       },error:(err :any)=>{
         console.log(err);
 
+        this.loading = false;
         this.messageType = 'error';
         this.message = 'Failed to reset password. Please try again.';
         this.cd.markForCheck();

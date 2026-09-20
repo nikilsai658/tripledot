@@ -95,6 +95,16 @@ GET(url: string, params?: any) {
     catchError((err) => this.handleError(err))
   );
 }
+  GETBlob(url: string) {
+    return this.http.get(`http://localhost:5000/api/${url}`, {
+      headers: this.getHeaders(),
+      responseType: 'blob',
+      observe: 'response'
+    }).pipe(
+      catchError((err) => this.handleError(err))
+    );
+  }
+
   PUT(url: string, payload: any) {
     return this.http.put(`http://localhost:5000/api/${url}`,payload,{  headers: this.getHeaders()  }).pipe(
       catchError((err) => this.handleError(err))

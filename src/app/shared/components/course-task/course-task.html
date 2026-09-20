@@ -1,4 +1,4 @@
-<div *ngIf="auth.hasPermission('VIEW_TASK'); else noPermission"
+<div *ngIf="auth.hasPermission('VIEW_COURSE_TASK_MAP'); else noPermission"
     class="min-h-screen bg-gray-100 p-6">
 
     <!-- Header -->
@@ -6,38 +6,52 @@
 
         <div>
             <h1 class="text-3xl font-bold text-[#2F3E46]">
-                Task Management
+                Course Task Mapping
             </h1>
 
             <p class="text-gray-500 mt-1">
-                Create, Update and Manage Tasks
+                Map Tasks to Courses
             </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-4">
 
             <div class="bg-white rounded-xl shadow px-6 py-4">
                 <p class="text-sm text-gray-500">
-                    Total Tasks
+                    Total Mappings
                 </p>
 
                 <h2 class="text-3xl font-bold text-[#24c0c5]">
-                    {{ tasks?.length || 0 }}
+                    {{ mappings?.length || 0 }}
                 </h2>
 
             </div>
 
             <button
-                *ngIf="auth.hasPermission('CREATE_TASK')"
+                *ngIf="auth.hasPermission('CREATE_COURSE_TASK_MAP')"
                 type="button"
                 (click)="openAddModal()"
                 style="background-color:#2F3E46"
                 class="flex items-center gap-2 hover:opacity-90 text-white px-5 py-3 rounded-xl font-semibold shadow-sm transition-opacity h-full">
                 <span class="text-lg leading-none">+</span>
-                Add Task
+                Add Mapping
             </button>
 
         </div>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="mb-5">
+
+        <input
+            type="text"
+            [(ngModel)]="searchText"
+            (keyup)="search()"
+            [ngModelOptions]="{standalone:true}"
+            placeholder="Search by course or task..."
+            class="w-full md:w-96 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
 
     </div>
 
@@ -48,7 +62,7 @@
         <div class="bg-[#2F3E46] text-white px-6 py-4">
 
             <h2 class="text-xl font-bold">
-                Tasks List
+                Mappings List
             </h2>
 
         </div>
@@ -63,14 +77,12 @@
 
                         <th class="px-5 py-4 text-left">#</th>
 
-                        <th class="px-5 py-4 text-left">Title</th>
+                        <th class="px-5 py-4 text-left">Course</th>
 
-                        <th class="px-5 py-4 text-left">Question</th>
-
-                        <th class="px-5 py-4 text-left">Status</th>
+                        <th class="px-5 py-4 text-left">Task</th>
 
                         <th
-                            *ngIf="auth.hasPermission('UPDATE_TASK') || auth.hasPermission('DELETE_TASK')"
+                            *ngIf="auth.hasPermission('UPDATE_COURSE_TASK_MAP') || auth.hasPermission('DELETE_COURSE_TASK_MAP')"
                             class="px-5 py-4 text-center">
 
                             Actions
@@ -82,8 +94,9 @@
                 </thead>
 
                 <tbody>
+
                     <tr
-                        *ngFor="let task of tasks; let i = index"
+                        *ngFor="let item of filteredMappings; let i = index"
                         class="border-b hover:bg-gray-50">
 
                         <!-- Serial Number -->
@@ -91,37 +104,28 @@
                             {{ i + 1 }}
                         </td>
 
-                        <!-- Title -->
+                        <!-- Course -->
                         <td class="px-5 py-4 font-semibold">
-                            {{ task.title }}
+                            {{ item.courseName }}
                         </td>
 
-                        <!-- Question -->
+                        <!-- Task -->
                         <td class="px-5 py-4">
-                            {{ task.question }}
-                        </td>
-
-                        <!-- Status -->
-                        <td class="px-5 py-4">
-                            <span
-                                class="px-3 py-1 rounded-full text-xs font-semibold"
-                                [ngClass]="task.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-200 text-gray-600'">
-                                {{ task.isActive ? 'Active' : 'Inactive' }}
-                            </span>
+                            {{ item.taskTitle }}
                         </td>
 
                         <!-- Actions -->
                         <td
-                            *ngIf="auth.hasPermission('UPDATE_TASK') || auth.hasPermission('DELETE_TASK')"
+                            *ngIf="auth.hasPermission('UPDATE_COURSE_TASK_MAP') || auth.hasPermission('DELETE_COURSE_TASK_MAP')"
                             class="px-5 py-4">
 
                             <div class="flex justify-center gap-3">
 
                                 <!-- Edit -->
                                 <button
-                                    *ngIf="auth.hasPermission('UPDATE_TASK')"
+                                    *ngIf="auth.hasPermission('UPDATE_COURSE_TASK_MAP')"
                                     type="button"
-                                    (click)="editTask(task)"
+                                    (click)="edit(item)"
                                     class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition">
 
                                     Edit
@@ -130,9 +134,9 @@
 
                                 <!-- Delete -->
                                 <button
-                                    *ngIf="auth.hasPermission('DELETE_TASK')"
+                                    *ngIf="auth.hasPermission('DELETE_COURSE_TASK_MAP')"
                                     type="button"
-                                    (click)="deleteTask(task.id ?? task.taskId)"
+                                    (click)="delete(item.id)"
                                     class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition">
 
                                     Delete
@@ -147,13 +151,13 @@
 
                     <!-- Empty State -->
 
-                    <tr *ngIf="tasks?.length === 0">
+                    <tr *ngIf="filteredMappings.length === 0 && !loading">
 
                         <td
-                            [attr.colspan]="(auth.hasPermission('UPDATE_TASK') || auth.hasPermission('DELETE_TASK')) ? 5 : 4"
+                            colspan="4"
                             class="text-center py-12 text-gray-500 font-medium">
 
-                            No Tasks Found
+                            No Mapping Found
 
                         </td>
 
@@ -179,7 +183,7 @@
 
             <div class="flex items-center justify-between px-6 py-4" style="background-color:#2F3E46">
                 <h3 class="text-white text-lg font-semibold">
-                    {{ isEditMode ? 'Edit Task' : 'Add Task' }}
+                    {{ editMode ? 'Edit Mapping' : 'Add Mapping' }}
                 </h3>
                 <button
                     type="button"
@@ -191,46 +195,56 @@
 
             <!-- Dialog Body -->
 
-            <form [formGroup]="taskForm" class="px-6 py-6" *ngIf="taskForm">
+            <form [formGroup]="courseTaskForm" class="px-6 py-6" *ngIf="courseTaskForm">
 
                 <div class="mb-4">
                     <label class="block mb-1.5 text-sm font-medium text-gray-700">
-                        Task Title
+                        Course
                     </label>
-                    <input
-                        type="text"
-                        formControlName="title"
-                        placeholder="e.g. Prepare monthly report"
+                    <select
+                        formControlName="courseName"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
-                    <p class="text-xs text-red-500 mt-1"
-                       *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
-                        Task title is required
-                    </p>
-                </div>
 
-                <div class="mb-4">
-                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
-                        Question
-                    </label>
-                    <textarea
-                        rows="4"
-                        formControlName="question"
-                        placeholder="Task question..."
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent"></textarea>
+                        <option value="">Select Course</option>
+
+                        <option
+                            *ngFor="let course of courses"
+                            [value]="course.name">
+
+                            {{ course.name }}
+
+                        </option>
+
+                    </select>
                     <p class="text-xs text-red-500 mt-1"
-                       *ngIf="taskForm.get('question')?.invalid && taskForm.get('question')?.touched">
-                        Question is required
+                       *ngIf="submitted && courseTaskForm.get('courseName')?.invalid">
+                        Course is required
                     </p>
                 </div>
 
                 <div class="mb-2">
-                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            formControlName="isActive"
-                            class="w-4 h-4 accent-[#2F3E46]">
-                        Active
+                    <label class="block mb-1.5 text-sm font-medium text-gray-700">
+                        Task
                     </label>
+                    <select
+                        formControlName="taskTitle"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+                        <option value="">Select Task</option>
+
+                        <option
+                            *ngFor="let task of tasks"
+                            [value]="task.title">
+
+                            {{ task.title }}
+
+                        </option>
+
+                    </select>
+                    <p class="text-xs text-red-500 mt-1"
+                       *ngIf="submitted && courseTaskForm.get('taskTitle')?.invalid">
+                        Task is required
+                    </p>
                 </div>
 
             </form>
@@ -247,17 +261,17 @@
                 </button>
 
                 <button
-                    *ngIf="!isEditMode"
+                    *ngIf="!editMode"
                     type="button"
-                    (click)="createTask()"
+                    (click)="save()"
                     class="px-5 py-2 rounded-lg font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors">
                     Save
                 </button>
 
                 <button
-                    *ngIf="isEditMode"
+                    *ngIf="editMode"
                     type="button"
-                    (click)="updateTask()"
+                    (click)="save()"
                     class="px-5 py-2 rounded-lg font-medium text-white bg-amber-500 hover:bg-amber-600 transition-colors">
                     Update
                 </button>
@@ -310,7 +324,7 @@
 
             <p class="text-gray-500 mb-8">
 
-                You don't have permission to access the Task Management module.
+                You don't have permission to access the Course Task Mapping module.
 
             </p>
 

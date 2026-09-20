@@ -153,7 +153,16 @@
             Domain Management
 
           </a>
+           <a
+            *ngIf="this.auth.hasPermission('VIEW_TASK')"
+            routerLink="/main/task"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
 
+            Task Management
+
+          </a>
           <a
             *ngIf="this.auth.hasPermission('VIEW_COURSE')"
             routerLink="/main/course"
@@ -285,6 +294,16 @@
             class="nav-sublink">
 
             Domain Course Mapping
+
+          </a>
+          <a
+           *ngIf="auth.hasPermission('VIEW_COURSE_TASK_MAP')"
+            routerLink="/main/course-task-mapping"
+            routerLinkActive="active-link"
+            (click)="toggleSidebar()"
+            class="nav-sublink">
+
+            Course Task Mapping
 
           </a>
           <a

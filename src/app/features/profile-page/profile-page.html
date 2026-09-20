@@ -1,173 +1,288 @@
-<div class="profile-page">
+<div class="login-page">
 
-  <!-- ================= PROFILE CARD ================= -->
-  <div class="profile-card">
+  <div class="login-card">
 
-    <!-- ================= HEADER ================= -->
-    <div class="profile-header">
+    <!-- LEFT VISUAL SECTION -->
+    <div class="login-visual">
 
-      <h1 class="profile-title">
-        Complete Your Profile Details
-      </h1>
+      <div class="purple-orb orb-1"></div>
+      <div class="purple-orb orb-2"></div>
+      <div class="purple-orb orb-3"></div>
 
-      <p class="profile-description">
-        Please confirm your personal and contact details to finish setting up
-        your account. These can also be modified later in settings.
-      </p>
+      <div class="visual-overlay"></div>
+
+      <div class="brand">
+        <app-logo></app-logo>
+
+        <div class="brand-name">
+          <span>Tripledot Ai</span>
+          <span class="brand-highlight">Technologies</span>
+        </div>
+      </div>
+
+      <div class="visual-content">
+        <p class="small-text">ALMOST THERE</p>
+
+        <h2>
+          Tripledot Ai
+          <br />
+          Technologies
+        </h2>
+
+        <p>
+          Secure. Smart. Connected.
+          <br />
+          Tell us a little about yourself.
+        </p>
+      </div>
+
+      <div class="visual-dots">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+      </div>
 
     </div>
 
 
-    <!-- ================= FORM ================= -->
-    <form
-      class="profile-form"
-      [formGroup]="Form"
-      (ngSubmit)="onSubmit()"
-    >
+    <!-- RIGHT FORM SECTION -->
+    <div class="login-form-section">
 
-      <!-- ================= FULL NAME ================= -->
-      <div class="form-field form-field-full">
+      <div class="login-content">
 
-        <label for="fullName" class="form-label">
-          FULL NAME <span class="required">*</span>
-        </label>
+        <div class="mobile-logo">
+          <app-logo></app-logo>
+        </div>
 
-        <input
-          pInputText
-          id="fullName"
-          type="text"
-          formControlName="fullName"
-          autocomplete="name"
-          placeholder="fullName"
-          class="profile-input"
-        />
+        <h1>Complete your profile</h1>
 
-      </div>
+        <p class="subtitle">
+          Confirm your personal and contact details to finish setting up
+          your account. You can change these later in settings.
+        </p>
 
 
-      <!-- ================= FIRST + LAST NAME ================= -->
-      <div class="form-row">
+        <form
+          class="form"
+          [formGroup]="Form"
+          (ngSubmit)="onSubmit()">
 
-        <div class="form-field">
+            <div class="input-wrapper">
 
-          <label for="firstName" class="form-label">
-            FIRST NAME <span class="required">*</span>
-          </label>
+              <span class="input-icon">
+                <i class="pi pi-user"></i>
+              </span>
 
-          <input
-            pInputText
-            id="firstName"
-            type="text"
-            formControlName="firstName"
-            autocomplete="given-name"
-            placeholder="firstName"
-            class="profile-input"
-          />
+              <p-floatlabel>
+
+                <input
+                  pInputText
+                  formControlName="fullName"
+                  id="fullName"
+                  type="text"
+                  autocomplete="name"
+                  class="custom-input"
+                />
+
+                <label for="fullName">
+                  Full Name
+                </label>
+
+              </p-floatlabel>
+
+            </div>
+
+          <div class="form-row">
+            <div class="input-wrapper">
+
+              <span class="input-icon">
+                <i class="pi pi-user"></i>
+              </span>
+
+              <p-floatlabel>
+
+                <input
+                  pInputText
+                  formControlName="firstName"
+                  id="firstName"
+                  type="text"
+                  autocomplete="given-name"
+                  class="custom-input"
+                />
+
+                <label for="firstName">
+                  First Name
+                </label>
+
+              </p-floatlabel>
+
+            </div>
+
+            <div class="input-wrapper">
+
+              <span class="input-icon">
+                <i class="pi pi-user"></i>
+              </span>
+
+              <p-floatlabel>
+
+                <input
+                  pInputText
+                  formControlName="lastName"
+                  id="lastName"
+                  type="text"
+                  autocomplete="family-name"
+                  class="custom-input"
+                />
+
+                <label for="lastName">
+                  Last Name
+                </label>
+
+              </p-floatlabel>
+
+            </div>
+
+          </div>
+
+            <div class="input-wrapper">
+
+              <span class="input-icon">
+                <i class="pi pi-user"></i>
+              </span>
+
+              <p-floatlabel>
+
+                <input
+                  pInputText
+                  formControlName="middleName"
+                  id="middleName"
+                  type="text"
+                  autocomplete="additional-name"
+                  class="custom-input"
+                />
+
+                <label for="middleName">
+                  Middle Name <span class="optional">(optional)</span>
+                </label>
+
+              </p-floatlabel>
+
+            </div>
+
+          <div class="form-row">
+            <div class="input-wrapper">
+
+              <span class="input-icon">
+                <i class="pi pi-phone"></i>
+              </span>
+
+              <p-floatlabel>
+
+                <input
+                  pInputText
+                  formControlName="phoneNumber"
+                  id="phoneNumber"
+                  type="tel"
+                  autocomplete="tel"
+                  class="custom-input"
+                />
+
+                <label for="phoneNumber">
+                  Phone Number
+                </label>
+
+              </p-floatlabel>
+
+            </div>
+
+            <div class="input-wrapper">
+
+              <span class="input-icon">
+                <i class="pi pi-mobile"></i>
+              </span>
+
+              <p-floatlabel>
+
+                <input
+                  pInputText
+                  formControlName="alternatePhoneNumber"
+                  id="alternatePhoneNumber"
+                  type="tel"
+                  autocomplete="tel"
+                  class="custom-input"
+                />
+
+                <label for="alternatePhoneNumber">
+                  Alternate Phone <span class="optional">(optional)</span>
+                </label>
+
+              </p-floatlabel>
+
+            </div>
+
+          </div>
+
+            <div class="input-wrapper">
+
+              <span class="input-icon">
+                <i class="pi pi-envelope"></i>
+              </span>
+
+              <p-floatlabel>
+
+                <input
+                  pInputText
+                  formControlName="alternateEmail"
+                  id="alternateEmail"
+                  type="email"
+                  autocomplete="email"
+                  class="custom-input"
+                />
+
+                <label for="alternateEmail">
+                  Alternate Email <span class="optional">(optional)</span>
+                </label>
+
+              </p-floatlabel>
+
+            </div>
+
+          <!-- SUBMIT BUTTON -->
+          <p-button
+            label="Save & Complete Setup"
+            type="submit"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [loading]="loading"
+            styleClass="submit-button">
+          </p-button>
+
+
+          <!-- ERROR -->
+          <p
+            class="form-error"
+            [class.visible]="errorMessage">
+            {{ errorMessage }}
+          </p>
+
+        </form>
+
+
+        <!-- FOOTER -->
+        <div class="social-section">
+
+          <span></span>
+
+          <p>Secure access to your learning portal</p>
+
+          <span></span>
 
         </div>
 
-
-        <div class="form-field">
-
-          <label for="lastName" class="form-label">
-            LAST NAME <span class="required">*</span>
-          </label>
-
-          <input
-            pInputText
-            id="lastName"
-            type="text"
-            formControlName="lastName"
-            autocomplete="family-name"
-            placeholder="lastName"
-            class="profile-input"
-          />
-
-        </div>
-
       </div>
 
-
-      <!-- ================= PHONE + ALTERNATE PHONE ================= -->
-      <div class="form-row">
-
-        <div class="form-field">
-
-          <label for="phoneNumber" class="form-label">
-            PHONE NUMBER <span class="required">*</span>
-          </label>
-
-          <input
-            pInputText
-            id="phoneNumber"
-            type="tel"
-            formControlName="phoneNumber"
-            autocomplete="tel"
-            placeholder="+91 98765 43210"
-            class="profile-input"
-          />
-
-        </div>
-
-
-        <div class="form-field">
-
-          <label for="alternatePhoneNumber" class="form-label">
-            ALTERNATE PHONE NUMBER
-            <span class="optional">(optional)</span>
-          </label>
-
-          <input
-            pInputText
-            id="alternatePhoneNumber"
-            type="tel"
-            formControlName="alternatePhoneNumber"
-            autocomplete="tel"
-            placeholder="+91 98765 43211"
-            class="profile-input"
-          />
-
-        </div>
-
-      </div>
-
-
-      <!-- ================= ALTERNATE EMAIL ================= -->
-      <div class="form-field form-field-full">
-
-        <label for="alternateEmail" class="form-label">
-          ALTERNATE EMAIL
-          <span class="optional">(optional)</span>
-        </label>
-
-        <input
-          pInputText
-          id="alternateEmail"
-          type="email"
-          formControlName="alternateEmail"
-          autocomplete="email"
-          placeholder="e.g. personal.backup@gmail.com"
-          class="profile-input"
-        />
-
-      </div>
-
-
-      <!-- ================= FOOTER ================= -->
-      <div class="form-footer">
-
-        <button
-          pButton
-          type="submit"
-          label="Save & Complete Setup"
-          icon="pi pi-arrow-right"
-          iconPos="right"
-          class="submit-button"
-        ></button>
-
-      </div>
-
-    </form>
+    </div>
 
   </div>
 

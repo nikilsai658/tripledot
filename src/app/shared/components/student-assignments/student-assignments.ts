@@ -15,6 +15,8 @@ export class StudentAssignments implements OnInit {
   domainId!: number;
   courseId!: number;
   assignments:any[]=[];
+  tasks:any[]=[];
+  loading = true;
   constructor(private route: ActivatedRoute,private api:Student,private cd:ChangeDetectorRef, private router:Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
@@ -29,12 +31,45 @@ export class StudentAssignments implements OnInit {
     next:(res:any)=>{
       console.log(res.data)
         this.assignments=res?.data??[];
+        if (this.assignments.length === 0) {
+          this.loadTasks();
+          return;
+        }
+        this.loading=false;
         this.cd.detectChanges();
     },error:(err:any)=>{
        this.assignments = [];
        console.log(err);
+       this.loadTasks();
     }
    })
+  }
+
+  openTask(task: any): void {
+    // The list item's id field name isn't fixed, so try the likely ones.
+    const taskId = task?.id ?? task?.studentTaskId ?? task?.taskId;
+    if (taskId == null) {
+      console.error('Task has no id field, item received:', task);
+      return;
+    }
+    this.router.navigate(['/main/student-task'], {
+      state: { taskId, domainId: this.domainId, courseId: this.courseId }
+    });
+  }
+
+  // Only reached when the course has no assignments; tasks are shown instead.
+  loadTasks():void{
+    this.api.getstudenttasks(this.domainId, this.courseId).subscribe({
+      next:(res:any)=>{
+        this.tasks=res?.data??[];
+        this.loading=false;
+        this.cd.detectChanges();
+      },error:()=>{
+        this.tasks=[];
+        this.loading=false;
+        this.cd.detectChanges();
+      }
+    })
   }
   startAssignment(id: number): void {
   const assignmentIds = this.assignments.map(a => a.assignmentId);

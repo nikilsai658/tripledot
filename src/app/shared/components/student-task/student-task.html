@@ -1,0 +1,45 @@
+<div class="task-page">
+
+  <button type="button" class="back-btn" (click)="back()">&larr; Back</button>
+
+  <div class="detail-card" *ngIf="task">
+
+    <div class="detail-header">
+      <div>
+        <span class="detail-label">Task</span>
+        <h1 class="page-title">{{ task.taskTitle }}</h1>
+      </div>
+
+      <span
+        class="status-pill"
+        [ngClass]="(task.status || 'Pending') == 'Pending' ? 'is-pending' : 'is-done'">
+        {{ task.status || 'Pending' }}
+      </span>
+    </div>
+
+    <div class="question-box">
+      <span class="detail-label">Question</span>
+      <p>{{ task.question }}</p>
+    </div>
+
+    <div class="submission-box" *ngIf="task.hasSubmission">
+      <span class="detail-label">Your Submission</span>
+      <p>&#128206; {{ task.fileName }}</p>
+    </div>
+
+    <div class="action-row">
+      <button type="button" class="download-btn" (click)="download()">Download</button>
+
+      <label class="upload-btn" [class.disabled]="uploading">
+        {{ uploading ? 'Uploading...' : (task.hasSubmission ? 'Re-upload' : 'Upload') }}
+        <input type="file" hidden [disabled]="uploading" (change)="onFileSelected($event)" />
+      </label>
+    </div>
+
+  </div>
+
+  <div class="empty-card" *ngIf="!loading && !task">
+    Task not found
+  </div>
+
+</div>

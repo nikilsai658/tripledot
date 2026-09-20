@@ -28,6 +28,7 @@ import { CollegeService } from '../../../features/services/college/college-servi
 import { DepartmentService } from '../../../features/services/department/department-service';
 import { BranchService } from '../../../features/services/branch/branch-service';
 import { RoleService } from '../../../features/services/role/role-service';
+import { Superadmin } from '../../../features/services/superadmin/superadmin';
 
 @Component({
   selector: 'app-user',
@@ -49,6 +50,7 @@ export class UserComponent implements OnInit {
     private departmentService: DepartmentService,
     private branchService: BranchService,
     private roleService: RoleService,
+    private superadmin: Superadmin,
     public auth: Auth,
     private router: Router,
     private cdr: ChangeDetectorRef,
@@ -314,26 +316,15 @@ export class UserComponent implements OnInit {
             res
           );
 
-          if (Array.isArray(res)) {
+          this.users = this.extractArray(res);
 
-            this.users = res;
+          this.users.forEach((user: any) => {
 
-          }
-          else if (Array.isArray(res?.data)) {
+            user.isLocked = false;
 
-            this.users = res.data;
+          });
 
-          }
-          else if (Array.isArray(res?.items)) {
-
-            this.users = res.items;
-
-          }
-          else {
-
-            this.users = [];
-
-          }
+          this.loadLockedStudents();
 
           this.totalRecords =
             this.users.length;
@@ -1417,6 +1408,205 @@ export class UserComponent implements OnInit {
           console.error(
             'Change Status Error:',
             err
+          );
+
+        }
+
+      });
+
+  }
+
+  // ==========================
+  // Load Locked Students
+  // ==========================
+  // Source of truth for lock state comes from
+  // SuperAdmin/students/locked — cross-reference
+  // its ids against the loaded users so locked
+  // students show "Unlock" and the rest show "Lock".
+  // ==========================
+
+  loadLockedStudents(): void {
+
+    this.superadmin.student1ocked().subscribe({
+
+      next: (res: any) => {
+
+        console.log('Locked Students Response:', res);
+
+        const lockedIds = this.extractIds(res, ['studentId', 'StudentId', 'id', 'Id', 'userId', 'UserId']);
+
+        this.users.forEach((user: any) => {
+
+          const userId = user?.id ?? user?.userId ?? user?.studentId;
+
+          user.isLocked = lockedIds.has(this.normalizeId(userId));
+
+        });
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Load Locked Students Error:', err);
+
+      }
+
+    });
+
+  }
+
+  // ==========================
+  // Response Helpers
+  // ==========================
+
+  extractArray(res: any): any[] {
+
+    if (Array.isArray(res)) {
+      return res;
+    }
+
+    if (Array.isArray(res?.data)) {
+      return res.data;
+    }
+
+    if (Array.isArray(res?.items)) {
+      return res.items;
+    }
+
+    if (Array.isArray(res?.result)) {
+      return res.result;
+    }
+
+    if (Array.isArray(res?.students)) {
+      return res.students;
+    }
+
+    if (Array.isArray(res?.lockedStudents)) {
+      return res.lockedStudents;
+    }
+
+    return [];
+
+  }
+
+  extractIds(res: any, keys: string[]): Set<string> {
+
+    const ids = this.extractArray(res)
+      .map((item: any) => {
+
+        if (item && typeof item === 'object') {
+
+          for (const key of keys) {
+
+            if (item[key] !== undefined && item[key] !== null) {
+              return item[key];
+            }
+
+          }
+
+          return undefined;
+
+        }
+
+        return item;
+
+      })
+      .filter((id: any) => id !== undefined && id !== null);
+
+    return new Set(ids.map((id: any) => this.normalizeId(id)));
+
+  }
+
+  // Ids may be numeric (colleges) or GUID strings (students) —
+  // compare as trimmed lowercase strings so both shapes match.
+  normalizeId(id: any): string {
+
+    return String(id).trim().toLowerCase();
+
+  }
+
+  // ==========================
+  // Lock / Unlock Student
+  // ==========================
+
+  lockUser(user: any): void {
+
+    if (
+      !confirm(
+        `Lock "${user?.fullName || user?.email}"? This user will lose access.`
+      )
+    ) {
+
+      return;
+
+    }
+
+    this.superadmin
+      .studentlock(user.id, {})
+      .subscribe({
+
+        next: () => {
+
+          user.isLocked = true;
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Lock User Error:',
+            err
+          );
+
+          alert(
+            err?.error?.message ||
+            'Unable to lock user.'
+          );
+
+        }
+
+      });
+
+  }
+
+  unlockUser(user: any): void {
+
+    if (
+      !confirm(
+        `Unlock "${user?.fullName || user?.email}"?`
+      )
+    ) {
+
+      return;
+
+    }
+
+    this.superadmin
+      .studentunlock(user.id, {})
+      .subscribe({
+
+        next: () => {
+
+          user.isLocked = false;
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Unlock User Error:',
+            err
+          );
+
+          alert(
+            err?.error?.message ||
+            'Unable to unlock user.'
           );
 
         }

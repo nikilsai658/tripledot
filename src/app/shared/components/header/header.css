@@ -1,4 +1,7 @@
 @import "tailwindcss";
+:host{
+  display: block;
+}
 .overlay{
   @apply fixed inset-0 bg-black/50 backdrop-blur-[2px] z-40 transition-opacity duration-300;
 }
@@ -92,11 +95,11 @@
 /* Header */
 
 .main-header{
-  @apply sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm;
+  @apply relative z-30 bg-white border-b border-gray-200 shadow-sm h-16 sm:h-[72px] lg:h-20;
 }
 
 .header-container{
-  @apply flex items-center justify-between px-3 sm:px-6 md:px-8 py-3;
+  @apply flex items-center justify-between px-3 sm:px-6 md:px-8 h-full;
 }
 
 .header-left{

@@ -41,9 +41,9 @@
 
     </div>
 
-    <!-- Search -->
+    <!-- Search & Filter -->
 
-    <div class="mb-5">
+    <div class="mb-5 flex flex-col md:flex-row gap-3">
 
         <input
             type="text"
@@ -52,6 +52,24 @@
             [ngModelOptions]="{standalone:true}"
             placeholder="Search by role or permission..."
             class="w-full md:w-96 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+        <select
+            [(ngModel)]="selectedRole"
+            (change)="filterByRole()"
+            [ngModelOptions]="{standalone:true}"
+            class="w-full md:w-64 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2F3E46] focus:border-transparent">
+
+            <option value="">All Roles</option>
+
+            <option
+                *ngFor="let roleName of uniqueRoleNames"
+                [value]="roleName">
+
+                {{ roleName }}
+
+            </option>
+
+        </select>
 
     </div>
 
@@ -80,6 +98,8 @@
                         <th class="px-5 py-4 text-left">Role</th>
 
                         <th class="px-5 py-4 text-left">Permission</th>
+
+                        <th class="px-5 py-4 text-center">Scope</th>
 
                         <th class="px-5 py-4 text-center">Delegate</th>
 
@@ -114,6 +134,17 @@
                         <!-- Permission -->
                         <td class="px-5 py-4">
                             {{ item.permissionCode }}
+                        </td>
+
+                        <!-- Scope -->
+                        <td class="px-5 py-4 text-center">
+                            <span
+                                class="px-3 py-1 rounded-full text-xs font-semibold"
+                                [ngClass]="item.scope === 'Admin' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'">
+
+                                {{ item.scope }}
+
+                            </span>
                         </td>
 
                         <!-- Delegate -->

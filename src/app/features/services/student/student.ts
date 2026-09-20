@@ -24,4 +24,19 @@ export class Student {
   submitCode(assignmentId:number, sourceCode:string, languageId:number, stdin:string|null){
     return this.api.POST('Student/submit', { assignmentId, sourceCode, languageId, stdin });
   }
+  getstudenttasks(domainId:number,courseId:number){
+    return this.api.GET(`Student/domain/${domainId}/course/${courseId}/tasks`);
+  }
+  gettaskbyId(taskId:number){
+    return this.api.GET(`Student/task/${taskId}`);
+  }
+  uploadtask(taskId:number,file:File){
+   const formData = new FormData();
+   formData.append('file', file);
+   return this.api.POST(`Student/task/${taskId}/upload`, formData);
+  }
+  downloadtask(taskId:number){
+    return this.api.GETBlob(`Student/task/${taskId}/download`);
+  }
 }
+

@@ -65,11 +65,9 @@ export class Task implements OnInit {
 
       title: ['', Validators.required],
 
-      description: [''],
+      question: ['', Validators.required],
 
-      dueDate: ['', Validators.required],
-
-      status: ['Pending', Validators.required]
+      isActive: [true]
 
     });
 
@@ -172,9 +170,8 @@ export class Task implements OnInit {
 
     this.taskForm.reset({
       title: '',
-      description: '',
-      dueDate: '',
-      status: 'Pending'
+      question: '',
+      isActive: true
     });
 
     this.showModal = true;
@@ -247,17 +244,15 @@ export class Task implements OnInit {
 
     this.isEditMode = true;
 
-    this.selectedTaskId = task.id;
+    this.selectedTaskId = task.id ?? task.taskId;
 
     this.taskForm.patchValue({
 
       title: task.title,
 
-      description: task.description,
+      question: task.question,
 
-      dueDate: task.dueDate ? String(task.dueDate).slice(0, 10) : '',
-
-      status: task.status || 'Pending'
+      isActive: task.isActive ?? true
 
     });
 
@@ -363,9 +358,8 @@ export class Task implements OnInit {
 
     this.taskForm.reset({
       title: '',
-      description: '',
-      dueDate: '',
-      status: 'Pending'
+      question: '',
+      isActive: true
     });
 
     this.isEditMode = false;

@@ -302,6 +302,8 @@
   color: white;
 
   position: relative;
+
+  color-scheme: dark;
 }
 
 
@@ -404,6 +406,118 @@
 
   box-shadow:
     0 4px 12px rgba(124, 58, 237, 0.15) !important;
+}
+
+
+/* =========================================================
+   AUTOFILL (keep filled fields dark)
+========================================================= */
+
+.input-wrapper input:-webkit-autofill,
+.input-wrapper input:-webkit-autofill:hover,
+.input-wrapper input:-webkit-autofill:focus,
+:host ::ng-deep .custom-password:-webkit-autofill,
+:host ::ng-deep .custom-password:-webkit-autofill:hover,
+:host ::ng-deep .custom-password:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff;
+
+  caret-color: #ffffff;
+
+  -webkit-box-shadow: 0 0 0 1000px #0b0812 inset !important;
+
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+
+/* =========================================================
+   SUGGESTIONS
+========================================================= */
+
+.suggestions {
+  position: absolute;
+
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+
+  z-index: 20;
+
+  margin: 0;
+  padding: 6px;
+
+  list-style: none;
+
+  background: #130f1d;
+
+  border: 1px solid #2a2140;
+  border-radius: 10px;
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.55),
+    0 0 20px rgba(124, 58, 237, 0.12);
+}
+
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+
+  border-radius: 6px;
+
+  color: #d4cfe0;
+
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition: 0.15s ease;
+}
+
+
+.suggestion-item:hover {
+  background: rgba(124, 58, 237, 0.18);
+
+  color: #ffffff;
+}
+
+
+.suggestion-item > .pi {
+  color: #7c3aed;
+
+  font-size: 13px;
+}
+
+
+.suggestion-text {
+  flex: 1;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.suggestion-remove {
+  padding: 4px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #625d69;
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+
+.suggestion-remove:hover {
+  color: #f87171;
 }
 
 

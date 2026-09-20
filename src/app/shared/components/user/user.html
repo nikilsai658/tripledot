@@ -982,6 +982,10 @@
             </th>
 
             <th>
+              License
+            </th>
+
+            <th>
               Actions
             </th>
 
@@ -1086,6 +1090,30 @@
             </td>
 
 
+            <!-- License (Lock / Unlock) -->
+            <td>
+
+              <button
+                type="button"
+                class="lock-btn"
+                *ngIf="!user.isLocked"
+                (click)="lockUser(user)"
+              >
+                Lock
+              </button>
+
+              <button
+                type="button"
+                class="unlock-btn"
+                *ngIf="user.isLocked"
+                (click)="unlockUser(user)"
+              >
+                Unlock
+              </button>
+
+            </td>
+
+
             <!-- Actions -->
             <td>
 
@@ -1121,7 +1149,7 @@
           >
 
             <td
-              colspan="10"
+              colspan="11"
               class="empty-state"
             >
               No users found.

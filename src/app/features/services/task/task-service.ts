@@ -6,18 +6,18 @@ import { Api } from '../../../core/api/api';
 export class TaskService {
   constructor(private api:Api){}
   getTask(){
-   return this.api.GET('/Task');
+   return this.api.GET('Task');
   }
   postTask(data:any){
-    return this.api.POST('/Task',data);
+    return this.api.POST('Task',data);
   }
   getbyIdTask(id:any){
-    return this.api.GET(`/Task/${id}`);
+    return this.api.GET(`Task/${id}`);
   }
   UpdateTask(id:any,data:any){
-    return this.api.PUT(`/Task/${id}`,data);
+    return this.api.PUT(`Task/${id}`,data);
   }
   deleteTask(id:any){
-    return this.api.DELETE(`/Task/${id}`);
+    return this.api.DELETE(`Task/${id}`);
   }
 }
