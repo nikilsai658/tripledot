@@ -27,6 +27,7 @@ import { Auth } from '../../../core/auth/auth';
 import { RoleService } from '../../../features/services/role/role-service';
 import { PermissionService } from '../../../features/services/permission/permission-service';
 import { RolepermissionService } from '../../../features/services/rolepermission/rolepermission-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-rolepermission',
@@ -41,6 +42,8 @@ import { RolepermissionService } from '../../../features/services/rolepermission
   styleUrls: ['./rolepermission.css']
 })
 export class RolePermissionComponent implements OnInit {
+
+  feedback = new Feedback();
 
   rolePermissionForm!: FormGroup;
 
@@ -270,8 +273,11 @@ export class RolePermissionComponent implements OnInit {
           this.loadMappings();
 
           this.closeModal();
+          this.feedback.ok('Mapping added successfully');
 
-        }
+        },
+
+        error: (err: any) => this.feedback.fail(err)
 
       });
 
@@ -294,8 +300,11 @@ export class RolePermissionComponent implements OnInit {
         next: () => {
 
           this.loadMappings();
+          this.feedback.ok('Mapping deleted successfully');
 
-        }
+        },
+
+        error: (err: any) => this.feedback.fail(err)
 
       });
 

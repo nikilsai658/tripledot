@@ -23,6 +23,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
 import { DomainServices } from '../../../features/services/domain/domain-services';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-domain',
@@ -35,6 +36,8 @@ import { DomainServices } from '../../../features/services/domain/domain-service
   styleUrls: ['./domain.css']
 })
 export class DomainComponent implements OnInit {
+
+  feedback = new Feedback();
 
   domains: any[] = [];
 
@@ -126,7 +129,7 @@ export class DomainComponent implements OnInit {
   openAddModal(): void {
 
     if (!this.auth.hasPermission('CREATE_DOMAIN')) {
-      alert('Permission denied');
+      this.feedback.fail('You do not have permission to perform this action.');
       return;
     }
 
@@ -151,7 +154,7 @@ export class DomainComponent implements OnInit {
   createDomain(): void {
 
     if (!this.auth.hasPermission('CREATE_DOMAIN')) {
-      alert('Permission denied');
+      this.feedback.fail('You do not have permission to perform this action.');
       return;
     }
 
@@ -164,7 +167,7 @@ export class DomainComponent implements OnInit {
 
       next: () => {
 
-        alert('Domain Created Successfully');
+        this.feedback.ok('Domain added successfully');
 
         this.resetForm();
 
@@ -173,9 +176,7 @@ export class DomainComponent implements OnInit {
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });
@@ -189,7 +190,7 @@ export class DomainComponent implements OnInit {
   editDomain(domain: any): void {
 
     if (!this.auth.hasPermission('UPDATE_DOMAIN')) {
-      alert('Permission denied');
+      this.feedback.fail('You do not have permission to perform this action.');
       return;
     }
 
@@ -218,7 +219,7 @@ export class DomainComponent implements OnInit {
   updateDomain(): void {
 
     if (!this.auth.hasPermission('UPDATE_DOMAIN')) {
-      alert('Permission denied');
+      this.feedback.fail('You do not have permission to perform this action.');
       return;
     }
 
@@ -234,7 +235,7 @@ export class DomainComponent implements OnInit {
 
       next: () => {
 
-        alert('Domain Updated Successfully');
+        this.feedback.ok('Domain updated successfully');
 
         this.resetForm();
 
@@ -243,9 +244,7 @@ export class DomainComponent implements OnInit {
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });
@@ -259,7 +258,7 @@ export class DomainComponent implements OnInit {
   deleteDomain(id: number): void {
 
     if (!this.auth.hasPermission('DELETE_DOMAIN')) {
-      alert('Permission denied');
+      this.feedback.fail('You do not have permission to perform this action.');
       return;
     }
 
@@ -269,16 +268,14 @@ export class DomainComponent implements OnInit {
 
       next: () => {
 
-        alert('Deleted Successfully');
+        this.feedback.ok('Domain deleted successfully');
 
         this.loadDomains();
 
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });

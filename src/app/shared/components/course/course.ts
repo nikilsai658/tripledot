@@ -23,6 +23,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
 import { CourseService } from '../../../features/services/course/course-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-course',
@@ -45,6 +46,8 @@ export class Course implements OnInit {
   selectedCourseId = 0;
 
   showModal = false;
+
+  feedback = new Feedback();
 
   constructor(
     private api: CourseService,
@@ -126,7 +129,7 @@ export class Course implements OnInit {
   openAddModal(): void {
 
     if (!this.auth.hasPermission('CREATE_COURSE')) {
-      alert('No Permission');
+      this.feedback.fail('You do not have permission to add courses.');
       return;
     }
 
@@ -155,7 +158,7 @@ export class Course implements OnInit {
   createCourse(): void {
 
     if (!this.auth.hasPermission('CREATE_COURSE')) {
-      alert('No Permission');
+      this.feedback.fail('You do not have permission to add courses.');
       return;
     }
 
@@ -171,9 +174,9 @@ export class Course implements OnInit {
 
       next: () => {
 
-        alert('Course Created Successfully');
-
         this.resetForm();
+
+        this.feedback.ok('Course added successfully');
 
         this.loadCourses();
 
@@ -181,7 +184,7 @@ export class Course implements OnInit {
 
       error: (err) => {
 
-        console.error(err);
+        this.feedback.fail(err, 'Failed to add course');
 
       }
 
@@ -196,7 +199,7 @@ export class Course implements OnInit {
   editCourse(course: any): void {
 
     if (!this.auth.hasPermission('UPDATE_COURSE')) {
-      alert('No Permission');
+      this.feedback.fail('You do not have permission to edit courses.');
       return;
     }
 
@@ -223,7 +226,7 @@ export class Course implements OnInit {
   updateCourse(): void {
 
     if (!this.auth.hasPermission('UPDATE_COURSE')) {
-      alert('No Permission');
+      this.feedback.fail('You do not have permission to edit courses.');
       return;
     }
 
@@ -245,9 +248,9 @@ export class Course implements OnInit {
 
       next: () => {
 
-        alert('Course Updated Successfully');
-
         this.resetForm();
+
+        this.feedback.ok('Course updated successfully');
 
         this.loadCourses();
 
@@ -255,7 +258,7 @@ export class Course implements OnInit {
 
       error: (err) => {
 
-        console.error(err);
+        this.feedback.fail(err, 'Failed to update course');
 
       }
 
@@ -270,7 +273,7 @@ export class Course implements OnInit {
   deleteCourse(id: number): void {
 
     if (!this.auth.hasPermission('DELETE_COURSE')) {
-      alert('No Permission');
+      this.feedback.fail('You do not have permission to delete courses.');
       return;
     }
 
@@ -282,7 +285,7 @@ export class Course implements OnInit {
 
       next: () => {
 
-        alert('Course Deleted Successfully');
+        this.feedback.ok('Course deleted successfully');
 
         this.loadCourses();
 
@@ -290,7 +293,7 @@ export class Course implements OnInit {
 
       error: (err) => {
 
-        console.error(err);
+        this.feedback.fail(err, 'Failed to delete course');
 
       }
 

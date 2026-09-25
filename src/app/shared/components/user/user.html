@@ -985,7 +985,9 @@
               License
             </th>
 
-            <th>
+            <th
+              *ngIf="auth.hasPermission('UPDATE_USER') || auth.hasPermission('DELETE_USER')"
+            >
               Actions
             </th>
 
@@ -1115,26 +1117,29 @@
 
 
             <!-- Actions -->
-            <td>
+            <td
+              *ngIf="auth.hasPermission('UPDATE_USER') || auth.hasPermission('DELETE_USER')"
+            >
 
               <div class="action-buttons">
 
-               <button
-  
-  type="button"
-  class="edit-btn"
-  (click)="editUser(user)"
->
-  Edit
-</button>
+                <button
+                  type="button"
+                  class="edit-btn"
+                  *ngIf="auth.hasPermission('UPDATE_USER')"
+                  (click)="editUser(user)"
+                >
+                  Edit
+                </button>
 
-<button
-  type="button"
-  class="delete-btn"
-  (click)="deleteUser(user.id)"
->
-  Delete
-</button>
+                <button
+                  type="button"
+                  class="delete-btn"
+                  *ngIf="auth.hasPermission('DELETE_USER')"
+                  (click)="deleteUser(user.id)"
+                >
+                  Delete
+                </button>
 
               </div>
 
@@ -1149,7 +1154,7 @@
           >
 
             <td
-              colspan="11"
+              [attr.colspan]="(auth.hasPermission('UPDATE_USER') || auth.hasPermission('DELETE_USER')) ? 11 : 10"
               class="empty-state"
             >
               No users found.

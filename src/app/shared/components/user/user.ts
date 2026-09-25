@@ -29,6 +29,7 @@ import { DepartmentService } from '../../../features/services/department/departm
 import { BranchService } from '../../../features/services/branch/branch-service';
 import { RoleService } from '../../../features/services/role/role-service';
 import { Superadmin } from '../../../features/services/superadmin/superadmin';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-user',
@@ -95,6 +96,10 @@ export class UserComponent implements OnInit {
   submitted = false;
   editMode = false;
   showModal = false;
+
+  // Inline messages: page/form actions, and the bulk upload card.
+  feedback = new Feedback();
+  uploadFeedback = new Feedback();
 
   selectedUserId: number | null = null;
 
@@ -680,9 +685,9 @@ export class UserComponent implements OnInit {
             res
           );
 
-          alert(
+          this.feedback.ok(
             res?.message ||
-            'User created successfully'
+            'User added successfully'
           );
 
           this.resetForm();
@@ -698,10 +703,7 @@ export class UserComponent implements OnInit {
             err
           );
 
-          alert(
-            err?.error?.message ||
-            'Unable to create user.'
-          );
+          this.feedback.fail(err, 'Unable to create user.');
 
         }
 
@@ -903,9 +905,9 @@ export class UserComponent implements OnInit {
             res
           );
 
-          alert(
+          this.feedback.ok(
             res?.message ||
-            'Updated Successfully'
+            'User updated successfully'
           );
 
           this.resetForm();
@@ -921,10 +923,7 @@ export class UserComponent implements OnInit {
             err
           );
 
-          alert(
-            err?.error?.message ||
-            'Unable to update user.'
-          );
+          this.feedback.fail(err, 'Unable to update user.');
 
         }
 
@@ -963,9 +962,9 @@ export class UserComponent implements OnInit {
 
         next: (res: any) => {
 
-          alert(
+          this.feedback.ok(
             res?.message ||
-            'User deleted successfully.'
+            'User deleted successfully'
           );
 
           this.loadUsers();
@@ -979,10 +978,7 @@ export class UserComponent implements OnInit {
             err
           );
 
-          alert(
-            err?.error?.message ||
-            'Unable to delete user.'
-          );
+          this.feedback.fail(err, 'Unable to delete user.');
 
         }
 
@@ -1551,6 +1547,8 @@ export class UserComponent implements OnInit {
 
           user.isLocked = true;
 
+          this.feedback.ok('User locked successfully');
+
           this.cdr.detectChanges();
 
         },
@@ -1562,10 +1560,7 @@ export class UserComponent implements OnInit {
             err
           );
 
-          alert(
-            err?.error?.message ||
-            'Unable to lock user.'
-          );
+          this.feedback.fail(err, 'Unable to lock user.');
 
         }
 
@@ -1593,6 +1588,8 @@ export class UserComponent implements OnInit {
 
           user.isLocked = false;
 
+          this.feedback.ok('User unlocked successfully');
+
           this.cdr.detectChanges();
 
         },
@@ -1604,10 +1601,7 @@ export class UserComponent implements OnInit {
             err
           );
 
-          alert(
-            err?.error?.message ||
-            'Unable to unlock user.'
-          );
+          this.feedback.fail(err, 'Unable to unlock user.');
 
         }
 
@@ -1731,9 +1725,7 @@ export class UserComponent implements OnInit {
 
     if (!this.selectedFile) {
 
-      alert(
-        'Please select a file'
-      );
+      this.uploadFeedback.fail('Please select a file');
 
       return;
 
@@ -1789,9 +1781,7 @@ export class UserComponent implements OnInit {
           }
           else {
 
-            alert(
-              'File Uploaded Successfully'
-            );
+            this.uploadFeedback.ok('Users uploaded successfully');
 
           }
 
@@ -1803,6 +1793,8 @@ export class UserComponent implements OnInit {
             'Upload Error:',
             err
           );
+
+          this.uploadFeedback.fail(err, 'Unable to upload users.');
 
         }
 

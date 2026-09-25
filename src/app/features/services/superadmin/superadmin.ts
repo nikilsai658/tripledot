@@ -21,6 +21,12 @@ export class Superadmin {
   getsuperadmincollege_domain_student_assignment_code(collegeId:number,domainId:number,studentId:any,assignmentId:any){
     return this.api.GET(`SuperAdmin/college/${collegeId}/domain/${domainId}/student/${studentId}/assignment/${assignmentId}/code`)
   }
+  getsuperadmincollege_domain_student_tasks(collegeId:number,domainId:number,studentId:any){
+    return this.api.GET(`SuperAdmin/college/${collegeId}/domain/${domainId}/student/${studentId}/tasks`)
+  }
+  downloadsuperadmincollege_domain_student_task(collegeId:number,domainId:number,studentId:any,taskId:any){
+    return this.api.GETBlob(`SuperAdmin/college/${collegeId}/domain/${domainId}/student/${studentId}/task/${taskId}/download`)
+  }
   collegelicense(collegeId:number,data:any){
     return this.api.POST(`SuperAdmin/college/${collegeId}/license`,data);
   }
@@ -41,5 +47,5 @@ export class Superadmin {
   }
   collegelocked(){
     return this.api.GET(`SuperAdmin/colleges/locked`);
-  }
+  } 
 }

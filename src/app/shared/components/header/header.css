@@ -1,168 +1,710 @@
 @import "tailwindcss";
-:host{
-  display: block;
-}
-.overlay{
-  @apply fixed inset-0 bg-black/50 backdrop-blur-[2px] z-40 transition-opacity duration-300;
-}
 
-/* Sidebar */
+/* =====================================================
+   HOST
+===================================================== */
 
-.sidebar{
-  @apply fixed top-0 left-0 bg-[#2F3E46]
-  text-white shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out;
-
-  width:270px;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  z-index:1000;
+:host {
+  @apply block;
 }
 
-.sidebar.sidebar-open{
-  @apply translate-x-0;
+
+/* =====================================================
+   OVERLAY
+===================================================== */
+
+.sidebar-overlay {
+  @apply fixed inset-0 z-[998] bg-black/65 backdrop-blur-[3px];
+  animation: fadeIn 0.2s ease;
 }
 
-.sidebar-header{
-  @apply flex items-center justify-between p-5 border-b border-white/10;
+
+/* =====================================================
+   OFFCANVAS SIDEBAR
+===================================================== */
+
+.app-sidebar {
+  @apply fixed top-0 left-0 z-[999]
+         flex h-screen w-[270px] flex-col
+         border-r border-[#29292f]
+         bg-[#111114]
+         -translate-x-full
+         transition-all duration-300;
+
+  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
 }
 
-.sidebar-body{
-    flex:1;
-    overflow-y:auto;
-    overflow-x:hidden;
-    padding:12px 0;
-    scrollbar-width:none;
+.app-sidebar.sidebar-open {
+  @apply translate-x-0 shadow-[15px_0_45px_rgba(0,0,0,0.45)];
 }
 
-.sidebar-logo{
+
+/* =====================================================
+   SIDEBAR HEADER
+===================================================== */
+
+.sidebar-header {
+  @apply flex h-[72px] shrink-0
+         items-center justify-between
+         border-b border-[#29292f]
+         px-[18px];
+}
+
+
+/* =====================================================
+   BRAND
+===================================================== */
+
+.brand-wrapper {
+  @apply flex items-center gap-[11px];
+}
+
+.brand-mark {
+  @apply flex h-[34px] w-[34px]
+         items-center justify-center
+         overflow-hidden
+         rounded-lg;
+}
+
+.brand-logo {
+  @apply h-[34px] w-[34px] object-contain;
+}
+
+.brand-text {
+  @apply flex flex-col leading-[1.1];
+}
+
+.brand-name {
+  @apply text-[13px] font-bold
+         tracking-[0.08em]
+         text-white;
+}
+
+.brand-subtitle {
+  @apply mt-1 text-[8px]
+         font-semibold
+         tracking-[0.12em]
+         text-[#71717a];
+}
+
+
+/* =====================================================
+   CLOSE BUTTON
+===================================================== */
+
+.sidebar-close {
+  @apply flex h-[34px] w-[34px]
+         cursor-pointer
+         items-center justify-center
+         rounded-[7px]
+         border-0
+         bg-transparent
+         text-[#71717a]
+         transition-all duration-200;
+}
+
+.sidebar-close:hover {
+  @apply bg-[#202025] text-white;
+}
+
+.sidebar-close svg {
+  @apply h-[18px] w-[18px] fill-none;
+}
+
+
+/* =====================================================
+   SIDEBAR CONTENT
+===================================================== */
+
+.sidebar-content {
+  @apply flex-1 overflow-y-auto px-3 py-[18px];
+}
+
+.sidebar-content::-webkit-scrollbar {
+  @apply w-1;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-[#303036];
+}
+
+
+/* =====================================================
+   SECTION TITLE
+===================================================== */
+
+.nav-section-title {
+  @apply px-3 pb-[9px]
+         text-[9px]
+         font-bold
+         tracking-[0.12em]
+         text-[#606069];
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.sidebar-nav {
+  @apply flex flex-col gap-[3px];
+}
+
+.nav-item {
+  @apply relative
+         flex min-h-[42px] w-full
+         cursor-pointer
+         items-center
+         gap-3
+         rounded-[7px]
+         border-0
+         bg-transparent
+         px-3
+         text-[12px]
+         font-medium
+         text-[#a1a1aa]
+         no-underline
+         transition-all duration-200;
+}
+
+.nav-item:hover {
+  @apply bg-[#1c1c21] text-white;
+}
+
+.nav-item svg {
+  @apply h-[17px] w-[17px]
+         shrink-0
+         fill-none
+         stroke-current
+         stroke-[1.7]
+         [stroke-linecap:round]
+         [stroke-linejoin:round];
+}
+
+.nav-item span {
+  @apply overflow-hidden
+         text-ellipsis
+         whitespace-nowrap;
+}
+
+
+/* =====================================================
+   ACTIVE NAVIGATION
+===================================================== */
+
+.nav-item.active-link {
+  @apply bg-gradient-to-r
+         from-violet-600
+         to-violet-600/65
+         text-white
+         shadow-[0_4px_16px_rgba(124,58,237,0.18)];
+}
+
+.nav-item.active-link::before {
+  content: "";
+
+  @apply absolute
+         top-2 bottom-2 left-0
+         w-[3px]
+         rounded-r
+         bg-violet-300;
+}
+
+
+/* =====================================================
+   NAV GROUP
+===================================================== */
+
+.nav-group {
+  @apply mt-[3px];
+}
+
+.nav-group-button {
+  @apply justify-between text-left;
+}
+
+.nav-item-left {
   @apply flex items-center gap-3;
 }
 
-.company-logo{
-  @apply h-10 w-10 sm:h-12 sm:w-12 rounded-lg object-cover ring-1 ring-white/10;
+.chevron {
+  @apply h-[15px] w-[15px]
+         transition-transform duration-200;
 }
 
-.company-title{
-  @apply text-xs sm:text-sm font-semibold text-gray-200 leading-5 tracking-wide;
+.chevron.rotate {
+  @apply rotate-180;
 }
 
-.close-btn{
-  @apply text-2xl leading-none text-gray-300 hover:text-[#24c0c5] transition-colors duration-200;
+
+/* =====================================================
+   SUBMENU
+===================================================== */
+
+.submenu {
+  @apply relative
+         ml-5 mb-[6px]
+         flex flex-col gap-0.5
+         border-l border-[#303038]
+         pl-[14px];
 }
 
-.sidebar-nav{
-  @apply mt-3 flex flex-col gap-0.5 px-2;
+.submenu a {
+  @apply flex min-h-[35px]
+         items-center
+         rounded-md
+         px-2.5
+         text-[11px]
+         text-[#85858e]
+         no-underline
+         transition-all duration-200;
 }
 
-.nav-link{
-  @apply flex items-center gap-3 px-4 py-3 rounded-md
-  text-[0.9rem] font-medium text-gray-300
-  border-l-4 border-transparent
-  hover:bg-white/5 hover:text-white
-  transition-all duration-200;
+.submenu a:hover {
+  @apply bg-[#1d1d22] text-white;
 }
 
-.nav-group-toggle{
-  @apply w-full flex items-center justify-between text-left cursor-pointer;
+.submenu a.active-sublink {
+  @apply bg-violet-600/10
+         font-semibold
+         text-violet-300;
 }
 
-.chevron-icon{
-  @apply w-4 h-4 text-gray-400 transition-transform duration-200;
+
+/* =====================================================
+   SIDEBAR FOOTER
+===================================================== */
+
+.sidebar-footer {
+  @apply shrink-0 border-t border-[#29292f] p-[14px];
 }
 
-.chevron-icon.rotate-180{
-  transform: rotate(180deg);
+.system-status {
+  @apply flex items-center gap-2.5
+         rounded-lg
+         border border-[#29292f]
+         bg-[#18181c]
+         p-[11px];
 }
 
-.nav-submenu{
-  @apply flex flex-col gap-0.5 mt-0.5 mb-1 ml-4 pl-2
-  border-l border-white/10;
+.status-dot {
+  @apply h-[7px] w-[7px]
+         rounded-full
+         bg-green-500
+         shadow-[0_0_8px_rgba(34,197,94,0.7)];
 }
 
-.nav-sublink{
-  @apply flex items-center px-4 py-2.5 rounded-md
-  text-[0.85rem] text-gray-400
-  border-l-4 border-transparent
-  hover:bg-white/5 hover:text-white
-  transition-all duration-200;
+.system-status div {
+  @apply flex flex-col;
 }
 
-.active-link{
-  @apply bg-[#24c0c5]/10 text-white font-semibold border-[#24c0c5];
+.system-status strong {
+  @apply text-[10px] text-[#d4d4d8];
 }
 
-/* Header */
-
-.main-header{
-  @apply relative z-30 bg-white border-b border-gray-200 shadow-sm h-16 sm:h-[72px] lg:h-20;
+.system-status small {
+  @apply mt-0.5 text-[9px] text-[#62626b];
 }
 
-.header-container{
-  @apply flex items-center justify-between px-3 sm:px-6 md:px-8 h-full;
+
+/* =====================================================
+   TOP HEADER
+===================================================== */
+
+.top-header {
+  @apply fixed
+         top-0 right-0 left-0
+         z-[900]
+         flex h-[68px]
+         items-center
+         border-b border-[#29292f]
+         bg-[#111114]/95
+         px-[22px]
+         text-white
+         backdrop-blur-xl;
 }
 
-.header-left{
-  @apply flex items-center gap-2 sm:gap-4;
+
+/* =====================================================
+   HEADER LEFT
+===================================================== */
+
+.header-left {
+  @apply flex min-w-[300px]
+         items-center gap-[13px];
 }
 
-.menu-btn{
-  @apply p-2 rounded-lg text-gray-600 hover:bg-[#24c0c5]/10 hover:text-[#24c0c5] transition-colors duration-200;
+
+/* =====================================================
+   MENU BUTTON
+===================================================== */
+
+.menu-button {
+  @apply flex h-9 w-9
+         cursor-pointer
+         items-center justify-center
+         rounded-[7px]
+         border border-[#2b2b31]
+         bg-[#18181c]
+         text-[#a1a1aa]
+         transition-all duration-200;
 }
 
-.menu-icon{
-  @apply w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8;
+.menu-button:hover {
+  @apply border-[#3a3a42]
+         bg-[#202025]
+         text-white;
 }
 
-.college-logo{
-  @apply h-8 sm:h-10 md:h-12 lg:h-14 w-auto object-contain;
+.menu-button svg {
+  @apply h-[18px] w-[18px]
+         fill-none
+         stroke-current
+         stroke-[1.8]
+         [stroke-linecap:round];
 }
 
-.divider{
-  @apply hidden md:block h-10 w-px bg-gray-200;
+
+/* =====================================================
+   COLLEGE BRAND
+===================================================== */
+
+.college-brand {
+  @apply flex h-9 w-9
+         items-center justify-center
+         overflow-hidden;
 }
 
-.company-logo-small{
-  @apply h-9 w-9 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-lg object-cover;
+.college-brand img {
+  @apply h-8 w-8
+         rounded-md
+         object-contain;
 }
 
-.header-right{
-  @apply flex items-center gap-2 sm:gap-4;
+
+/* =====================================================
+   HEADER DIVIDER
+===================================================== */
+
+.header-divider {
+  @apply h-7 w-px bg-[#303036];
 }
 
-.profile-btn{
-  @apply flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg
-  text-gray-700 hover:bg-gray-100 transition-colors duration-200;
+
+/* =====================================================
+   TECHNEX BRAND
+===================================================== */
+
+.technex-brand {
+  @apply flex items-center gap-2 no-underline;
 }
 
-.profile-icon{
-  @apply w-8 h-8 sm:w-9 sm:h-9 rounded-full ring-1 ring-gray-200;
+.technex-brand img {
+  @apply h-7 w-7 object-contain;
 }
 
-.username{
-  @apply hidden sm:block font-semibold text-gray-700;
+.technex-title {
+  @apply flex flex-col leading-[1.05];
 }
 
-.change-password-btn{
-  @apply flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg
-  text-gray-600 hover:bg-[#24c0c5]/10 hover:text-[#24c0c5]
-  transition-colors duration-200;
+.technex-title strong {
+  @apply text-[11px]
+         tracking-[0.08em]
+         text-[#f5f5f7];
 }
 
-.change-password-icon{
-  @apply w-6 h-6;
+.technex-title span {
+  @apply mt-0.5 text-[8px] text-[#686871];
 }
 
-.change-password-label{
-  @apply hidden lg:block font-semibold text-sm;
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.header-search {
+  @apply absolute
+         left-1/2
+         flex h-9
+         w-[min(420px,32vw)]
+         -translate-x-1/2
+         items-center
+         gap-[9px]
+         rounded-[7px]
+         border border-[#29292f]
+         bg-[#18181c]
+         px-2.5
+         text-[#71717a];
 }
 
-.logout-btn{
-  @apply bg-[#2F3E46] hover:bg-[#1F2A30]
-  text-white font-semibold rounded-lg
-  px-3 sm:px-5 py-2
-  text-sm sm:text-base
-  border border-transparent hover:border-[#24c0c5]/60
-  shadow-sm hover:shadow
-  transition-all duration-200;
+.header-search svg {
+  @apply h-[15px] w-[15px]
+         shrink-0
+         fill-none
+         stroke-current
+         stroke-[1.8];
+}
+
+.header-search input {
+  @apply min-w-0 flex-1
+         border-0
+         bg-transparent
+         text-[11px]
+         text-white
+         outline-none;
+}
+
+.header-search input::placeholder {
+  @apply text-[#62626b];
+}
+
+.search-shortcut {
+  @apply whitespace-nowrap
+         rounded
+         border border-[#303038]
+         px-1.5 py-[3px]
+         text-[8px]
+         text-[#666670];
+}
+
+
+/* =====================================================
+   HEADER RIGHT
+===================================================== */
+
+.header-right {
+  @apply ml-auto flex items-center gap-2;
+}
+
+
+/* =====================================================
+   HEADER ICONS
+===================================================== */
+
+.header-icon-button,
+.header-action {
+  @apply relative
+         flex h-9 w-9
+         cursor-pointer
+         items-center justify-center
+         rounded-[7px]
+         border border-transparent
+         bg-transparent
+         text-[#92929b]
+         transition-all duration-200;
+}
+
+.header-icon-button:hover,
+.header-action:hover {
+  @apply border-[#2b2b31]
+         bg-[#1c1c21]
+         text-white;
+}
+
+.header-icon-button svg,
+.header-action svg {
+  @apply h-[17px] w-[17px]
+         fill-none
+         stroke-current
+         stroke-[1.7]
+         [stroke-linecap:round]
+         [stroke-linejoin:round];
+}
+
+
+/* =====================================================
+   NOTIFICATION
+===================================================== */
+
+.notification-dot {
+  @apply absolute
+         top-2 right-2
+         h-[5px] w-[5px]
+         rounded-full
+         bg-violet-400
+         shadow-[0_0_7px_rgba(167,139,250,0.8)];
+}
+
+
+/* =====================================================
+   USER PROFILE
+===================================================== */
+
+.user-profile {
+  @apply flex items-center gap-[9px]
+         rounded-lg
+         px-1 py-1 pr-2
+         no-underline
+         transition-all duration-200;
+}
+
+.user-profile:hover {
+  @apply bg-[#1c1c21];
+}
+
+.profile-avatar {
+  @apply flex h-[30px] w-[30px]
+         items-center justify-center
+         overflow-hidden
+         rounded-[7px]
+         bg-[#27272d];
+}
+
+.profile-avatar img {
+  @apply h-[18px] w-[18px] object-contain;
+}
+
+.profile-details {
+  @apply flex min-w-20 flex-col;
+}
+
+.profile-details strong {
+  @apply overflow-hidden
+         text-ellipsis
+         whitespace-nowrap
+         text-[10px]
+         text-[#e4e4e7];
+}
+
+.profile-details span {
+  @apply mt-0.5 text-[8px] text-[#64646d];
+}
+
+.profile-chevron {
+  @apply h-[13px] w-[13px] text-[#686871];
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+.logout-button {
+  @apply flex h-9
+         cursor-pointer
+         items-center gap-[7px]
+         rounded-[7px]
+         border border-[#29292f]
+         bg-[#18181c]
+         px-[11px]
+         text-[10px]
+         text-[#a1a1aa]
+         transition-all duration-200;
+}
+
+.logout-button:hover {
+  @apply border-[#48252e]
+         bg-[#21181d]
+         text-white;
+}
+
+.logout-button svg {
+  @apply h-[15px] w-[15px]
+         fill-none
+         stroke-current
+         stroke-[1.8]
+         [stroke-linecap:round]
+         [stroke-linejoin:round];
+}
+
+
+/* =====================================================
+   ANIMATION
+===================================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1100px) {
+
+  .header-search {
+    @apply w-[280px];
+  }
+
+}
+
+
+@media (max-width: 850px) {
+
+  .header-left {
+    @apply min-w-0;
+  }
+
+  .technex-title {
+    @apply hidden;
+  }
+
+  .header-search {
+    @apply static
+           ml-[15px]
+           w-[220px]
+           translate-x-0;
+  }
+
+  .profile-details {
+    @apply hidden;
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .top-header {
+    @apply px-3;
+  }
+
+  .header-divider,
+  .college-brand,
+  .technex-brand {
+    @apply hidden;
+  }
+
+  .header-search {
+    @apply ml-2.5
+           w-auto
+           flex-1;
+  }
+
+  .search-shortcut {
+    @apply hidden;
+  }
+
+  .logout-button span {
+    @apply hidden;
+  }
+
+  .logout-button {
+    @apply w-9 justify-center px-0;
+  }
+
+}
+
+
+/* =====================================================
+   LARGE SCREEN
+===================================================== */
+
+@media (min-width: 1200px) {
+
+  .app-sidebar.sidebar-open ~ .top-header {
+    @apply pl-[290px];
+  }
+
 }

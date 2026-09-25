@@ -24,6 +24,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Auth } from '../../../core/auth/auth';
 import { CollegeService } from '../../../features/services/college/college-service';
 import { Superadmin } from '../../../features/services/superadmin/superadmin';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-college',
@@ -36,6 +37,8 @@ import { Superadmin } from '../../../features/services/superadmin/superadmin';
   styleUrls: ['./college.css']
 })
 export class College implements OnInit {
+
+  feedback = new Feedback();
 
   colleges: any[] = [];
 
@@ -343,7 +346,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('MANAGE_COLLEGE_LICENSING')) {
 
-      alert('You do not have permission to manage college licensing.');
+      this.feedback.fail('You do not have permission to manage college licensing.');
 
       return;
 
@@ -381,7 +384,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('MANAGE_COLLEGE_LICENSING')) {
 
-      alert('You do not have permission to manage college licensing.');
+      this.feedback.fail('You do not have permission to manage college licensing.');
 
       return;
 
@@ -411,7 +414,7 @@ export class College implements OnInit {
 
         this.selectedLicenseCollege.licenseExpiresAt = payload.licenseExpiresAt;
 
-        alert('License Updated Successfully');
+        this.feedback.ok('License updated successfully');
 
         this.closeLicenseModal();
 
@@ -421,9 +424,7 @@ export class College implements OnInit {
 
       error: (err) => {
 
-        console.error('Update License Error:', err);
-
-        alert(err?.error?.message || 'Unable to update license.');
+        this.feedback.fail(err, 'Unable to update license.');
 
       }
 
@@ -439,7 +440,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('CREATE_COLLEGE')) {
 
-      alert('You do not have permission to create colleges.');
+      this.feedback.fail('You do not have permission to create colleges.');
 
       return;
 
@@ -471,7 +472,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('CREATE_COLLEGE')) {
 
-      alert('You do not have permission to create colleges.');
+      this.feedback.fail('You do not have permission to create colleges.');
 
       return;
 
@@ -489,7 +490,7 @@ export class College implements OnInit {
 
       next: () => {
 
-        alert('College Created Successfully');
+        this.feedback.ok('College added successfully');
 
         this.resetForm();
 
@@ -498,9 +499,7 @@ export class College implements OnInit {
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });
@@ -515,7 +514,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_COLLEGE')) {
 
-      alert('You do not have permission to edit.');
+      this.feedback.fail('You do not have permission to edit.');
 
       return;
 
@@ -549,7 +548,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_COLLEGE')) {
 
-      alert('You do not have permission to update.');
+      this.feedback.fail('You do not have permission to update.');
 
       return;
 
@@ -573,7 +572,7 @@ export class College implements OnInit {
 
       next: () => {
 
-        alert('College Updated Successfully');
+        this.feedback.ok('College updated successfully');
 
         this.resetForm();
 
@@ -582,9 +581,7 @@ export class College implements OnInit {
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });
@@ -599,7 +596,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('DELETE_COLLEGE')) {
 
-      alert('You do not have permission to delete.');
+      this.feedback.fail('You do not have permission to delete.');
 
       return;
 
@@ -615,16 +612,14 @@ export class College implements OnInit {
 
       next: () => {
 
-        alert('College Deleted Successfully');
+        this.feedback.ok('College deleted successfully');
 
         this.loadColleges();
 
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });
@@ -639,7 +634,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_COLLEGE')) {
 
-      alert('You do not have permission to lock colleges.');
+      this.feedback.fail('You do not have permission to lock colleges.');
 
       return;
 
@@ -657,16 +652,14 @@ export class College implements OnInit {
 
         college.isLocked = true;
 
-        alert('College Locked Successfully');
+        this.feedback.ok('College locked successfully');
 
         this.cd.detectChanges();
 
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });
@@ -677,7 +670,7 @@ export class College implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_COLLEGE')) {
 
-      alert('You do not have permission to unlock colleges.');
+      this.feedback.fail('You do not have permission to unlock colleges.');
 
       return;
 
@@ -695,16 +688,14 @@ export class College implements OnInit {
 
         college.isLocked = false;
 
-        alert('College Unlocked Successfully');
+        this.feedback.ok('College unlocked successfully');
 
         this.cd.detectChanges();
 
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });

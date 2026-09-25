@@ -23,6 +23,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
 import { RoleService } from '../../../features/services/role/role-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-role',
@@ -35,6 +36,8 @@ import { RoleService } from '../../../features/services/role/role-service';
   styleUrls: ['./role.css']
 })
 export class Role implements OnInit {
+
+  feedback = new Feedback();
 
   roles: any[] = [];
 
@@ -81,7 +84,7 @@ export class Role implements OnInit {
     }
 
     if (!this.auth.hasPermission('VIEW_ROLE')) {
-      alert('You do not have permission to view Roles.');
+      this.feedback.fail('You do not have permission to view Roles.');
       this.router.navigate(['/dashboard']);
       return;
     }
@@ -129,7 +132,7 @@ export class Role implements OnInit {
   openAddModal(): void {
 
     if (!this.auth.hasPermission('CREATE_ROLE')) {
-      alert('You do not have permission to create Role.');
+      this.feedback.fail('You do not have permission to create Role.');
       return;
     }
 
@@ -154,7 +157,7 @@ export class Role implements OnInit {
   createRole(): void {
 
     if (!this.auth.hasPermission('CREATE_ROLE')) {
-      alert('You do not have permission to create Role.');
+      this.feedback.fail('You do not have permission to create Role.');
       return;
     }
 
@@ -167,7 +170,7 @@ export class Role implements OnInit {
 
       next: () => {
 
-        alert('Role Created Successfully');
+        this.feedback.ok('Role added successfully');
 
         this.resetForm();
 
@@ -176,7 +179,7 @@ export class Role implements OnInit {
       },
 
       error: (err) => {
-        console.error(err);
+        this.feedback.fail(err);
       }
 
     });
@@ -190,7 +193,7 @@ export class Role implements OnInit {
   editRole(role: any): void {
 
     if (!this.auth.hasPermission('UPDATE_ROLE')) {
-      alert('You do not have permission to edit Role.');
+      this.feedback.fail('You do not have permission to edit Role.');
       return;
     }
 
@@ -200,7 +203,7 @@ export class Role implements OnInit {
 
     this.roleForm.patchValue({
 
-      roleName: role.roleName,
+      name: role.name,
       requiresCollege: role.requiresCollege,
       requiresDepartment: role.requiresDepartment,
       requiresBranch: role.requiresBranch,
@@ -219,7 +222,7 @@ export class Role implements OnInit {
   updateRole(): void {
 
     if (!this.auth.hasPermission('UPDATE_ROLE')) {
-      alert('You do not have permission to update Role.');
+      this.feedback.fail('You do not have permission to update Role.');
       return;
     }
 
@@ -235,7 +238,7 @@ export class Role implements OnInit {
 
       next: () => {
 
-        alert('Role Updated Successfully');
+        this.feedback.ok('Role updated successfully');
 
         this.resetForm();
 
@@ -244,7 +247,7 @@ export class Role implements OnInit {
       },
 
       error: (err) => {
-        console.error(err);
+        this.feedback.fail(err);
       }
 
     });
@@ -258,7 +261,7 @@ export class Role implements OnInit {
   deleteRole(id: number): void {
 
     if (!this.auth.hasPermission('DELETE_ROLE')) {
-      alert('You do not have permission to delete Role.');
+      this.feedback.fail('You do not have permission to delete Role.');
       return;
     }
 
@@ -270,14 +273,14 @@ export class Role implements OnInit {
 
       next: () => {
 
-        alert('Role Deleted Successfully');
+        this.feedback.ok('Role deleted successfully');
 
         this.loadRoles();
 
       },
 
       error: (err) => {
-        console.error(err);
+        this.feedback.fail(err);
       }
 
     });

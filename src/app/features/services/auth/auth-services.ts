@@ -8,8 +8,9 @@ export class AuthServices {
    login(data:any){
    return this.api.POST('Auth/login',data,{silent:true});
   }
-  refreshToken(refreshToken:string){
-   return this.api.POST('Auth/refresh-token',{refreshToken});
+  // Backend RefreshTokenRequestDto requires both UserId and RefreshToken.
+  refreshToken(userId:string, refreshToken:string){
+   return this.api.POST('Auth/refresh-token',{userId, refreshToken});
   }
   forgotpassword(data:any) {
     return this.api.POST('Auth/forget-password',data);

@@ -23,6 +23,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
 import { BranchService } from '../../../features/services/branch/branch-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-branch',
@@ -47,6 +48,26 @@ export class Branch implements OnInit {
   selectedBranchId = 0;
 
   showModal = false;
+
+  feedback = new Feedback();
+
+  searchText = '';
+
+  // Branches matching the search box (by name or code, case-insensitive).
+  get filteredBranches(): any[] {
+
+    const term = this.searchText.trim().toLowerCase();
+
+    if (!term) {
+      return this.branches;
+    }
+
+    return this.branches.filter(branch =>
+      String(branch.name ?? '').toLowerCase().includes(term) ||
+      String(branch.code ?? '').toLowerCase().includes(term)
+    );
+
+  }
 
   constructor(
     private api: BranchService,
@@ -184,11 +205,11 @@ export class Branch implements OnInit {
 
       next: () => {
 
-        alert('Branch Created Successfully');
-
         this.branchForm.reset();
 
         this.showModal = false;
+
+        this.feedback.ok('Branch added successfully');
 
         this.loadBranches();
 
@@ -196,7 +217,7 @@ export class Branch implements OnInit {
 
       error: (err) => {
 
-        console.error(err);
+        this.feedback.fail(err, 'Failed to add branch');
 
       }
 
@@ -252,8 +273,6 @@ export class Branch implements OnInit {
 
       next: () => {
 
-        alert('Branch Updated Successfully');
-
         this.branchForm.reset();
 
         this.isEditMode = false;
@@ -262,13 +281,15 @@ export class Branch implements OnInit {
 
         this.showModal = false;
 
+        this.feedback.ok('Branch updated successfully');
+
         this.loadBranches();
 
       },
 
       error: (err) => {
 
-        console.error(err);
+        this.feedback.fail(err, 'Failed to update branch');
 
       }
 
@@ -292,7 +313,7 @@ export class Branch implements OnInit {
 
       next: () => {
 
-        alert('Branch Deleted Successfully');
+        this.feedback.ok('Branch deleted successfully');
 
         this.loadBranches();
 
@@ -300,7 +321,7 @@ export class Branch implements OnInit {
 
       error: (err) => {
 
-        console.error(err);
+        this.feedback.fail(err, 'Failed to delete branch');
 
       }
 

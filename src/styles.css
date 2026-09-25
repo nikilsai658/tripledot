@@ -1,3 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+/* The admin layout's routed .content frame is position: fixed, so it forms
+   its own stacking context and a page's dialog (z-50 inside it) can never
+   rise above the fixed header (z-index 100). While a full-screen add/edit
+   dialog is open, lift the whole content frame over the header so the
+   dialog's backdrop covers the entire window. Global because the dialogs
+   live in child components that Admin's scoped styles can't reach. */
+.content:has(.fixed.inset-0),
+.content:has(.modal-overlay) {
+  z-index: 200;
+}

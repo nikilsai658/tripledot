@@ -68,7 +68,8 @@
 
             <th class="px-5 py-4 text-left text-sm font-semibold">Permission Code</th>
 
-            <th class="px-5 py-4 text-center text-sm font-semibold">Actions</th>
+            <th *ngIf="auth.hasPermission('UPDATE_PERMISSION') || auth.hasPermission('DELETE_PERMISSION')"
+                class="px-5 py-4 text-center text-sm font-semibold">Actions</th>
 
           </tr>
 
@@ -92,7 +93,8 @@
               {{ permission.code }}
             </td>
 
-            <td class="px-5 py-4">
+            <td *ngIf="auth.hasPermission('UPDATE_PERMISSION') || auth.hasPermission('DELETE_PERMISSION')"
+                class="px-5 py-4">
 
               <div class="flex justify-center gap-3">
 
@@ -127,7 +129,7 @@
           <tr *ngIf="permissions.length === 0">
 
             <td
-              colspan="4"
+              [attr.colspan]="(auth.hasPermission('UPDATE_PERMISSION') || auth.hasPermission('DELETE_PERMISSION')) ? 4 : 3"
               class="text-center py-10 text-gray-400">
 
               No Permissions Found

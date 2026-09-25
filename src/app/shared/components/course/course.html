@@ -68,7 +68,8 @@
 
             <th class="px-5 py-4 text-left">Description</th>
 
-            <th class="px-5 py-4 text-center">Actions</th>
+            <th *ngIf="auth.hasPermission('UPDATE_COURSE') || auth.hasPermission('DELETE_COURSE')"
+                class="px-5 py-4 text-center">Actions</th>
 
           </tr>
 
@@ -92,7 +93,8 @@
               {{ course.description }}
             </td>
 
-            <td class="px-5 py-4">
+            <td *ngIf="auth.hasPermission('UPDATE_COURSE') || auth.hasPermission('DELETE_COURSE')"
+                class="px-5 py-4">
 
               <div class="flex justify-center gap-3">
 
@@ -127,7 +129,7 @@
           <tr *ngIf="courses.length === 0">
 
             <td
-              colspan="4"
+              [attr.colspan]="(auth.hasPermission('UPDATE_COURSE') || auth.hasPermission('DELETE_COURSE')) ? 4 : 3"
               class="text-center py-10 text-gray-500">
 
               No Courses Found

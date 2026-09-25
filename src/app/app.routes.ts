@@ -40,43 +40,24 @@ import { SuperadminDomains } from './shared/components/superadmin-domains/supera
 import { SuperadminDomainStudents } from './shared/components/superadmin-domain-students/superadmin-domain-students';
 import { SuperadminStudentAssignments } from './shared/components/superadmin-student-assignments/superadmin-student-assignments';
 import { SuperadminStudentAssignmentCode } from './shared/components/superadmin-student-assignment-code/superadmin-student-assignment-code';
+import { SuperadminStudentTasks } from './shared/components/superadmin-student-tasks/superadmin-student-tasks';
 import { YearUpdation } from './shared/components/year-updation/year-updation';
 import { authGuard } from './core/auth/auth-guard';
 import { assignmentGuard } from './core/guards/assignment-guard';
-import { permissionGuard } from './core/guards/permission-guard';
+import { defaultChildRedirect, permissionGuard } from './core/guards/permission-guard';
 import { NotFoundComponent } from './shared/components/page-not-found/page-not-found';
 import { Viewcertificate } from './shared/components/viewcertificate/viewcertificate';
 import { ChangePassword } from './shared/components/change-password/change-password';
 import { Task } from './shared/components/task/task';
-export const routes: Routes = [
-
-  {
-    path: '',redirectTo: 'home',pathMatch: 'full'
-  },
-
-  {
-    path: 'home',component: Home
-  },
-
-  {
-    path: 'auth',
-    loadChildren: () =>
-      import('./features/auth/auth-module')
-        .then(m => m.AuthModule)
-  },
-
-  {
-    path: 'main',component: Admin,canActivate: [authGuard],canActivateChild: [authGuard, permissionGuard],children: [
-
-      {
-        path: '',redirectTo: 'student-domain', pathMatch: 'full'
-      },
+// Order matters: the first route the user has permission for becomes their
+// landing page after login (see defaultChildRedirect).
+const mainChildren: Routes = [
       {
         path: 'student-domain', component: StudentDomain, data: { permission: 'VIEW_STUDENT_DOMAIN' }
       },
 
       {
-        path: 'student-courses',component: StudentCourses
+        path: 'student-courses',component: StudentCourses,data: { permission: 'VIEW_STUDENT_COURSES' }
       },
 
       {
@@ -84,7 +65,7 @@ export const routes: Routes = [
       },
 
       {
-        path: 'student-task', component: StudentTask
+        path: 'student-task', component: StudentTask, 
       },
 
       {
@@ -97,7 +78,7 @@ export const routes: Routes = [
         path:'department-management',component:Department, data: { permission: 'VIEW_DEPARTMENT' }
       },
       {
-        path:'branch-management',component:Branch, data: { permission: 'UPDATE_BRANCH' }
+        path:'branch-management',component:Branch, data: { permission: 'VIEW_BRANCH' }
       },
       {
         path:'domain',component:DomainComponent, data: { permission: 'VIEW_DOMAIN' }
@@ -106,7 +87,7 @@ export const routes: Routes = [
         path:'course',component:Course, data: { permission: 'VIEW_COURSE' }
       },
       {
-        path:'assignment',component:AssignmentComponent, data: { permission: 'UPDATE_ASSIGNMENT' }
+        path:'assignment',component:AssignmentComponent, data: { permission: 'VIEW_ASSIGNMENT' }
       },
       {
         path:'task',component:Task, data: { permission: 'VIEW_TASK' }
@@ -139,16 +120,16 @@ export const routes: Routes = [
         path:'ticket',component:TicketComponent, data: { permission: 'CREATE_TICKET' }
       },
       {
-      path:'mytickets',component:MyTicketComponent
+      path:'mytickets',component:MyTicketComponent,data:{permission:'VIEW_MY_TICKETS'}
       },
       {
-        path:'replyticket/:id',component:ReplyTicketComponent
+        path:'replyticket/:id',component:ReplyTicketComponent,data:{permission:'REPLY_TICKET'}
       },
       {
         path:'alltickets',component:AllTicketsComponent, data: { permission: 'VIEW_ALL_TICKETS' }
       },
       {
-        path: 'support-ticket-details/:id',component: SupportTicketDetailsComponent
+        path: 'support-ticket-details/:id',component: SupportTicketDetailsComponent,data: { permission: 'VIEW_ALL_TICKETS' }
       },
       {
         path:'college-department-mapping',component:CollegeDepartmentComponent, data: { permission: 'VIEW_COLLEGE_DEPARTMENT' }
@@ -178,16 +159,19 @@ export const routes: Routes = [
         path:'superamin-colleges', component:SuperAdmin, data: { permission: 'VIEW_SUPERADMIN_COLLEGES' }
       },
       {
-        path:'superadmin-domains', component:SuperadminDomains
+        path:'superadmin-domains', component:SuperadminDomains,data:{permission:'VIEW_SUPERADMIN_COLLEGE_DOMAINS'}
       },
       {
-        path:'superadmin-domain-students', component:SuperadminDomainStudents
+        path:'superadmin-domain-students', component:SuperadminDomainStudents,data:{permission:'VIEW_SUPERADMIN_DOMAIN_STUDENTS'}
       },
       {
-        path:'superadmin-student-assignments',component:SuperadminStudentAssignments
+        path:'superadmin-student-assignments',component:SuperadminStudentAssignments,data:{permission:'VIEW_SUPERADMIN_STUDENT_ASSIGNMENTS'}
       },
       {
-        path:'superadmin-student-assignment-code',component:SuperadminStudentAssignmentCode
+        path:'superadmin-student-assignment-code',component:SuperadminStudentAssignmentCode,data:{permission:'VIEW_SUPERADMIN_STUDENT_ASSIGNMENTS'}
+      },
+      {
+        path:'superadmin-student-tasks',component:SuperadminStudentTasks,data:{permission:'VIEW_SUPERADMIN_STUDENT_ASSIGNMENTS'}
       },
       {
         path:'view-certificate',component:Viewcertificate
@@ -195,6 +179,31 @@ export const routes: Routes = [
       {
         path:'change_password',component:ChangePassword
       }
+];
+
+export const routes: Routes = [
+
+  {
+    path: '',redirectTo: 'home',pathMatch: 'full'
+  },
+
+  {
+    path: 'home',component: Home
+  },
+
+  {
+    path: 'auth',
+    loadChildren: () =>
+      import('./features/auth/auth-module')
+        .then(m => m.AuthModule)
+  },
+  {
+    path: 'main',component: Admin,canActivate: [authGuard],canActivateChild: [authGuard, permissionGuard],children: [
+
+      {
+        path: '',redirectTo: defaultChildRedirect(mainChildren), pathMatch: 'full'
+      },
+      ...mainChildren
     ]
   },
 

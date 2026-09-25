@@ -25,6 +25,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { Auth } from '../../../core/auth/auth';
 import { StudentdomaincoursemapService } from '../../../features/services/studentdomaincourse/studentdomaincoursemap-ser';
 import { DomainServices } from '../../../features/services/domain/domain-services';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-studentdomainmap',
@@ -39,6 +40,8 @@ import { DomainServices } from '../../../features/services/domain/domain-service
   styleUrls: ['./studentdomaincourse.css']
 })
 export class StudentDomainMapComponent implements OnInit {
+
+  feedback = new Feedback();
 
   mappings: any[] = [];
   filteredMappings: any[] = [];
@@ -212,10 +215,13 @@ export class StudentDomainMapComponent implements OnInit {
           this.loadMappings();
 
           this.closeModal();
+          this.feedback.ok('Mapping added successfully');
 
         },
 
-        error: err => console.log(err)
+        error: err => {
+        this.feedback.fail(err);
+      }
 
       });
 
@@ -238,10 +244,13 @@ export class StudentDomainMapComponent implements OnInit {
         next: () => {
 
           this.loadMappings();
+          this.feedback.ok('Mapping deleted successfully');
 
         },
 
-        error: err => console.log(err)
+        error: err => {
+        this.feedback.fail(err);
+      }
 
       });
 

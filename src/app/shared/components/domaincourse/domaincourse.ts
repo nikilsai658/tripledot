@@ -26,6 +26,7 @@ import { Auth } from '../../../core/auth/auth';
 import { DomaincourseService } from '../../../features/services/domaincourse/domaincourse-service';
 import { DomainServices } from '../../../features/services/domain/domain-services';
 import { CourseService } from '../../../features/services/course/course-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-domaincoursemap',
@@ -40,6 +41,8 @@ import { CourseService } from '../../../features/services/course/course-service'
   styleUrls: ['./domaincourse.css']
 })
 export class DomainCourseMapComponent implements OnInit {
+
+  feedback = new Feedback();
 
   domainCourseForm!: FormGroup;
 
@@ -243,10 +246,13 @@ export class DomainCourseMapComponent implements OnInit {
           this.loadMappings();
 
           this.closeModal();
+          this.feedback.ok('Mapping updated successfully');
 
         },
 
-        error: err => console.log(err)
+        error: err => {
+        this.feedback.fail(err);
+      }
 
       });
 
@@ -259,10 +265,13 @@ export class DomainCourseMapComponent implements OnInit {
           this.loadMappings();
 
           this.closeModal();
+          this.feedback.ok('Mapping added successfully');
 
         },
 
-        error: err => console.log(err)
+        error: err => {
+        this.feedback.fail(err);
+      }
 
       });
 
@@ -313,10 +322,13 @@ export class DomainCourseMapComponent implements OnInit {
       next: () => {
 
         this.loadMappings();
+        this.feedback.ok('Mapping deleted successfully');
 
       },
 
-      error: err => console.log(err)
+      error: err => {
+        this.feedback.fail(err);
+      }
 
     });
 

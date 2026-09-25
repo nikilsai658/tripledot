@@ -1,490 +1,670 @@
-<div>
-
-  <!-- Overlay -->
+<!-- =========================
+     OVERLAY
+========================= -->
 <div
   *ngIf="sidebarOpen"
-  class="overlay"
+  class="sidebar-overlay"
   (click)="toggleSidebar()">
 </div>
+
+
+<!-- =========================
+     OFFCANVAS SIDEBAR
+========================= -->
 <aside
-    class="sidebar"
-    [class.sidebar-open]="sidebarOpen">
+  class="app-sidebar"
+  [class.sidebar-open]="sidebarOpen">
 
-    <!-- Fixed Header -->
-    <div class="sidebar-header">
-        <div class="sidebar-logo">
+  <!-- Sidebar Header -->
+  <div class="sidebar-header">
 
+    <div class="brand-wrapper">
+
+      <div class="brand-mark">
         <img
-          src="../../../../assets/images/logo.jpeg"
-          class="company-logo">
-
-
+          src="../../../../assets/images/tripledot-logo.jpeg"
+          class="brand-logo"
+          alt="TripleDot">
       </div>
 
-      <button
-        (click)="toggleSidebar()"
-        class="close-btn">
-        ✕
-      </button>
+      <div class="brand-text">
+        <span class="brand-name">TRIPLEDOT</span>
+        <span class="brand-subtitle">AI TECHNOLOGIES</span>
+      </div>
+
     </div>
 
-    <!-- Scrollable Body -->
-    <div class="sidebar-body">
+    <button
+      type="button"
+      class="sidebar-close"
+      (click)="toggleSidebar()"
+      aria-label="Close sidebar">
 
-        <nav class="sidebar-nav">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M6 6l12 12M18 6L6 18"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"/>
+      </svg>
 
-             <a
-             *ngIf="this.auth.hasPermission('VIEW_STUDENT_DOMAIN')"
+    </button>
+
+  </div>
+
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar-content">
+
+    <div class="nav-section-title">
+      MAIN
+    </div>
+
+    <nav class="sidebar-nav">
+
+
+      <!-- Dashboard -->
+      <a
+        *ngIf="auth.hasPermission('VIEW_STUDENT_DOMAIN')"
         routerLink="/main/student-domain"
         routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
         (click)="toggleSidebar()"
-        class="nav-link">
-        Dashboard
+        class="nav-item">
+
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+
+        <span>Dashboard</span>
 
       </a>
 
+
+      <!-- Leaderboard -->
       <a
-      *ngIf="this.auth.hasPermission('LEADERBOARD_DOMAIN')"
+        *ngIf="auth.hasPermission('LEADERBOARD_DOMAIN')"
         routerLink="/main/leadership"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
-        class="nav-link">
+        class="nav-item">
 
-        Leaderboard
+        <svg viewBox="0 0 24 24">
+          <path d="M8 21V10"/>
+          <path d="M16 21V4"/>
+          <path d="M12 21V7"/>
+          <path d="M4 21h16"/>
+        </svg>
+
+        <span>Leaderboard</span>
 
       </a>
 
+
+      <!-- Certifications -->
       <a
-      *ngIf="this.auth.hasPermission('LEADERBOARD_DOMAIN')"
+        *ngIf="auth.hasPermission('LEADERBOARD_DOMAIN')"
         routerLink="/main/certificate"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
-        class="nav-link">
+        class="nav-item">
 
-        Certifications
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M8.5 12.5L7 21l5-3 5 3-1.5-8.5"/>
+        </svg>
+
+        <span>Certifications</span>
 
       </a>
 
+
+      <!-- Raise Ticket -->
       <a
-      *ngIf="this.auth.hasPermission('CREATE_TICKET')"
+        *ngIf="auth.hasPermission('CREATE_TICKET')"
         routerLink="/main/ticket"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
-        class="nav-link">
+        class="nav-item">
 
-       Raise Ticket
+        <svg viewBox="0 0 24 24">
+          <path d="M21 11.5a8.4 8.4 0 0 1-9 8.5
+                   8.4 8.4 0 0 1-8.5-8.5
+                   A8.4 8.4 0 0 1 12 3
+                   a8.4 8.4 0 0 1 9 8.5Z"/>
+          <path d="M8 12h8"/>
+          <path d="M12 8v8"/>
+        </svg>
+
+        <span>Raise Ticket</span>
 
       </a>
-        <a
-        *ngIf="this.auth.hasPermission('VIEW_ALL_TICKETS')"
+
+
+      <!-- Tickets -->
+      <a
+        *ngIf="auth.hasPermission('VIEW_ALL_TICKETS')"
         routerLink="/main/alltickets"
         routerLinkActive="active-link"
         (click)="toggleSidebar()"
-        class="nav-link">
+        class="nav-item">
 
-       Tickets
+        <svg viewBox="0 0 24 24">
+          <path d="M4 5h16v14H4z"/>
+          <path d="M8 9h8"/>
+          <path d="M8 13h5"/>
+        </svg>
+
+        <span>Tickets</span>
 
       </a>
-       <div class="nav-group" *ngIf="hasAnyManagementPermission()">
+
+
+      <!-- =========================
+           MANAGEMENT
+      ========================= -->
+      <div
+        class="nav-group"
+        *ngIf="hasAnyManagementPermission()">
 
         <button
           type="button"
-          (click)="toggleManagement()"
-          class="nav-link nav-group-toggle">
+          class="nav-item nav-group-button"
+          (click)="toggleManagement()">
 
-          <span>Management</span>
+          <div class="nav-item-left">
+
+            <svg viewBox="0 0 24 24">
+              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
+              <path d="M19.4 15a1.8 1.8 0 0 0 .3 2
+                       l.1.1-1.8 1.8-.1-.1
+                       a1.8 1.8 0 0 0-2-.3
+                       1.8 1.8 0 0 0-1.1 1.7v.2h-2.6v-.2
+                       a1.8 1.8 0 0 0-1.1-1.7
+                       1.8 1.8 0 0 0-2 .3l-.1.1-1.8-1.8.1-.1
+                       a1.8 1.8 0 0 0 .3-2
+                       1.8 1.8 0 0 0-1.7-1.1H7v-2.6h.2
+                       a1.8 1.8 0 0 0 1.7-1.1
+                       1.8 1.8 0 0 0-.3-2l-.1-.1
+                       1.8-1.8.1.1a1.8 1.8 0 0 0 2 .3
+                       1.8 1.8 0 0 0 1.1-1.7V5h2.6v.2
+                       a1.8 1.8 0 0 0 1.1 1.7
+                       1.8 1.8 0 0 0 2-.3l.1-.1
+                       1.8 1.8-.1.1a1.8 1.8 0 0 0-.3 2
+                       1.8 1.8 0 0 0 1.7 1.1h.2v2.6h-.2
+                       A1.8 1.8 0 0 0 19.4 15Z"/>
+            </svg>
+
+            <span>Management</span>
+
+          </div>
 
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="chevron-icon"
-            [class.rotate-180]="managementOpen"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
+            class="chevron"
+            [class.rotate]="managementOpen"
+            viewBox="0 0 24 24">
 
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              d="m6 9 6 6 6-6"
+              stroke="currentColor"
               stroke-width="2"
-              d="M19 9l-7 7-7-7"/>
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
 
           </svg>
 
         </button>
 
-        <div class="nav-submenu" *ngIf="managementOpen">
+
+        <div
+          class="submenu"
+          *ngIf="managementOpen">
 
           <a
-            *ngIf="this.auth.hasPermission('UPDATE_COLLEGE')"
+            *ngIf="auth.hasPermission('UPDATE_COLLEGE')"
             routerLink="/main/college-management"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             College Management
           </a>
 
           <a
-            *ngIf="this.auth.hasPermission('VIEW_DEPARTMENT')"
+            *ngIf="auth.hasPermission('VIEW_DEPARTMENT')"
             routerLink="/main/department-management"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Department Management
-
           </a>
+
           <a
-            *ngIf="this.auth.hasPermission('UPDATE_BRANCH')"
+            *ngIf="auth.hasPermission('VIEW_BRANCH')"
             routerLink="/main/branch-management"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Branch Management
-
           </a>
+
           <a
-            *ngIf="this.auth.hasPermission('VIEW_DOMAIN')"
+            *ngIf="auth.hasPermission('VIEW_DOMAIN')"
             routerLink="/main/domain"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Domain Management
-
           </a>
-           <a
-            *ngIf="this.auth.hasPermission('VIEW_TASK')"
+
+          <a
+            *ngIf="auth.hasPermission('VIEW_TASK')"
             routerLink="/main/task"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Task Management
-
           </a>
+
           <a
-            *ngIf="this.auth.hasPermission('VIEW_COURSE')"
+            *ngIf="auth.hasPermission('VIEW_COURSE')"
             routerLink="/main/course"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Course Management
-
           </a>
+
           <a
-            *ngIf="this.auth.hasPermission('VIEW_COURSE')"
+            *ngIf="auth.hasPermission('VIEW_USER')"
             routerLink="/main/user"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
-           User Management
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
+            User Management
           </a>
+
           <a
-            *ngIf="this.auth.hasPermission('VIEW_ROLE')"
+            *ngIf="auth.hasPermission('VIEW_ROLE')"
             routerLink="/main/role"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Role Management
-
           </a>
+
           <a
-            *ngIf="this.auth.hasPermission('VIEW_PERMISSION')"
+            *ngIf="auth.hasPermission('VIEW_PERMISSION')"
             routerLink="/main/permission"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Permission Management
-
           </a>
+
           <a
-            *ngIf="this.auth.hasPermission('VIEW_YEAR')"
+            *ngIf="auth.hasPermission('VIEW_YEAR')"
             routerLink="/main/year"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Year Management
-
           </a>
+
           <a
-            *ngIf="this.auth.hasPermission('UPDATE_YEAR')"
+            *ngIf="auth.hasPermission('UPDATE_YEAR')"
             routerLink="/main/year-updation"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Year Promotion
-
           </a>
+
           <a
-            *ngIf="this.auth.hasPermission('UPDATE_ASSIGNMENT')"
+            *ngIf="auth.hasPermission('VIEW_ASSIGNMENT')"
             routerLink="/main/assignment"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Assignment Management
-
           </a>
 
         </div>
 
       </div>
-         <div class="nav-group" *ngIf="hasAnyMappingPermission()">
+
+
+      <!-- =========================
+           MAPPING
+      ========================= -->
+      <div
+        class="nav-group"
+        *ngIf="hasAnyMappingPermission()">
 
         <button
           type="button"
-          (click)="toggleMapping()"
-          class="nav-link nav-group-toggle">
+          class="nav-item nav-group-button"
+          (click)="toggleMapping()">
 
-          <span>Mapping</span>
+          <div class="nav-item-left">
+
+            <svg viewBox="0 0 24 24">
+              <circle cx="6" cy="6" r="2"/>
+              <circle cx="18" cy="6" r="2"/>
+              <circle cx="12" cy="18" r="2"/>
+              <path d="M8 6h8"/>
+              <path d="M7.5 7.5 11 16"/>
+              <path d="M16.5 7.5 13 16"/>
+            </svg>
+
+            <span>Mapping</span>
+
+          </div>
 
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="chevron-icon"
-            [class.rotate-180]="mappingOpen"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
+            class="chevron"
+            [class.rotate]="mappingOpen"
+            viewBox="0 0 24 24">
 
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              d="m6 9 6 6 6-6"
+              stroke="currentColor"
               stroke-width="2"
-              d="M19 9l-7 7-7-7"/>
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
 
           </svg>
 
         </button>
 
-        <div class="nav-submenu" *ngIf="mappingOpen">
+
+        <div
+          class="submenu"
+          *ngIf="mappingOpen">
 
           <a
             *ngIf="auth.hasPermission('VIEW_COLLEGE_DEPARTMENT')"
             routerLink="/main/college-department-mapping"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             College Department Mapping
-
           </a>
+
           <a
-           *ngIf="auth.hasPermission('VIEW_DEPARTMENT_BRANCH')"
+            *ngIf="auth.hasPermission('VIEW_DEPARTMENT_BRANCH')"
             routerLink="/main/department-branch-mapping"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Department Branch Mapping
-
           </a>
+
           <a
-           *ngIf="auth.hasPermission('VIEW_DOMAIN_COURSE_MAP')"
+            *ngIf="auth.hasPermission('VIEW_DOMAIN_COURSE_MAP')"
             routerLink="/main/domain-course-mapping"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Domain Course Mapping
-
           </a>
+
           <a
-           *ngIf="auth.hasPermission('VIEW_COURSE_TASK_MAP')"
+            *ngIf="auth.hasPermission('VIEW_COURSE_TASK_MAP')"
             routerLink="/main/course-task-mapping"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Course Task Mapping
-
           </a>
+
           <a
             *ngIf="auth.hasPermission('VIEW_COURSE_ASSIGNMENT_MAP')"
             routerLink="/main/course-assignment-mapping"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Course Assignment Mapping
-
           </a>
+
           <a
             *ngIf="auth.hasPermission('VIEW_STUDENT_DOMAIN_COURSE_MAP')"
             routerLink="/main/student-domain-course-mapping"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Student Domain Course Mapping
-
           </a>
+
           <a
             *ngIf="auth.hasPermission('VIEW_ROLE_PERMISSION')"
             routerLink="/main/role-permission-mapping"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-sublink">
-
+            routerLinkActive="active-sublink"
+            (click)="toggleSidebar()">
             Role Permission Mapping
-
           </a>
 
         </div>
 
       </div>
-          <a
-             *ngIf="auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT')"
-            routerLink="/main/student-assignment-scores"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-link">
 
-            Student Assignment Scores 
 
-          </a>
-          <a
-             *ngIf="auth.hasPermission('VIEW_SUPERADMIN_COLLEGES')"
-            routerLink="/main/superamin-colleges"
-            routerLinkActive="active-link"
-            (click)="toggleSidebar()"
-            class="nav-link">
-            Tracking College Student Scores 
-          </a>
-        </nav>
+      <!-- Student Assignment Scores -->
+      <a
+        *ngIf="auth.hasPermission('UPDATE_STUDENT_ASSIGNMENT')"
+        routerLink="/main/student-assignment-scores"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-item">
 
+        <svg viewBox="0 0 24 24">
+          <path d="M4 19V5"/>
+          <path d="M4 19h16"/>
+          <path d="m7 15 3-4 3 2 5-7"/>
+        </svg>
+
+        <span>Assignment Scores</span>
+
+      </a>
+
+
+      <!-- College Tracking -->
+      <a
+        *ngIf="auth.hasPermission('VIEW_SUPERADMIN_COLLEGES')"
+        routerLink="/main/superamin-colleges"
+        routerLinkActive="active-link"
+        (click)="toggleSidebar()"
+        class="nav-item">
+
+        <svg viewBox="0 0 24 24">
+          <path d="M3 21h18"/>
+          <path d="M5 21V8l7-4 7 4v13"/>
+          <path d="M9 21v-6h6v6"/>
+          <path d="M9 10h.01M12 10h.01M15 10h.01"/>
+        </svg>
+
+        <span>College Tracking</span>
+
+      </a>
+
+    </nav>
+
+  </div>
+
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-footer">
+
+    <div class="system-status">
+      <span class="status-dot"></span>
+
+      <div>
+        <strong>System Online</strong>
+        <small>All services operational</small>
+      </div>
     </div>
 
-  </aside>
+  </div>
 
-  <!-- Header -->
+</aside>
 
-  <header class="main-header">
 
-    <div class="header-container">
+<!-- =========================
+     TOP HEADER
+========================= -->
+<header class="top-header">
 
-      <!-- Left -->
+  <div class="header-left">
 
-      <div class="header-left">
+    <!-- Menu -->
+    <button
+      type="button"
+      class="menu-button"
+      (click)="toggleSidebar()">
 
-        <button
-          (click)="toggleSidebar()"
-          class="menu-btn">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 6h16"/>
+        <path d="M4 12h16"/>
+        <path d="M4 18h16"/>
+      </svg>
 
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="menu-icon"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
+    </button>
 
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"/>
 
-          </svg>
+    <!-- College Logo -->
+    <a
+      routerLink="/main/student-domain"
+      class="college-brand">
 
-        </button>
+      <img
+        *ngIf="collegeLogo"
+        [src]="collegeLogo"
+        alt="College Logo">
 
-        <a routerLink="/main/student-domain">
+    </a>
 
-            <img
-          *ngIf="collegeLogo"
-          [src]="collegeLogo"
-          alt="College Logo"
-          class="college-logo"
-            />
 
-        </a>
+    <div class="header-divider"></div>
 
-        <div class="divider"></div>
 
-        <a routerLink="/main/student-domain">
+    <!-- Technex Logo -->
+    <a
+      routerLink="/main/student-domain"
+      class="technex-brand">
 
-          <img
-            src="../../../../assets/images/logo.jpeg"
-            class="company-logo-small">
+      <img
+        src="../../../../assets/images/tripledot-logo.jpeg"
+        alt="TripleDot">
 
-        </a>
+      <div class="technex-title">
+        <strong>TRIPLEDOT</strong>
+        <span>AI TECHNOLOGIES</span>
+      </div>
+
+    </a>
+
+  </div>
+
+
+  <!-- Center Search -->
+  <div class="header-search">
+
+    <svg viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="m20 20-4-4"/>
+    </svg>
+
+    <input
+      type="text"
+      placeholder="Search courses, domains, assignments...">
+
+    <span class="search-shortcut">
+      Ctrl K
+    </span>
+
+  </div>
+
+
+  <!-- Right -->
+  <div class="header-right">
+
+    <!-- Notification -->
+    <button
+      type="button"
+      class="header-icon-button"
+      title="Notifications">
+
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M18 8a6 6 0 0 0-12 0
+             c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+        <path d="M10 21h4"/>
+      </svg>
+
+      <span class="notification-dot"></span>
+
+    </button>
+
+
+    <!-- Profile -->
+    <a
+      routerLink="/main/profile"
+      class="user-profile">
+
+      <div class="profile-avatar">
+
+        <img
+          src="../../assets/images/profile-fill.svg"
+          alt="Profile">
 
       </div>
 
-      <!-- Right -->
+      <div class="profile-details">
 
-      <div class="header-right">
+        <strong>{{ username }}</strong>
 
-        <button
-          routerLink="/main/profile"
-          class="profile-btn">
-
-          <img
-            src="../../assets/images/profile-fill.svg"
-            class="profile-icon">
-
-          <span class="username">
-
-            {{ username }}
-
-          </span>
-
-        </button>
-
-        <a
-          routerLink="/main/change_password"
-          class="change-password-btn"
-          title="Change Password">
-
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="change-password-icon"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
-
-            <rect
-              x="4"
-              y="11"
-              width="16"
-              height="9"
-              rx="2"
-              stroke-width="1.8">
-            </rect>
-
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.8"
-              d="M8 11V7a4 4 0 0 1 8 0v4">
-            </path>
-
-          </svg>
-
-          <span class="change-password-label">Change Password</span>
-
-        </a>
-
-        <a
-          (click)="logout()"
-          routerLink="/auth/login"
-          class="logout-btn">
-
-          Logout
-
-        </a>
+        <span>Student Portal</span>
 
       </div>
 
-    </div>
+      <svg
+        class="profile-chevron"
+        viewBox="0 0 24 24">
 
-  </header>
+        <path
+          d="m6 9 6 6 6-6"
+          stroke="currentColor"
+          stroke-width="2"
+          fill="none"/>
 
-</div>
+      </svg>
+
+    </a>
+
+
+    <!-- Change Password -->
+    <a
+      routerLink="/main/change_password"
+      class="header-action"
+      title="Change Password">
+
+      <svg viewBox="0 0 24 24">
+        <rect
+          x="4"
+          y="11"
+          width="16"
+          height="9"
+          rx="2"/>
+
+        <path
+          d="M8 11V7a4 4 0 0 1 8 0v4"/>
+      </svg>
+
+    </a>
+
+
+    <!-- Logout -->
+    <button
+      type="button"
+      class="logout-button"
+      (click)="logout()">
+
+      <svg viewBox="0 0 24 24">
+        <path d="M10 17l5-5-5-5"/>
+        <path d="M15 12H3"/>
+        <path d="M21 3v18"/>
+      </svg>
+
+      <span>Logout</span>
+
+    </button>
+
+  </div>
+
+</header>

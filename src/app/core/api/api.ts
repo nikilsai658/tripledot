@@ -32,43 +32,17 @@ export class Api {
   });
 }
 
-private showAlert(message: string): void {
-  if (isPlatformBrowser(this.platformId)) {
-    alert(message);
-  }
-}
-
+// Components render errors inline (see shared/feedback), so this never
+// shows a blocking alert — it only clears stale auth on a 401.
+// `silent` skips the redirect to login (used by pre-login pages).
 private handleError(err: any, silent = false) {
 
-  // Silent mode: the caller renders its own inline error UI, so skip
-  // the blocking alert(s) — still clear stale auth on a 401 though.
-  if (silent) {
-    if (err.status === 401) {
-      this.cookie.delete('token', '/');
-      this.cookie.delete('refresh', '/');
-    }
-    return throwError(() => err);
-  }
-
-  if (err.status === 400) {
-    this.showAlert(err.error.message);
-  } else if (err.status === 401) {
+  if (err.status === 401) {
     this.cookie.delete('token', '/');
     this.cookie.delete('refresh', '/');
-    if (isPlatformBrowser(this.platformId)) {
+    if (!silent && isPlatformBrowser(this.platformId)) {
       this.router.navigate(['/auth/login']);
     }
-  } else if (err.status === 403) {
-    this.showAlert('Forbidden');
-  } else if (err.status === 404) {
-    // A 404 on a "get my records" style endpoint usually just means
-    // "nothing found yet" — let the calling component's own error
-    // handler decide how to render that instead of interrupting the
-    // user with a blocking alert.
-  } else if (err.status === 500) {
-    this.showAlert('Internal Server Error');
-  } else {
-    this.showAlert('Something went wrong');
   }
 
   return throwError(() => err);

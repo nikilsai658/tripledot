@@ -24,6 +24,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
 import { AssignmentService } from '../../../features/services/assignment/assignment-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-assignment',
@@ -36,6 +37,8 @@ import { AssignmentService } from '../../../features/services/assignment/assignm
   styleUrls: ['./assignment.css']
 })
 export class AssignmentComponent implements OnInit {
+
+  feedback = new Feedback();
 
   assignments: any[] = [];
 
@@ -133,7 +136,7 @@ export class AssignmentComponent implements OnInit {
   removeTestCase(index: number): void {
 
     if (this.testCases.length === 1) {
-      alert('At least one test case is required');
+      this.feedback.fail('At least one test case is required');
       return;
     }
 
@@ -148,7 +151,7 @@ export class AssignmentComponent implements OnInit {
   openAddModal(): void {
 
     if (!this.auth.hasPermission('CREATE_ASSIGNMENT')) {
-      alert('Permission Denied');
+      this.feedback.fail('You do not have permission to perform this action.');
       return;
     }
 
@@ -211,7 +214,7 @@ export class AssignmentComponent implements OnInit {
   createAssignment(): void {
 
     if (!this.auth.hasPermission('CREATE_ASSIGNMENT')) {
-      alert('Permission Denied');
+      this.feedback.fail('You do not have permission to perform this action.');
       return;
     }
 
@@ -225,7 +228,7 @@ export class AssignmentComponent implements OnInit {
 
         next: () => {
 
-          alert('Assignment Created Successfully');
+          this.feedback.ok('Assignment added successfully');
 
           this.resetForm();
 
@@ -233,7 +236,7 @@ export class AssignmentComponent implements OnInit {
 
         },
 
-        error: (err) => console.log(err)
+        error: (err) => this.feedback.fail(err)
 
       });
 
@@ -246,7 +249,7 @@ export class AssignmentComponent implements OnInit {
   editAssignment(item: any): void {
 
     if (!this.auth.hasPermission('UPDATE_ASSIGNMENT')) {
-      alert('Permission Denied');
+      this.feedback.fail('You do not have permission to perform this action.');
       return;
     }
 
@@ -309,7 +312,7 @@ export class AssignmentComponent implements OnInit {
   updateAssignment(): void {
 
     if (!this.auth.hasPermission('UPDATE_ASSIGNMENT')) {
-      alert('Permission Denied');
+      this.feedback.fail('You do not have permission to perform this action.');
       return;
     }
 
@@ -325,7 +328,7 @@ export class AssignmentComponent implements OnInit {
 
       next: () => {
 
-        alert('Assignment Updated Successfully');
+        this.feedback.ok('Assignment updated successfully');
 
         this.resetForm();
 
@@ -333,7 +336,7 @@ export class AssignmentComponent implements OnInit {
 
       },
 
-      error: (err) => console.log(err)
+      error: (err) => this.feedback.fail(err)
 
     });
 
@@ -346,7 +349,7 @@ export class AssignmentComponent implements OnInit {
   deleteAssignment(id: number): void {
 
     if (!this.auth.hasPermission('DELETE_ASSIGNMENT')) {
-      alert('Permission Denied');
+      this.feedback.fail('You do not have permission to perform this action.');
       return;
     }
 
@@ -357,13 +360,13 @@ export class AssignmentComponent implements OnInit {
 
         next: () => {
 
-          alert('Deleted Successfully');
+          this.feedback.ok('Assignment deleted successfully');
 
           this.loadAssignments();
 
         },
 
-        error: (err) => console.log(err)
+        error: (err) => this.feedback.fail(err)
 
       });
 

@@ -77,7 +77,8 @@
             <th class="px-4 py-3 text-left">Time</th>
             <th class="px-4 py-3 text-left">Memory</th>
             <th class="px-4 py-3 text-left">Status</th>
-            <th class="px-4 py-3 text-center">Actions</th>
+            <th *ngIf="auth.hasPermission('UPDATE_ASSIGNMENT') || auth.hasPermission('DELETE_ASSIGNMENT')"
+                class="px-4 py-3 text-center">Actions</th>
 
           </tr>
 
@@ -125,7 +126,8 @@
 
             </td>
 
-            <td class="px-4 py-3">
+            <td *ngIf="auth.hasPermission('UPDATE_ASSIGNMENT') || auth.hasPermission('DELETE_ASSIGNMENT')"
+                class="px-4 py-3">
 
               <div class="flex justify-center gap-2">
 
@@ -155,7 +157,8 @@
 
           <tr *ngIf="assignments.length === 0">
 
-            <td colspan="8" class="text-center py-8 text-gray-500">
+            <td [attr.colspan]="(auth.hasPermission('UPDATE_ASSIGNMENT') || auth.hasPermission('DELETE_ASSIGNMENT')) ? 8 : 7"
+                class="text-center py-8 text-gray-500">
 
               No Assignments Found
 

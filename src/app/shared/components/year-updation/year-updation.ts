@@ -27,6 +27,7 @@ import { YearService } from '../../../features/services/year/year-service';
 import { CollegeService } from '../../../features/services/college/college-service';
 import { DepartmentService } from '../../../features/services/department/department-service';
 import { BranchService } from '../../../features/services/branch/branch-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-year-updation',
@@ -39,6 +40,9 @@ import { BranchService } from '../../../features/services/branch/branch-service'
   styleUrls: ['./year-updation.css']
 })
 export class YearUpdation implements OnInit {
+
+  promoteFeedback = new Feedback();
+  uploadFeedback = new Feedback();
 
   promoteForm!: FormGroup;
 
@@ -258,7 +262,7 @@ export class YearUpdation implements OnInit {
   promoteYear(): void {
 
     if (!this.auth.hasPermission('UPDATE_YEAR')) {
-      alert('You do not have permission to promote years.');
+      this.promoteFeedback.fail('You do not have permission to promote years.');
       return;
     }
 
@@ -287,12 +291,12 @@ export class YearUpdation implements OnInit {
       .subscribe({
 
         next: () => {
-          alert('Students Promoted Successfully');
           this.resetForm();
+          this.promoteFeedback.ok('Students promoted successfully');
         },
 
         error: (err) => {
-          console.error(err);
+          this.promoteFeedback.fail(err, 'Failed to promote students');
         }
 
       });
@@ -316,12 +320,12 @@ export class YearUpdation implements OnInit {
   uploadPromoteFile(): void {
 
     if (!this.auth.hasPermission('UPDATE_YEAR')) {
-      alert('You do not have permission to promote years.');
+      this.uploadFeedback.fail('You do not have permission to promote years.');
       return;
     }
 
     if (!this.selectedFile) {
-      alert('Please select a file');
+      this.uploadFeedback.fail('Please select a file');
       return;
     }
 
@@ -332,12 +336,12 @@ export class YearUpdation implements OnInit {
       .subscribe({
 
         next: () => {
-          alert('Students Promoted Successfully');
+          this.uploadFeedback.ok('Students promoted successfully');
           this.selectedFile = null;
         },
 
         error: (err) => {
-          console.error(err);
+          this.uploadFeedback.fail(err, 'Failed to promote students from file');
         }
 
       });

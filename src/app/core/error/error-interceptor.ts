@@ -13,6 +13,19 @@ import { AuthServices } from '../../features/services/auth/auth-services';
 let isRefreshing = false;
 const refreshedToken$ = new BehaviorSubject<string | null>(null);
 
+// The refresh endpoint needs the user's id, which login stores in
+// localStorage as part of the 'user' object (TokenResponseDto.userId).
+function getStoredUserId(): string | null {
+
+  try {
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored)?.userId ?? null : null;
+  } catch {
+    return null;
+  }
+
+}
+
 function withAuthHeader(
   req: HttpRequest<unknown>,
   token: string
@@ -48,8 +61,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       const refreshToken = cookie.get('refresh');
+      const userId = getStoredUserId();
 
-      if (!refreshToken) {
+      if (!refreshToken || !userId) {
         return throwError(() => error);
       }
 
@@ -67,7 +81,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       isRefreshing = true;
       refreshedToken$.next(null);
 
-      return authServices.refreshToken(refreshToken).pipe(
+      return authServices.refreshToken(userId, refreshToken).pipe(
 
         switchMap((res: any) => {
 

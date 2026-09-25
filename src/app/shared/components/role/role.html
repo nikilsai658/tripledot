@@ -48,7 +48,8 @@
 
             <th class="p-3 text-sm font-semibold text-center">Year</th>
 
-            <th class="p-3 text-sm font-semibold text-center">Actions</th>
+            <th *ngIf="auth.hasPermission('UPDATE_ROLE') || auth.hasPermission('DELETE_ROLE')"
+                class="p-3 text-sm font-semibold text-center">Actions</th>
 
           </tr>
 
@@ -108,7 +109,8 @@
 
             </td>
 
-            <td class="p-3">
+            <td *ngIf="auth.hasPermission('UPDATE_ROLE') || auth.hasPermission('DELETE_ROLE')"
+                class="p-3">
 
               <div class="flex justify-center gap-2">
 
@@ -139,7 +141,7 @@
           <tr *ngIf="roles.length === 0">
 
             <td
-              colspan="6"
+              [attr.colspan]="(auth.hasPermission('UPDATE_ROLE') || auth.hasPermission('DELETE_ROLE')) ? 6 : 5"
               class="p-6 text-center text-gray-400">
 
               No Roles Found

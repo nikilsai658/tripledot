@@ -26,6 +26,7 @@ import { Auth } from '../../../core/auth/auth';
 import { CourseAssignmnetService } from '../../../features/services/courseassignment/course-assignmnet-service';
 import { CourseService } from '../../../features/services/course/course-service';
 import { AssignmentService } from '../../../features/services/assignment/assignment-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-courseassignmentmap',
@@ -40,6 +41,8 @@ import { AssignmentService } from '../../../features/services/assignment/assignm
   styleUrls: ['./courseassignment.css']
 })
 export class CourseAssignmentMapComponent implements OnInit {
+
+  feedback = new Feedback();
 
   courseAssignmentForm!: FormGroup;
 
@@ -253,10 +256,13 @@ export class CourseAssignmentMapComponent implements OnInit {
           this.loadMappings();
 
           this.closeModal();
+          this.feedback.ok('Mapping updated successfully');
 
         },
 
-        error: err => console.log(err)
+        error: err => {
+        this.feedback.fail(err);
+      }
 
       });
 
@@ -269,10 +275,13 @@ export class CourseAssignmentMapComponent implements OnInit {
           this.loadMappings();
 
           this.closeModal();
+          this.feedback.ok('Mapping added successfully');
 
         },
 
-        error: err => console.log(err)
+        error: err => {
+        this.feedback.fail(err);
+      }
 
       });
 
@@ -325,10 +334,13 @@ export class CourseAssignmentMapComponent implements OnInit {
       next: () => {
 
         this.loadMappings();
+        this.feedback.ok('Mapping deleted successfully');
 
       },
 
-      error: err => console.log(err)
+      error: err => {
+        this.feedback.fail(err);
+      }
 
     });
 

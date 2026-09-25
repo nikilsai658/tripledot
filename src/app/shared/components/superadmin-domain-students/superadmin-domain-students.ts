@@ -93,6 +93,18 @@ export class SuperadminDomainStudents implements OnInit {
     }
   );
 }
+ viewTasks(student: any): void {
+  this.router.navigate(
+    ['/main/superadmin-student-tasks'],
+    {
+      state: {
+        studentId: student.studentId,
+        collegeId: this.collegeId,
+        domainId: this.domainId,
+      }
+    }
+  );
+}
 printContent(): void {
   const printContent = document.getElementById('print-section');
 

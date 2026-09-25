@@ -30,19 +30,14 @@
 }
 
 /* Routed content: fixed frame below the header, only this area scrolls.
-   top must match .main-header height */
+   top must match .top-header's height (h-[68px] in header.css, same at
+   every breakpoint) or a white strip shows between header and page. */
 .content{
     position: fixed;
-    top: 64px;
+    top: 68px;
     left: 0;
     right: 0;
     bottom: 0;
     overflow-y: auto;
     overflow-x: hidden;
-}
-@media (min-width: 640px){
-    .content{ top: 72px; }
-}
-@media (min-width: 1024px){
-    .content{ top: 80px; }
 }

@@ -23,6 +23,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
 import { PermissionService } from '../../../features/services/permission/permission-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-permission',
@@ -45,6 +46,8 @@ export class Permission implements OnInit {
   selectedPermissionId = 0;
 
   showModal = false;
+
+  feedback = new Feedback();
 
   constructor(
     private api: PermissionService,
@@ -127,7 +130,7 @@ export class Permission implements OnInit {
   openAddModal(): void {
 
     if (!this.auth.hasPermission('CREATE_PERMISSION')) {
-      alert('No Permission');
+      this.feedback.fail('You do not have permission to add permissions.');
       return;
     }
 
@@ -156,7 +159,7 @@ export class Permission implements OnInit {
   createPermission(): void {
 
     if (!this.auth.hasPermission('CREATE_PERMISSION')) {
-      alert('No Permission');
+      this.feedback.fail('You do not have permission to add permissions.');
       return;
     }
 
@@ -169,15 +172,15 @@ export class Permission implements OnInit {
 
       next: () => {
 
-        alert('Permission Created Successfully');
-
         this.resetForm();
+
+        this.feedback.ok('Permission added successfully');
 
         this.loadPermissions();
 
       },
 
-      error: err => console.error(err)
+      error: err => this.feedback.fail(err, 'Failed to add permission')
 
     });
 
@@ -190,7 +193,7 @@ export class Permission implements OnInit {
   editPermission(permission: any): void {
 
     if (!this.auth.hasPermission('UPDATE_PERMISSION')) {
-      alert('No Permission');
+      this.feedback.fail('You do not have permission to edit permissions.');
       return;
     }
 
@@ -217,7 +220,7 @@ export class Permission implements OnInit {
   updatePermission(): void {
 
     if (!this.auth.hasPermission('UPDATE_PERMISSION')) {
-      alert('No Permission');
+      this.feedback.fail('You do not have permission to edit permissions.');
       return;
     }
 
@@ -236,15 +239,15 @@ export class Permission implements OnInit {
 
       next: () => {
 
-        alert('Permission Updated Successfully');
-
         this.resetForm();
+
+        this.feedback.ok('Permission updated successfully');
 
         this.loadPermissions();
 
       },
 
-      error: err => console.error(err)
+      error: err => this.feedback.fail(err, 'Failed to update permission')
 
     });
 
@@ -257,7 +260,7 @@ export class Permission implements OnInit {
   deletePermission(id: number): void {
 
     if (!this.auth.hasPermission('DELETE_PERMISSION')) {
-      alert('No Permission');
+      this.feedback.fail('You do not have permission to delete permissions.');
       return;
     }
 
@@ -268,13 +271,13 @@ export class Permission implements OnInit {
 
       next: () => {
 
-        alert('Permission Deleted Successfully');
+        this.feedback.ok('Permission deleted successfully');
 
         this.loadPermissions();
 
       },
 
-      error: err => console.error(err)
+      error: err => this.feedback.fail(err, 'Failed to delete permission')
 
     });
 

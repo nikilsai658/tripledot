@@ -23,6 +23,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
 import { YearService } from '../../../features/services/year/year-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-year',
@@ -35,6 +36,8 @@ import { YearService } from '../../../features/services/year/year-service';
   styleUrls: ['./year.css']
 })
 export class Year implements OnInit {
+
+  feedback = new Feedback();
 
   years: any[] = [];
 
@@ -146,7 +149,7 @@ export class Year implements OnInit {
 
     if (!this.auth.hasPermission('CREATE_YEAR')) {
 
-      alert('Permission Denied');
+      this.feedback.fail('You do not have permission to perform this action.');
 
       return;
 
@@ -178,7 +181,7 @@ export class Year implements OnInit {
 
     if (!this.auth.hasPermission('CREATE_YEAR')) {
 
-      alert('Permission Denied');
+      this.feedback.fail('You do not have permission to perform this action.');
 
       return;
 
@@ -196,7 +199,7 @@ export class Year implements OnInit {
 
       next: () => {
 
-        alert('Year Created Successfully');
+        this.feedback.ok('Year added successfully');
 
         this.resetForm();
 
@@ -205,9 +208,7 @@ export class Year implements OnInit {
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });
@@ -222,7 +223,7 @@ export class Year implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_YEAR')) {
 
-      alert('Permission Denied');
+      this.feedback.fail('You do not have permission to perform this action.');
 
       return;
 
@@ -252,7 +253,7 @@ export class Year implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_YEAR')) {
 
-      alert('Permission Denied');
+      this.feedback.fail('You do not have permission to perform this action.');
 
       return;
 
@@ -276,7 +277,7 @@ export class Year implements OnInit {
 
       next: () => {
 
-        alert('Year Updated Successfully');
+        this.feedback.ok('Year updated successfully');
 
         this.resetForm();
 
@@ -285,9 +286,7 @@ export class Year implements OnInit {
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });
@@ -302,7 +301,7 @@ export class Year implements OnInit {
 
     if (!this.auth.hasPermission('DELETE_YEAR')) {
 
-      alert('Permission Denied');
+      this.feedback.fail('You do not have permission to perform this action.');
 
       return;
 
@@ -318,16 +317,14 @@ export class Year implements OnInit {
 
       next: () => {
 
-        alert('Year Deleted Successfully');
+        this.feedback.ok('Year deleted successfully');
 
         this.loadYears();
 
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });

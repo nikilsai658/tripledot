@@ -86,13 +86,15 @@ colleges = [
     return [
       'UPDATE_COLLEGE',
       'VIEW_DEPARTMENT',
-      'UPDATE_BRANCH',
+      'VIEW_BRANCH',
       'VIEW_DOMAIN',
       'VIEW_COURSE',
+      'VIEW_USER',
       'VIEW_ROLE',
       'VIEW_PERMISSION',
       'VIEW_YEAR',
-      'UPDATE_ASSIGNMENT',
+      'UPDATE_YEAR',
+      'VIEW_ASSIGNMENT',
     ].some(permission => this.auth.hasPermission(permission));
   }
 

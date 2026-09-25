@@ -9,6 +9,8 @@ import {
 
 import { Studentassignment } from '../../../features/services/studentassignment/studentassignment';
 import { Auth } from '../../../core/auth/auth';
+import { Feedback } from '../../feedback/feedback';
+
 @Component({
   selector: 'app-student-assignment',
   standalone: true,
@@ -18,6 +20,8 @@ import { Auth } from '../../../core/auth/auth';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentAssignment implements OnInit {
+
+  feedback = new Feedback();
 
   assignmentForm!: FormGroup;
   assignments: any[] = [];
@@ -82,7 +86,6 @@ export class StudentAssignment implements OnInit {
         const data = res.data || res;
 
         this.assignmentForm.patchValue(data);
-
         this.selectedId = id;
         this.editMode = true;
         this.cdr.markForCheck();
@@ -130,9 +133,10 @@ update(): void {
         console.log(res);
         this.getAssignments();
         this.cancel();
+        this.feedback.ok('Record updated successfully');
       },
       error: (err) => {
-        console.log(err);
+        this.feedback.fail(err, 'Failed to update record');
       }
     });
 }
@@ -147,11 +151,11 @@ update(): void {
       .deletestudentassignmnet(id)
       .subscribe({
         next: () => {
-          alert('Assignment Deleted Successfully');
+          this.feedback.ok('Record deleted successfully');
           this.getAssignments();
 
         },
-        error: (err) => console.error(err)
+        error: (err) => this.feedback.fail(err, 'Failed to delete record')
       });
 
   }

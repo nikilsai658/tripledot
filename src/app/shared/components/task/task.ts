@@ -23,6 +23,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 import { Auth } from '../../../core/auth/auth';
 import { TaskService } from '../../../features/services/task/task-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-task',
@@ -35,6 +36,8 @@ import { TaskService } from '../../../features/services/task/task-service';
   styleUrls: ['./task.css']
 })
 export class Task implements OnInit {
+
+  feedback = new Feedback();
 
   tasks: any[] = [];
 
@@ -158,7 +161,7 @@ export class Task implements OnInit {
 
     if (!this.auth.hasPermission('CREATE_TASK')) {
 
-      alert('You do not have permission to create tasks.');
+      this.feedback.fail('You do not have permission to create tasks.');
 
       return;
 
@@ -192,7 +195,7 @@ export class Task implements OnInit {
 
     if (!this.auth.hasPermission('CREATE_TASK')) {
 
-      alert('You do not have permission to create tasks.');
+      this.feedback.fail('You do not have permission to create tasks.');
 
       return;
 
@@ -210,7 +213,7 @@ export class Task implements OnInit {
 
       next: () => {
 
-        alert('Task Created Successfully');
+        this.feedback.ok('Task added successfully');
 
         this.resetForm();
 
@@ -219,9 +222,7 @@ export class Task implements OnInit {
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });
@@ -236,7 +237,7 @@ export class Task implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_TASK')) {
 
-      alert('You do not have permission to edit.');
+      this.feedback.fail('You do not have permission to edit.');
 
       return;
 
@@ -268,7 +269,7 @@ export class Task implements OnInit {
 
     if (!this.auth.hasPermission('UPDATE_TASK')) {
 
-      alert('You do not have permission to update.');
+      this.feedback.fail('You do not have permission to update.');
 
       return;
 
@@ -292,7 +293,7 @@ export class Task implements OnInit {
 
       next: () => {
 
-        alert('Task Updated Successfully');
+        this.feedback.ok('Task updated successfully');
 
         this.resetForm();
 
@@ -301,9 +302,7 @@ export class Task implements OnInit {
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });
@@ -318,7 +317,7 @@ export class Task implements OnInit {
 
     if (!this.auth.hasPermission('DELETE_TASK')) {
 
-      alert('You do not have permission to delete.');
+      this.feedback.fail('You do not have permission to delete.');
 
       return;
 
@@ -334,16 +333,14 @@ export class Task implements OnInit {
 
       next: () => {
 
-        alert('Task Deleted Successfully');
+        this.feedback.ok('Task deleted successfully');
 
         this.loadTasks();
 
       },
 
       error: (err) => {
-
-        console.error(err);
-
+        this.feedback.fail(err);
       }
 
     });

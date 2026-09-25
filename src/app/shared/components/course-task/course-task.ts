@@ -26,6 +26,7 @@ import { Auth } from '../../../core/auth/auth';
 import { CourseTaskService } from '../../../features/services/coursetask/course-task-service';
 import { CourseService } from '../../../features/services/course/course-service';
 import { TaskService } from '../../../features/services/task/task-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-course-task',
@@ -40,6 +41,8 @@ import { TaskService } from '../../../features/services/task/task-service';
   styleUrls: ['./course-task.css']
 })
 export class CourseTask implements OnInit {
+
+  feedback = new Feedback();
 
   courseTaskForm!: FormGroup;
 
@@ -228,7 +231,10 @@ export class CourseTask implements OnInit {
           next: () => {
             this.loadMappings();
             this.closeModal();
-          }
+            this.feedback.ok('Mapping updated successfully');
+          },
+
+          error: (err: any) => this.feedback.fail(err)
 
         });
 
@@ -244,7 +250,10 @@ export class CourseTask implements OnInit {
           next: () => {
             this.loadMappings();
             this.closeModal();
-          }
+            this.feedback.ok('Mapping added successfully');
+          },
+
+          error: (err: any) => this.feedback.fail(err)
 
         });
 
@@ -289,7 +298,11 @@ export class CourseTask implements OnInit {
       .subscribe({
         next: () => {
           this.loadMappings();
-        }
+          this.feedback.ok('Mapping deleted successfully');
+        },
+
+        error: (err: any) => this.feedback.fail(err)
+
       });
   }
 

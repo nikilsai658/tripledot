@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Auth } from '../../../core/auth/auth';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-department',
@@ -21,6 +22,8 @@ export class Department {
   isEditMode = false;
   selectedDepartmentId = 0;
   showModal = false;
+
+  feedback = new Feedback();
 
  sidebarOpen = false;
 
@@ -158,11 +161,11 @@ loadDepartments(): void {
 
         console.log(res);
 
-        alert('Department Created Successfully');
-
         this.departmentForm.reset();
 
         this.showModal = false;
+
+        this.feedback.ok('Department added successfully');
 
         this.loadDepartments();
 
@@ -170,7 +173,7 @@ loadDepartments(): void {
 
       error: (err) => {
 
-        console.error(err);
+        this.feedback.fail(err, 'Failed to add department');
 
       }
 
@@ -223,8 +226,6 @@ loadDepartments(): void {
 
       next: () => {
 
-        alert('Department Updated Successfully');
-
         this.departmentForm.reset();
 
         this.isEditMode = false;
@@ -233,13 +234,15 @@ loadDepartments(): void {
 
         this.showModal = false;
 
+        this.feedback.ok('Department updated successfully');
+
         this.loadDepartments();
 
       },
 
       error: (err) => {
 
-        console.error(err);
+        this.feedback.fail(err, 'Failed to update department');
 
       }
 
@@ -261,7 +264,7 @@ loadDepartments(): void {
 
       next: () => {
 
-        alert('Department Deleted Successfully');
+        this.feedback.ok('Department deleted successfully');
 
         this.loadDepartments();
 
@@ -269,7 +272,7 @@ loadDepartments(): void {
 
       error: (err) => {
 
-        console.error(err);
+        this.feedback.fail(err, 'Failed to delete department');
 
       }
 

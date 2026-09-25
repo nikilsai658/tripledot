@@ -26,6 +26,7 @@ import { Auth } from '../../../core/auth/auth';
 import { DepartmentService } from '../../../features/services/department/department-service';
 import { BranchService } from '../../../features/services/branch/branch-service';
 import { DeptbranchService} from '../../../features/services/departmentbranch/deptbranch-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-departmentbranch',
@@ -40,6 +41,8 @@ import { DeptbranchService} from '../../../features/services/departmentbranch/de
   styleUrls: ['./departmentbranch.css']
 })
 export class DepartmentBranchComponent implements OnInit {
+
+  feedback = new Feedback();
 
   departmentBranchForm!: FormGroup;
 
@@ -224,8 +227,11 @@ export class DepartmentBranchComponent implements OnInit {
             this.loadMappings();
 
             this.closeModal();
+            this.feedback.ok('Mapping updated successfully');
 
-          }
+          },
+
+          error: (err: any) => this.feedback.fail(err)
 
         });
 
@@ -241,8 +247,11 @@ export class DepartmentBranchComponent implements OnInit {
             this.loadMappings();
 
             this.closeModal();
+            this.feedback.ok('Mapping added successfully');
 
-          }
+          },
+
+          error: (err: any) => this.feedback.fail(err)
 
         });
 
@@ -290,8 +299,11 @@ export class DepartmentBranchComponent implements OnInit {
         next: () => {
 
           this.loadMappings();
+          this.feedback.ok('Mapping deleted successfully');
 
-        }
+        },
+
+        error: (err: any) => this.feedback.fail(err)
 
       });
 
@@ -309,7 +321,8 @@ export class DepartmentBranchComponent implements OnInit {
 
     this.selectedId = null;
 
-    this.departmentBranchForm.reset();
+    // Reset to '' (not null) so the "Select …" placeholder options show.
+    this.departmentBranchForm.reset({ departmentName: '', branchName: '' });
 
   }
 

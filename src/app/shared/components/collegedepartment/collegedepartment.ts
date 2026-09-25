@@ -25,6 +25,7 @@ import { Auth } from '../../../core/auth/auth';
 import { CollegedepartService } from '../../../features/services/collegedepartment/collegedepart-service';
 import { CollegeService } from '../../../features/services/college/college-service';
 import { DepartmentService } from '../../../features/services/department/department-service';
+import { Feedback } from '../../feedback/feedback';
 
 @Component({
   selector: 'app-collegedepartment',
@@ -32,12 +33,14 @@ import { DepartmentService } from '../../../features/services/department/departm
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FormsModule,
+    FormsModule
   ],
   templateUrl: './collegedepartment.html',
   styleUrls: ['./collegedepartment.css']
 })
 export class CollegeDepartmentComponent implements OnInit {
+
+  feedback = new Feedback();
 
   collegeDepartmentForm!: FormGroup;
 
@@ -272,8 +275,11 @@ loadDepartments(): void {
             this.loadMappings();
 
             this.closeModal();
+            this.feedback.ok('Mapping updated successfully');
 
-          }
+          },
+
+          error: (err: any) => this.feedback.fail(err)
 
         });
 
@@ -289,8 +295,11 @@ loadDepartments(): void {
             this.loadMappings();
 
             this.closeModal();
+            this.feedback.ok('Mapping added successfully');
 
-          }
+          },
+
+          error: (err: any) => this.feedback.fail(err)
 
         });
 
@@ -334,7 +343,11 @@ delete(id: number) {
     .subscribe({
       next: () => {
         this.loadMappings();
-      }
+        this.feedback.ok('Mapping deleted successfully');
+      },
+
+      error: (err: any) => this.feedback.fail(err)
+
     });
 }
 
@@ -350,7 +363,8 @@ delete(id: number) {
 
     this.selectedId = null;
 
-    this.collegeDepartmentForm.reset();
+    // Reset to '' (not null) so the "Select …" placeholder options show.
+    this.collegeDepartmentForm.reset({ collegeName: '', departmentName: '' });
 
   }
 

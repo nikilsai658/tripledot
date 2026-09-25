@@ -79,6 +79,8 @@
         <input
             type="text"
             placeholder="Search Branch..."
+            [value]="searchText"
+            (input)="searchText = $any($event.target).value"
             class="w-full border rounded-lg p-3">
 
     </div>
@@ -101,7 +103,8 @@
 
                     <th class="p-4 text-left">Status</th>
 
-                    <th class="p-4 text-center">Actions</th>
+                    <th *ngIf="auth.hasPermission('UPDATE_BRANCH') || auth.hasPermission('DELETE_BRANCH')"
+                        class="p-4 text-center">Actions</th>
 
                 </tr>
 
@@ -110,7 +113,7 @@
             <tbody>
 
                 <tr
-                    *ngFor="let branch of branches; let i=index"
+                    *ngFor="let branch of filteredBranches; let i=index"
                     class="border-b hover:bg-gray-50 transition-colors">
 
                     <td class="p-4">
@@ -135,7 +138,8 @@
 
                     </td>
 
-                    <td class="p-4">
+                    <td *ngIf="auth.hasPermission('UPDATE_BRANCH') || auth.hasPermission('DELETE_BRANCH')"
+                        class="p-4">
 
                         <div class="flex justify-center gap-2">
 
@@ -165,8 +169,9 @@
 
                 </tr>
 
-                <tr *ngIf="!branches || branches.length === 0">
-                    <td colspan="6" class="p-6 text-center text-gray-400">
+                <tr *ngIf="filteredBranches.length === 0">
+                    <td [attr.colspan]="(auth.hasPermission('UPDATE_BRANCH') || auth.hasPermission('DELETE_BRANCH')) ? 5 : 4"
+                        class="p-6 text-center text-gray-400">
                         No branches found.
                     </td>
                 </tr>

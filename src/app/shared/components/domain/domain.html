@@ -147,7 +147,9 @@
               Status
             </th>
 
-            <th class="center-column">
+            <th
+              *ngIf="auth.hasPermission('UPDATE_DOMAIN') || auth.hasPermission('DELETE_DOMAIN')"
+              class="center-column">
               Actions
             </th>
 
@@ -257,7 +259,9 @@
 
 
             <!-- ACTIONS -->
-            <td class="center-column">
+            <td
+              *ngIf="auth.hasPermission('UPDATE_DOMAIN') || auth.hasPermission('DELETE_DOMAIN')"
+              class="center-column">
 
               <div class="action-buttons">
 
@@ -327,7 +331,7 @@
           <tr *ngIf="domains.length === 0">
 
             <td
-              colspan="7"
+              [attr.colspan]="(auth.hasPermission('UPDATE_DOMAIN') || auth.hasPermission('DELETE_DOMAIN')) ? 7 : 6"
               class="empty-state">
 
               <div class="empty-icon">

@@ -78,7 +78,8 @@
                             Semester
                         </th>
 
-                        <th class="px-5 py-4 text-center text-sm font-semibold">
+                        <th *ngIf="auth.hasPermission('UPDATE_YEAR') || auth.hasPermission('DELETE_YEAR')"
+                            class="px-5 py-4 text-center text-sm font-semibold">
                             Actions
                         </th>
 
@@ -104,7 +105,8 @@
                             Semester {{ year.semester }}
                         </td>
 
-                        <td class="px-5 py-4">
+                        <td *ngIf="auth.hasPermission('UPDATE_YEAR') || auth.hasPermission('DELETE_YEAR')"
+                            class="px-5 py-4">
 
                             <div class="flex justify-center gap-3">
 
@@ -135,7 +137,7 @@
                     <tr *ngIf="years.length === 0">
 
                         <td
-                            colspan="4"
+                            [attr.colspan]="(auth.hasPermission('UPDATE_YEAR') || auth.hasPermission('DELETE_YEAR')) ? 4 : 3"
                             class="text-center py-10 text-gray-500">
 
                             No Years Found
